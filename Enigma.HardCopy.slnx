@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Enigma.HardCopy.Core/Enigma.HardCopy.Core.csproj" />
+    <Project Path="src/Enigma.HardCopy.Desktop/Enigma.HardCopy.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Enigma.HardCopy.Core.UnitTests/Enigma.HardCopy.Core.UnitTests.csproj" />
+    <Project Path="tests/Enigma.HardCopy.Desktop.UnitTests/Enigma.HardCopy.Desktop.UnitTests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <!-- TFM deviation from the house netstandard2.0 default: QuestPDF (PDF composition) requires
+         .NET 8+, so this library cannot target netstandard2.0. Its only consumers are the
+         Enigma.HardCopy.Desktop app and a possible future CLI, both of which run on the latest
+         LTS runtime — so a single net10.0 target is sufficient and no polyfill set is needed. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <!-- LangVersion / Nullable / ImplicitUsings / TreatWarningsAsErrors are deliberately absent:
+       they come from Directory.Build.props. No Version attributes either — versions live in
+       Directory.Packages.props (Central Package Management). -->
+  <ItemGroup>
+    <PackageReference Include="QuestPDF" />
+    <PackageReference Include="QRCoder" />
+    <PackageReference Include="ZXing.Net" />
+    <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" />
+    <PackageReference Include="SkiaSharp" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Enigma.HardCopy.Desktop.ViewModels"
+        mc:Ignorable="d"
+        x:Class="Enigma.HardCopy.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/app.ico"
+        Title="{Binding Title}"
+        Width="900" Height="600"
+        WindowStartupLocation="CenterScreen">
+
+  <!-- Shell content (Backup / Recover navigation) is built in PHASE05. -->
+  <TextBlock Text="{Binding Title}"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center" />
+
+</Window>

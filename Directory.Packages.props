@@ -1,0 +1,51 @@
+<Project>
+
+  <!-- Central Package Management: every PackageReference version in the solution is pinned
+       here so shared dependencies (e.g. Avalonia, SkiaSharp) cannot drift between projects.
+       Projects reference packages WITHOUT a Version attribute (<PackageReference Include="Foo" />);
+       the version comes from the matching <PackageVersion> below. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- Core library. Targets net10.0 only, so the netstandard2.0-support pair
+       (System.Buffers / PolySharp) is deliberately absent. -->
+  <ItemGroup>
+    <PackageVersion Include="QuestPDF" Version="2026.7.2" />
+    <PackageVersion Include="QRCoder" Version="1.8.0" />
+    <PackageVersion Include="ZXing.Net" Version="0.16.11" />
+    <PackageVersion Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.22" />
+    <!-- SkiaSharp is pinned to the version Avalonia 12.1.1 itself depends on, NOT the newest
+         release (4.151.0): the ZXing SkiaSharp binding and Avalonia.Skia must resolve to one
+         Skia runtime. Bump this only together with the Avalonia ecosystem group below. -->
+    <PackageVersion Include="SkiaSharp" Version="3.119.4" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="3.119.4" />
+  </ItemGroup>
+
+  <!-- Hosting / logging — shared by the Desktop app (and a future CLI). -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.10" />
+  </ItemGroup>
+
+  <!-- Desktop (Avalonia) — this is a version-coupled ecosystem: bump Avalonia, the Fluent theme,
+       the Inter fonts and the diagnostics support TOGETHER, never one package at a time. Mixing
+       versions within the set breaks the build, so the whole group moves as a unit (SkiaSharp
+       above is part of that unit — see its note). -->
+  <ItemGroup>
+    <PackageVersion Include="Avalonia" Version="12.1.1" />
+    <PackageVersion Include="Avalonia.Desktop" Version="12.1.1" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.1" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.1" />
+    <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+  </ItemGroup>
+
+  <!-- Tests (MTP-native: xunit.v3 only; coverlet.collector for coverage). No Microsoft.NET.Test.Sdk. -->
+  <ItemGroup>
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
+    <PackageVersion Include="coverlet.collector" Version="10.0.1" />
+  </ItemGroup>
+
+</Project>
