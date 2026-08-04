@@ -67,6 +67,12 @@ v=1|n=<filename>|s=<original size bytes>|h=<sha256 hex of ORIGINAL file>|c=<0|1 
 hand-recovery with standard tools (`gunzip`) works. `e` is the reserved encryption flag, always `0` in v1.
 Unknown keys must be ignored by the decoder (forward compatibility).
 
+**Value escaping** (decided at PHASE02 build — the spec gap was that a filename may legally contain the
+`|` separator): inside a **value**, `%` is written `%25` and `|` is written `%7C`; the decoder unescapes
+any `%XX` whose byte is ASCII (`< 0x80`) and rejects a malformed `%` sequence. Keys never need escaping,
+and `=` is never escaped because a pair splits on its **first** `=` only. PHASE03's printed recovery-spec
+box must state the two escapes.
+
 **Capacity check (default chunk):** 1024 B → 1639 Base32 chars + ~27 header chars ≈ 1666 → fits QR
 version 25 at ECC M (1708 alphanumeric). Rendered at ≥ 0.35 mm/module, ~44 mm per symbol → roughly
 3×5 = 15 codes per A4 page ≈ 15 KB/page. Exact grid/version tuning happens in PHASE03.
@@ -141,7 +147,7 @@ Goal: empty but fully wired solution; everything builds clean, one placeholder t
 5. `LICENSE` (MIT), `README.md` stub, `Assets/` placeholder icon wiring.
 6. Acceptance: `dotnet build` zero warnings; `dotnet test` runs 1 placeholder test per test project.
 
-## PHASE02 — Core encoding pipeline — **TODO**
+## PHASE02 — Core encoding pipeline — **DONE**
 
 Goal: file bytes → list of code strings, fully unit-tested (no QR, no PDF yet).
 

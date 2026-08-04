@@ -32,6 +32,19 @@ public static class HardCopyFormat
     public const int MetadataIndex = 0;
 
     /// <summary>
+    /// The length of a backup ID, in <see cref="Base32"/> characters. Four characters carry 20 bits of
+    /// entropy — enough to make accidentally mixing scans from two different backups detectable, which
+    /// is all the ID is for.
+    /// </summary>
+    public const int BackupIdLength = 4;
+
+    /// <summary>
+    /// The length of the CRC-32 field of a code header, in hexadecimal characters (a CRC-32 is 32 bits,
+    /// so always exactly 8, zero-padded).
+    /// </summary>
+    public const int CrcHexLength = 8;
+
+    /// <summary>
     /// The 45-character QR alphanumeric-mode charset. Every character of a generated code is drawn
     /// from this set, which is what keeps the encoding overhead near 10% instead of forcing byte mode.
     /// </summary>
