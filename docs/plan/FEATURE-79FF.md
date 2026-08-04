@@ -73,9 +73,21 @@ any `%XX` whose byte is ASCII (`< 0x80`) and rejects a malformed `%` sequence. K
 and `=` is never escaped because a pair splits on its **first** `=` only. PHASE03's printed recovery-spec
 box must state the two escapes.
 
-**Capacity check (default chunk):** 1024 B → 1639 Base32 chars + ~27 header chars ≈ 1666 → fits QR
-version 25 at ECC M (1708 alphanumeric). Rendered at ≥ 0.35 mm/module, ~44 mm per symbol → roughly
-3×5 = 15 codes per A4 page ≈ 15 KB/page. Exact grid/version tuning happens in PHASE03.
+**Capacity check (default chunk)** — *corrected at the PHASE03 build; the version figure originally recorded
+here was wrong.* 1024 B → 1639 Base32 chars + ~27 header chars ≈ 1666 → QR **version 28** at ECC M, which
+holds 1732 alphanumeric characters. (Version 25 holds **1451**, not the 1708 first written here; 3391 for
+version 40 at ECC M, the number PHASE02's ceiling test uses, was right.) Version 28 is 137 modules per side
+with the quiet zone, printed at 0.414 mm/module → **56.7 mm** per symbol → a **3×4 = 12** code grid per A4
+page ≈ 12 KB/page, with 9 codes on page 1 because it shares its height with the recovery-spec box.
+
+Per-level alphanumeric ceilings, measured against QRCoder: L 4296, M 3391, Q 2420, H 1852. The 2048 B
+`EncodeOptions.MaxChunkSizeInBytes` ceiling therefore holds at ECC M and L only — a Large or Max chunk
+cannot be rendered at Q or H at all, and `PageLayout` rejects that combination rather than printing paper
+that omits data.
+
+The grid itself is **derived, not fixed** (PHASE03 decision): the minimum module size is the only print
+constraint, and the layout packs the densest grid an A4 sheet allows while honouring it, then grows each
+cell into the space left over. Small chunks come out 5×6, Medium and Large 3×4.
 
 ## Architecture
 
@@ -162,7 +174,7 @@ Goal: file bytes → list of code strings, fully unit-tested (no QR, no PDF yet)
    invariant (every produced code string ⊆ QR alphanumeric set).
 7. Acceptance: overall criteria 3–4 at the string level; zero-warning build, tests green.
 
-## PHASE03 — QR generation & PDF composition — **TODO**
+## PHASE03 — QR generation & PDF composition — **DONE**
 
 Goal: `EncodedBackup` → printable A4 PDF; QR seam proven by decode round-trip.
 
