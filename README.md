@@ -22,6 +22,15 @@ dotnet test --solution Enigma.HardCopy.slnx
 
 Requires the .NET 10 SDK (pinned in `global.json`).
 
+## Run
+
+```
+dotnet run --project src/Enigma.HardCopy.Desktop
+```
+
+The window opens on two pages: **Backup** turns a chosen file into the printable PDF, **Recover** rebuilds
+a file from imported scans or from code text typed in by hand. A full walkthrough of both is still to come.
+
 ## License
 
 MIT — see [LICENSE.md](LICENSE.md).

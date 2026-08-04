@@ -7,5 +7,5 @@
 | - PHASE02    | Core encoding pipeline                       | DONE        | (in FEATURE-79FF.md)      |
 | - PHASE03    | QR generation & PDF composition              | DONE        | (in FEATURE-79FF.md)      |
 | - PHASE04    | Core recovery pipeline                       | DONE        | (in FEATURE-79FF.md)      |
-| - PHASE05    | Avalonia desktop app                         | TODO        | (in FEATURE-79FF.md)      |
+| - PHASE05    | Avalonia desktop app                         | DONE        | (in FEATURE-79FF.md)      |
 | - PHASE06    | Release readiness                            | TODO        | (in FEATURE-79FF.md)      |

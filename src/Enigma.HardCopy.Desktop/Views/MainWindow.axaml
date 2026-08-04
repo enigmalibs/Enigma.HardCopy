@@ -8,12 +8,20 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/app.ico"
         Title="{Binding Title}"
-        Width="900" Height="600"
+        Width="1040" Height="760"
+        MinWidth="760" MinHeight="560"
         WindowStartupLocation="CenterScreen">
 
-  <!-- Shell content (Backup / Recover navigation) is built in PHASE05. -->
-  <TextBlock Text="{Binding Title}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+  <!-- Two-view navigation. A tab's content is the page ViewModel itself; the ViewLocator registered in
+       App.axaml turns it into the matching view. -->
+  <TabControl ItemsSource="{Binding Pages}"
+              SelectedIndex="{Binding SelectedPageIndex}"
+              Padding="0">
+    <TabControl.ItemTemplate>
+      <DataTemplate x:DataType="vm:PageViewModel">
+        <TextBlock Text="{Binding Title}" />
+      </DataTemplate>
+    </TabControl.ItemTemplate>
+  </TabControl>
 
 </Window>

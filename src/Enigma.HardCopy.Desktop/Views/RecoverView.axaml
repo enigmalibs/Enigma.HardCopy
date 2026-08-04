@@ -1,0 +1,152 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Enigma.HardCopy.Desktop.Resources"
+             xmlns:vm="using:Enigma.HardCopy.Desktop.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Enigma.HardCopy.Desktop.Views.RecoverView"
+             x:DataType="vm:RecoverViewModel"
+             DragDrop.AllowDrop="True">
+
+  <Grid RowDefinitions="Auto,*" Margin="24">
+
+    <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,16">
+      <TextBlock Classes="h1" Text="{x:Static res:Strings.RecoverHeader}" />
+      <TextBlock Classes="body" Text="{x:Static res:Strings.RecoverIntro}" />
+    </StackPanel>
+
+    <Grid Grid.Row="1" ColumnDefinitions="*,16,1.1*">
+
+      <!-- Feeding codes in -->
+      <ScrollViewer Grid.Column="0">
+        <StackPanel Spacing="16">
+
+          <Border Classes="card">
+            <StackPanel Spacing="10">
+              <TextBlock Classes="h2" Text="{x:Static res:Strings.RecoverImportHeader}" />
+              <Button Content="{x:Static res:Strings.RecoverImportImages}"
+                      Command="{Binding ImportImagesCommand}"
+                      HorizontalAlignment="Left" />
+              <TextBlock Classes="hint" Text="{x:Static res:Strings.RecoverDropHint}" />
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card">
+            <StackPanel Spacing="10">
+              <TextBlock Classes="h2" Text="{x:Static res:Strings.RecoverManualHeader}" />
+              <TextBlock Classes="hint" Text="{x:Static res:Strings.RecoverManualHint}" />
+              <TextBox Classes="mono"
+                       Text="{Binding ManualEntry}"
+                       PlaceholderText="{x:Static res:Strings.RecoverManualPlaceholder}"
+                       AcceptsReturn="True"
+                       TextWrapping="Wrap"
+                       MinHeight="110"
+                       MaxHeight="220" />
+              <Button Content="{x:Static res:Strings.RecoverAddCodes}"
+                      Command="{Binding AddCodesCommand}"
+                      HorizontalAlignment="Left" />
+            </StackPanel>
+          </Border>
+
+          <StackPanel Orientation="Horizontal" Spacing="12">
+            <Button Classes="accent"
+                    Content="{x:Static res:Strings.RecoverAssemble}"
+                    Command="{Binding AssembleCommand}" />
+            <Button Content="{x:Static res:Strings.RecoverSaveAnyway}"
+                    Command="{Binding SaveAnywayCommand}"
+                    IsVisible="{Binding CanSaveAnyway}" />
+            <Button Content="{x:Static res:Strings.RecoverStartOver}"
+                    Command="{Binding StartOverCommand}" />
+          </StackPanel>
+
+          <StackPanel Spacing="6" IsVisible="{Binding IsBusy}">
+            <TextBlock Classes="hint" Text="{Binding ProgressText}" />
+            <ProgressBar IsIndeterminate="True" />
+          </StackPanel>
+
+          <Border Classes="notice"
+                  IsVisible="{Binding HasMessage}"
+                  Classes.success="{Binding Message.IsSuccess}"
+                  Classes.warning="{Binding Message.IsWarning}"
+                  Classes.error="{Binding Message.IsError}">
+            <TextBlock Text="{Binding Message.Text}" TextWrapping="Wrap" />
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+      <!-- What is in, and what is still missing -->
+      <Grid Grid.Column="2" RowDefinitions="Auto,*">
+
+        <Border Grid.Row="0" Classes="card" Margin="0,0,0,16">
+          <StackPanel Spacing="10">
+            <TextBlock Classes="h2" Text="{x:Static res:Strings.RecoverStatusHeader}" />
+
+            <TextBlock Classes="hint"
+                       Text="{x:Static res:Strings.RecoverNothingYet}"
+                       IsVisible="{Binding !HasAnyCode}" />
+
+            <StackPanel Spacing="10" IsVisible="{Binding HasAnyCode}">
+              <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Classes="field" Text="{x:Static res:Strings.RecoverBackupIdLabel}" />
+                <SelectableTextBlock Grid.Row="0" Grid.Column="1" Classes="value mono" Text="{Binding BackupId}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Classes="field"
+                           Text="{x:Static res:Strings.RecoverFileLabel}"
+                           IsVisible="{Binding HasMetadata}" />
+                <SelectableTextBlock Grid.Row="1" Grid.Column="1" Classes="value"
+                                     Text="{Binding FileName}"
+                                     IsVisible="{Binding HasMetadata}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Classes="field"
+                           Text="{x:Static res:Strings.RecoverExpectedSha256Label}"
+                           IsVisible="{Binding HasMetadata}" />
+                <SelectableTextBlock Grid.Row="2" Grid.Column="1" Classes="value mono"
+                                     Text="{Binding ExpectedSha256}"
+                                     IsVisible="{Binding HasMetadata}" />
+              </Grid>
+
+              <Border Classes="notice warning" IsVisible="{Binding !HasMetadata}">
+                <TextBlock Text="{x:Static res:Strings.RecoverMetadataMissing}" TextWrapping="Wrap" />
+              </Border>
+
+              <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Classes="field" Text="{x:Static res:Strings.RecoverChunksLabel}" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Classes="value" Text="{Binding CodesText}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Classes="field" Text="{x:Static res:Strings.RecoverMissingLabel}" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Classes="value" Text="{Binding MissingText}" TextWrapping="Wrap" />
+              </Grid>
+
+              <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressPercent, Mode=OneWay}" />
+
+              <TextBlock Classes="hint"
+                         Text="{x:Static res:Strings.RecoverCompleteHint}"
+                         IsVisible="{Binding IsComplete}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Classes="card">
+          <Grid RowDefinitions="Auto,*">
+            <TextBlock Grid.Row="0" Classes="h2" Margin="0,0,0,8" Text="{x:Static res:Strings.RecoverLogHeader}" />
+            <ListBox Grid.Row="1" Classes="log" ItemsSource="{Binding Activity}">
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:StatusMessage">
+                  <TextBlock Text="{Binding Text}"
+                             TextWrapping="Wrap"
+                             Classes.success="{Binding IsSuccess}"
+                             Classes.warning="{Binding IsWarning}"
+                             Classes.error="{Binding IsError}" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Grid>
+        </Border>
+
+      </Grid>
+    </Grid>
+  </Grid>
+
+</UserControl>

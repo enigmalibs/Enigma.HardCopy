@@ -214,7 +214,7 @@ Goal: images and/or typed strings → verified original file.
    Malformed; foreign BID → WrongBackup), assemble-before-complete rejected, hash-mismatch surfaced.
 5. Acceptance: overall criteria 1–4 end-to-end in Core.
 
-## PHASE05 — Avalonia desktop app — **TODO**
+## PHASE05 — Avalonia desktop app — **DONE**
 
 Goal: the full UX on stock Fluent controls, MVVM per house CommunityToolkit style (no source generators).
 
