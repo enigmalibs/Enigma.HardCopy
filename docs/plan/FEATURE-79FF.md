@@ -67,6 +67,12 @@ v=1|n=<filename>|s=<original size bytes>|h=<sha256 hex of ORIGINAL file>|c=<0|1 
 hand-recovery with standard tools (`gunzip`) works. `e` is the reserved encryption flag, always `0` in v1.
 Unknown keys must be ignored by the decoder (forward compatibility).
 
+**Encryption flag handling** (decided at PHASE04 build): because the flag is *reserved* rather than
+forbidden, a later version may set it without bumping the `EHC1` magic — so a v1 decoder has to handle a
+block it cannot undo. It must **refuse** such a backup (`AssemblyOutcome.EncryptionUnsupported`) rather than
+hand back what is presumably ciphertext as a recovered file; the hash check alone would only report a
+mismatch, which is true but misleading.
+
 **Value escaping** (decided at PHASE02 build — the spec gap was that a filename may legally contain the
 `|` separator): inside a **value**, `%` is written `%25` and `|` is written `%7C`; the decoder unescapes
 any `%XX` whose byte is ASCII (`< 0x80`) and rejects a malformed `%` sequence. Keys never need escaping,
@@ -118,11 +124,18 @@ PdfComposer.Compose(EncodedBackup backup, PdfOptions options) -> byte[]   // A4 
 
 // Recovery side
 RecoverySession                       // accepts codes in any order, mixable sources
-  AddCode(string text) -> AddCodeResult        // Accepted | Duplicate | BadCrc(index) | WrongBackup | Malformed
+  AddCode(string text) -> AddCodeResult        // Accepted | Duplicate | Conflict | BadCrc | WrongBackup | Malformed
   AddImage(Stream image) -> ImageScanResult    // per-image: codes found, each with its AddCodeResult
   Status -> RecoveryStatus                     // metadata present?, received/total, missing indexes
-  TryAssemble() -> AssemblyResult              // file bytes + HashVerified flag + metadata; only when complete
+  TryAssemble() -> AssemblyResult              // Verified | HashMismatch | DecompressionFailed |
+                                               // EncryptionUnsupported | Incomplete (+ bytes when there are any)
+ImageDecoder.TryReadCodes(Stream) -> codes     // static seam over SkiaSharp + ZXing; every QR on the page
 ```
+
+(As built at PHASE04. `Conflict` is the "same index, different bytes — or a different total" case the phase
+description asks for; the two extra assembly outcomes are the refusals described above and under *Encryption
+flag handling*. Every outcome carries the barcode index where one is known, because "re-scan code 7" is the
+only useful thing to tell a user.)
 
 Error strategy: Core returns result objects for expected recovery outcomes (bad scans are normal, not
 exceptional) and throws typed exceptions for programming/IO errors; ViewModels translate to friendly
@@ -188,7 +201,7 @@ Goal: `EncodedBackup` → printable A4 PDF; QR seam proven by decode round-trip.
    3 chunk sizes; PDF smoke test (non-empty, expected page count, no layout exception).
 5. Acceptance: overall criteria 1 (generation half) and 5.
 
-## PHASE04 — Core recovery pipeline — **TODO**
+## PHASE04 — Core recovery pipeline — **DONE**
 
 Goal: images and/or typed strings → verified original file.
 
