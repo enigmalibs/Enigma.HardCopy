@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Every user-facing string of the application. The keys are the property names of
+    Resources/Strings.cs, one for one — StringsTests walks that class by reflection and fails if a
+    key is missing here, so the two cannot drift apart.
+
+    English is the only culture shipped in v1. A translation is a sibling Strings.<culture>.resx
+    with the same keys; nothing in the code has to change for one to be added.
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ===== Shell ===== -->
+  <data name="AppTitle" xml:space="preserve">
+    <value>Enigma.HardCopy</value>
+  </data>
+  <data name="NavBackup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="NavRecover" xml:space="preserve">
+    <value>Recover</value>
+  </data>
+
+  <!-- ===== Backup view ===== -->
+  <data name="BackupHeader" xml:space="preserve">
+    <value>Back up a file to paper</value>
+  </data>
+  <data name="BackupIntro" xml:space="preserve">
+    <value>Choose a small critical file — a private key, a password database — and generate a PDF of QR codes to print. The printed sheets are the backup; this application is only a convenience for making and reading them.</value>
+  </data>
+  <data name="BackupSourceHeader" xml:space="preserve">
+    <value>1 · File to back up</value>
+  </data>
+  <data name="BackupChooseFile" xml:space="preserve">
+    <value>Choose file…</value>
+  </data>
+  <data name="BackupNoFileChosen" xml:space="preserve">
+    <value>No file chosen.</value>
+  </data>
+  <data name="BackupFileLabel" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="BackupSizeLabel" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="BackupSha256Label" xml:space="preserve">
+    <value>SHA-256</value>
+  </data>
+  <data name="BackupBytesFormat" xml:space="preserve">
+    <value>{0:N0} bytes</value>
+    <comment>{0} = the file size in bytes.</comment>
+  </data>
+  <data name="BackupSettingsHeader" xml:space="preserve">
+    <value>2 · Barcode density (advanced)</value>
+  </data>
+  <data name="BackupChunkSizeLabel" xml:space="preserve">
+    <value>Bytes per code</value>
+  </data>
+  <data name="BackupChunkSizeSmall" xml:space="preserve">
+    <value>Small — 512 bytes per code, sparsest modules, easiest to scan</value>
+  </data>
+  <data name="BackupChunkSizeMedium" xml:space="preserve">
+    <value>Medium — 1024 bytes per code (default)</value>
+  </data>
+  <data name="BackupChunkSizeLarge" xml:space="preserve">
+    <value>Large — 1536 bytes per code, densest modules, fewest pages</value>
+  </data>
+  <data name="BackupChunkSizeNote" xml:space="preserve">
+    <value>This setting applies to the current session only — it is not remembered between runs.</value>
+  </data>
+  <data name="BackupEstimateLabel" xml:space="preserve">
+    <value>Estimate</value>
+  </data>
+  <data name="BackupEstimateFormat" xml:space="preserve">
+    <value>{0} codes across {1} pages</value>
+    <comment>{0} = number of QR codes, metadata code included. {1} = number of A4 pages.</comment>
+  </data>
+  <data name="BackupLargeInputWarningFormat" xml:space="preserve">
+    <value>This file needs about {0} pages. Printing and re-scanning that many sheets takes a while — a larger barcode density, or a smaller file, would cut it down.</value>
+    <comment>{0} = the estimated page count.</comment>
+  </data>
+  <data name="BackupEstimateFailedFormat" xml:space="preserve">
+    <value>This file cannot be laid out on A4 with the current settings: {0}</value>
+    <comment>{0} = the reason reported by the layout.</comment>
+  </data>
+  <data name="BackupOutputHeader" xml:space="preserve">
+    <value>3 · PDF to write</value>
+  </data>
+  <data name="BackupChooseOutput" xml:space="preserve">
+    <value>Choose destination…</value>
+  </data>
+  <data name="BackupNoOutputChosen" xml:space="preserve">
+    <value>No destination chosen.</value>
+  </data>
+  <data name="BackupOutputLabel" xml:space="preserve">
+    <value>Destination</value>
+  </data>
+  <data name="BackupDefaultPdfNameFormat" xml:space="preserve">
+    <value>{0}.hardcopy.pdf</value>
+    <comment>{0} = the name of the file being backed up.</comment>
+  </data>
+  <data name="BackupGenerate" xml:space="preserve">
+    <value>Generate PDF</value>
+  </data>
+  <data name="BackupCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="BackupStageReading" xml:space="preserve">
+    <value>Reading the file…</value>
+  </data>
+  <data name="BackupStageEncoding" xml:space="preserve">
+    <value>Encoding the barcodes…</value>
+  </data>
+  <data name="BackupStageComposing" xml:space="preserve">
+    <value>Composing the PDF…</value>
+  </data>
+  <data name="BackupStageWriting" xml:space="preserve">
+    <value>Writing the PDF…</value>
+  </data>
+  <data name="BackupSuccessFormat" xml:space="preserve">
+    <value>Saved {0} — {1} codes across {2} pages. Print it, check that every symbol came out sharp, and store the sheets somewhere safe.</value>
+    <comment>{0} = destination name. {1} = number of codes. {2} = number of pages.</comment>
+  </data>
+  <data name="BackupCancelled" xml:space="preserve">
+    <value>Cancelled. Nothing was written.</value>
+  </data>
+  <data name="BackupReadFailedFormat" xml:space="preserve">
+    <value>The file could not be read: {0}</value>
+    <comment>{0} = the underlying error message.</comment>
+  </data>
+  <data name="BackupGenerateFailedFormat" xml:space="preserve">
+    <value>The PDF could not be produced: {0}</value>
+    <comment>{0} = the underlying error message.</comment>
+  </data>
+  <data name="BackupWriteFailedFormat" xml:space="preserve">
+    <value>The PDF could not be written: {0}</value>
+    <comment>{0} = the underlying error message.</comment>
+  </data>
+
+  <!-- ===== Recover view ===== -->
+  <data name="RecoverHeader" xml:space="preserve">
+    <value>Recover a file from paper</value>
+  </data>
+  <data name="RecoverIntro" xml:space="preserve">
+    <value>Import scans or photographs of the printed pages, or type a code by hand. Codes may arrive in any order and from either source; repeats are harmless.</value>
+  </data>
+  <data name="RecoverImportHeader" xml:space="preserve">
+    <value>Scanned pages</value>
+  </data>
+  <data name="RecoverImportImages" xml:space="preserve">
+    <value>Import images…</value>
+  </data>
+  <data name="RecoverDropHint" xml:space="preserve">
+    <value>…or drop image files anywhere on this page.</value>
+  </data>
+  <data name="RecoverManualHeader" xml:space="preserve">
+    <value>Typed by hand</value>
+  </data>
+  <data name="RecoverManualHint" xml:space="preserve">
+    <value>Paste or type one or more codes. Line breaks and lower case are fine.</value>
+  </data>
+  <data name="RecoverManualPlaceholder" xml:space="preserve">
+    <value>EHC1:…</value>
+  </data>
+  <data name="RecoverAddCodes" xml:space="preserve">
+    <value>Add codes</value>
+  </data>
+  <data name="RecoverStatusHeader" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="RecoverNothingYet" xml:space="preserve">
+    <value>No code has been read yet.</value>
+  </data>
+  <data name="RecoverBackupIdLabel" xml:space="preserve">
+    <value>Backup ID</value>
+  </data>
+  <data name="RecoverFileLabel" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="RecoverExpectedSha256Label" xml:space="preserve">
+    <value>Expected SHA-256</value>
+  </data>
+  <data name="RecoverMetadataMissing" xml:space="preserve">
+    <value>The metadata code (index 0) is still missing. Without it the file has no name, no expected size and no hash to check against.</value>
+  </data>
+  <data name="RecoverChunksLabel" xml:space="preserve">
+    <value>Data codes</value>
+  </data>
+  <data name="RecoverChunksFormat" xml:space="preserve">
+    <value>{0} of {1}</value>
+    <comment>{0} = codes received. {1} = codes the backup is made of.</comment>
+  </data>
+  <data name="RecoverChunksUnknown" xml:space="preserve">
+    <value>Unknown until the first code is read</value>
+  </data>
+  <data name="RecoverMissingLabel" xml:space="preserve">
+    <value>Still missing</value>
+  </data>
+  <data name="RecoverMissingNothingKnown" xml:space="preserve">
+    <value>Nothing known to be missing yet</value>
+  </data>
+  <data name="RecoverMissingNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="RecoverMissingOverflowFormat" xml:space="preserve">
+    <value>{0} … and {1} more</value>
+    <comment>{0} = the first missing indexes, comma separated. {1} = how many are not listed.</comment>
+  </data>
+  <data name="RecoverCompleteHint" xml:space="preserve">
+    <value>Every code is in. Rebuild the file to check it against the recorded hash.</value>
+  </data>
+  <data name="RecoverAssemble" xml:space="preserve">
+    <value>Recover file</value>
+  </data>
+  <data name="RecoverSaveAnyway" xml:space="preserve">
+    <value>Save anyway</value>
+  </data>
+  <data name="RecoverStartOver" xml:space="preserve">
+    <value>Start over</value>
+  </data>
+  <data name="RecoverLogHeader" xml:space="preserve">
+    <value>Activity</value>
+  </data>
+  <data name="RecoverStageImporting" xml:space="preserve">
+    <value>Reading images…</value>
+  </data>
+  <data name="RecoverStageAssembling" xml:space="preserve">
+    <value>Rebuilding the file…</value>
+  </data>
+  <data name="RecoverStageWriting" xml:space="preserve">
+    <value>Writing the recovered file…</value>
+  </data>
+  <data name="RecoverSavedFormat" xml:space="preserve">
+    <value>Saved {0}. Its SHA-256 matches the backup — the recovery is intact.</value>
+    <comment>{0} = the destination name.</comment>
+  </data>
+  <data name="RecoverSavedUnverifiedFormat" xml:space="preserve">
+    <value>Saved {0} unverified. Its hash does not match the backup, so these bytes are not provably the file that was backed up.</value>
+    <comment>{0} = the destination name.</comment>
+  </data>
+  <data name="RecoverImageUnreadableFormat" xml:space="preserve">
+    <value>{0}: not a readable image.</value>
+    <comment>{0} = the image's file name.</comment>
+  </data>
+  <data name="RecoverImageNoCodesFormat" xml:space="preserve">
+    <value>{0}: readable, but no QR code was found on it.</value>
+    <comment>{0} = the image's file name.</comment>
+  </data>
+  <data name="RecoverImageScannedFormat" xml:space="preserve">
+    <value>{0}: {1} codes read, {2} new.</value>
+    <comment>{0} = the image's file name. {1} = codes found. {2} = codes the session did not already hold.</comment>
+  </data>
+  <data name="RecoverImageFailedFormat" xml:space="preserve">
+    <value>{0} could not be read: {1}</value>
+    <comment>{0} = the image's file name. {1} = the underlying error message.</comment>
+  </data>
+  <data name="RecoverManualEmpty" xml:space="preserve">
+    <value>There is no code text to add.</value>
+  </data>
+  <data name="RecoverManualNoCodesFound" xml:space="preserve">
+    <value>That text holds no code — every code starts with EHC1:.</value>
+  </data>
+  <data name="RecoverWriteFailedFormat" xml:space="preserve">
+    <value>The recovered file could not be written: {0}</value>
+    <comment>{0} = the underlying error message.</comment>
+  </data>
+  <data name="RecoverMismatchWarningFormat" xml:space="preserve">
+    <value>The rebuilt file's SHA-256 is {0}, but the backup recorded {1}. These bytes are not the file that was backed up — save them only if you understand what you are looking at.</value>
+    <comment>{0} = the hash of the rebuilt bytes. {1} = the hash recorded in the backup.</comment>
+  </data>
+  <data name="RecoverDefaultFileName" xml:space="preserve">
+    <value>recovered-file</value>
+  </data>
+
+  <!-- ===== One code's outcome ===== -->
+  <data name="CodeAcceptedMetadata" xml:space="preserve">
+    <value>Metadata code accepted.</value>
+  </data>
+  <data name="CodeAcceptedFormat" xml:space="preserve">
+    <value>Code {0} accepted.</value>
+    <comment>{0} = the barcode index.</comment>
+  </data>
+  <data name="CodeDuplicateFormat" xml:space="preserve">
+    <value>Code {0} was already in — nothing changed.</value>
+    <comment>{0} = the barcode index.</comment>
+  </data>
+  <data name="CodeBadCrcFormat" xml:space="preserve">
+    <value>Code {0} failed its own checksum. Re-scan or retype that one code.</value>
+    <comment>{0} = the barcode index.</comment>
+  </data>
+  <data name="CodeConflictFormat" xml:space="preserve">
+    <value>Code {0} contradicts a code already read; one of the two is damaged.</value>
+    <comment>{0} = the barcode index.</comment>
+  </data>
+  <data name="CodeWrongBackupFormat" xml:space="preserve">
+    <value>Code {0} belongs to backup {1}, not to this one. It was ignored.</value>
+    <comment>{0} = the barcode index. {1} = the foreign backup ID.</comment>
+  </data>
+  <data name="CodeMalformed" xml:space="preserve">
+    <value>That is not an Enigma.HardCopy code.</value>
+  </data>
+  <data name="CodeMalformedFormat" xml:space="preserve">
+    <value>Code {0} is not a valid Enigma.HardCopy code.</value>
+    <comment>{0} = the barcode index.</comment>
+  </data>
+
+  <!-- ===== Assembly outcome ===== -->
+  <data name="AssemblyIncomplete" xml:space="preserve">
+    <value>Some codes are still missing — see what is still needed.</value>
+  </data>
+  <data name="AssemblyEncryptionUnsupported" xml:space="preserve">
+    <value>This backup is marked as encrypted, which this version cannot undo. It was written by a newer build.</value>
+  </data>
+  <data name="AssemblyDecompressionFailed" xml:space="preserve">
+    <value>The codes are each intact but do not form the compressed file the metadata describes — the likeliest cause is a mistyped index.</value>
+  </data>
+  <data name="AssemblyHashMismatch" xml:space="preserve">
+    <value>The file was rebuilt, but its hash does not match the backup.</value>
+  </data>
+  <data name="AssemblyVerified" xml:space="preserve">
+    <value>The file was rebuilt and its SHA-256 matches the backup.</value>
+  </data>
+
+  <!-- ===== File dialogs ===== -->
+  <data name="DialogChooseFileTitle" xml:space="preserve">
+    <value>Choose the file to back up</value>
+  </data>
+  <data name="DialogChooseImagesTitle" xml:space="preserve">
+    <value>Choose the scanned pages</value>
+  </data>
+  <data name="DialogSavePdfTitle" xml:space="preserve">
+    <value>Save the backup PDF</value>
+  </data>
+  <data name="DialogSaveRecoveredTitle" xml:space="preserve">
+    <value>Save the recovered file</value>
+  </data>
+  <data name="DialogFilterImages" xml:space="preserve">
+    <value>Images</value>
+  </data>
+  <data name="DialogFilterPdf" xml:space="preserve">
+    <value>PDF document</value>
+  </data>
+  <data name="DialogFilterAllFiles" xml:space="preserve">
+    <value>All files</value>
+  </data>
+</root>

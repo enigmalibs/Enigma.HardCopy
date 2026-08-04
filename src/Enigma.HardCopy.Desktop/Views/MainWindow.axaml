@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Enigma.HardCopy.Desktop.ViewModels"
+        mc:Ignorable="d"
+        x:Class="Enigma.HardCopy.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/app.ico"
+        Title="{Binding Title}"
+        Width="1040" Height="760"
+        MinWidth="760" MinHeight="560"
+        WindowStartupLocation="CenterScreen">
+
+  <!-- Two-view navigation. A tab's content is the page ViewModel itself; the ViewLocator registered in
+       App.axaml turns it into the matching view. -->
+  <TabControl ItemsSource="{Binding Pages}"
+              SelectedIndex="{Binding SelectedPageIndex}"
+              Padding="0">
+    <TabControl.ItemTemplate>
+      <DataTemplate x:DataType="vm:PageViewModel">
+        <TextBlock Text="{Binding Title}" />
+      </DataTemplate>
+    </TabControl.ItemTemplate>
+  </TabControl>
+
+</Window>

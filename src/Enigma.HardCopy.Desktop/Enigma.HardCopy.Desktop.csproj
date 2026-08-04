@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <!-- Embeds the icon in the Windows .exe (Windows-only; ignored for the linux-x64 binary).
+         The runtime titlebar/taskbar icon on every platform comes from MainWindow's Icon attribute. -->
+    <ApplicationIcon>Assets/app.ico</ApplicationIcon>
+  </PropertyGroup>
+  <!-- LangVersion / Nullable / ImplicitUsings / TreatWarningsAsErrors come from Directory.Build.props;
+       package versions from Directory.Packages.props (Central Package Management). -->
+  <ItemGroup>
+    <AvaloniaResource Include="Assets/**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <!-- Avalonia.Diagnostics was removed in Avalonia 12; DiagnosticsSupport replaces it and is
+         stripped out of non-Debug builds. -->
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Enigma.HardCopy.Core/Enigma.HardCopy.Core.csproj" />
+  </ItemGroup>
+  <!-- SkiaSharp and HarfBuzz ship debug symbols for their *native* libraries in the runtime assets
+       (win-x64: libSkiaSharp.pdb 84 MB + libHarfBuzzSharp.pdb 21 MB). They are of no use to anyone
+       running the app and more than double the published artifact, so they are dropped here rather
+       than in the publish scripts — that way every publish is clean, however it was invoked. The
+       *managed* .pdb files are deliberately kept: they are ~60 KB and are what turns a user's crash
+       report into a file and line number. -->
+  <Target Name="TrimNativeSymbolsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish
+          Remove="@(ResolvedFileToPublish)"
+          Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb' AND '%(ResolvedFileToPublish.AssetType)' == 'native'" />
+    </ItemGroup>
+  </Target>
+</Project>
