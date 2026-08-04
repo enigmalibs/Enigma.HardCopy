@@ -1,6 +1,6 @@
 # FEATURE-79FF — Enigma.HardCopy v1 — paper backup & recovery
 
-**Status:** IN PROGRESS
+**Status:** DONE
 **Type:** multi-phase feature (6 phases)
 **Branches (created by `/build`, one per phase):** `feature/feature-79ff-phaseNN-<slug>`
 
@@ -229,7 +229,7 @@ Goal: the full UX on stock Fluent controls, MVVM per house CommunityToolkit styl
 5. Tests (Desktop.Tests): ViewModel logic — state transitions, command enablement, error mapping.
 6. Acceptance: overall criterion 6; manual smoke on Windows + Linux (WSLg).
 
-## PHASE06 — Release readiness — **TODO**
+## PHASE06 — Release readiness — **DONE**
 
 Goal: v1.0.0 shippable from a clean checkout.
 
