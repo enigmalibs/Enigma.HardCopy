@@ -1,0 +1,118 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Enigma.HardCopy.Desktop.Resources"
+             xmlns:vm="using:Enigma.HardCopy.Desktop.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Enigma.HardCopy.Desktop.Views.BackupView"
+             x:DataType="vm:BackupViewModel">
+
+  <ScrollViewer>
+    <StackPanel Classes="page">
+
+      <TextBlock Classes="h1" Text="{x:Static res:Strings.BackupHeader}" />
+      <TextBlock Classes="body" Text="{x:Static res:Strings.BackupIntro}" />
+
+      <!-- 1 · the file -->
+      <Border Classes="card">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="h2" Text="{x:Static res:Strings.BackupSourceHeader}" />
+          <StackPanel Orientation="Horizontal" Spacing="12">
+            <Button Content="{x:Static res:Strings.BackupChooseFile}"
+                    Command="{Binding ChooseFileCommand}" />
+            <TextBlock Classes="hint"
+                       VerticalAlignment="Center"
+                       Text="{x:Static res:Strings.BackupNoFileChosen}"
+                       IsVisible="{Binding !HasFile}" />
+          </StackPanel>
+
+          <Grid ColumnDefinitions="Auto,*"
+                RowDefinitions="Auto,Auto,Auto"
+                IsVisible="{Binding HasFile}">
+            <TextBlock Grid.Row="0" Grid.Column="0" Classes="field" Text="{x:Static res:Strings.BackupFileLabel}" />
+            <SelectableTextBlock Grid.Row="0" Grid.Column="1" Classes="value" Text="{Binding FileName}" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Classes="field" Text="{x:Static res:Strings.BackupSizeLabel}" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Classes="value" Text="{Binding SizeText}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Classes="field" Text="{x:Static res:Strings.BackupSha256Label}" />
+            <SelectableTextBlock Grid.Row="2" Grid.Column="1" Classes="value mono" Text="{Binding Sha256Hex}" />
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <!-- 2 · how densely to pack the codes -->
+      <Border Classes="card">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="h2" Text="{x:Static res:Strings.BackupSettingsHeader}" />
+          <TextBlock Classes="field" Text="{x:Static res:Strings.BackupChunkSizeLabel}" />
+          <ComboBox ItemsSource="{Binding ChunkSizes}"
+                    SelectedItem="{Binding SelectedChunkSize}"
+                    HorizontalAlignment="Stretch">
+            <ComboBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:ChunkSizeOption">
+                <TextBlock Text="{Binding Label}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+          <TextBlock Classes="hint" Text="{x:Static res:Strings.BackupChunkSizeNote}" />
+
+          <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding HasFile}">
+            <TextBlock Classes="field" Text="{x:Static res:Strings.BackupEstimateLabel}" />
+            <TextBlock Classes="value" Text="{Binding EstimateText}" />
+          </StackPanel>
+
+          <Border Classes="notice warning" IsVisible="{Binding HasLargeInputWarning}">
+            <TextBlock Text="{Binding LargeInputWarning}" TextWrapping="Wrap" />
+          </Border>
+        </StackPanel>
+      </Border>
+
+      <!-- 3 · where the PDF goes -->
+      <Border Classes="card">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="h2" Text="{x:Static res:Strings.BackupOutputHeader}" />
+          <StackPanel Orientation="Horizontal" Spacing="12">
+            <Button Content="{x:Static res:Strings.BackupChooseOutput}"
+                    Command="{Binding ChooseOutputCommand}" />
+            <TextBlock Classes="hint"
+                       VerticalAlignment="Center"
+                       Text="{x:Static res:Strings.BackupNoOutputChosen}"
+                       IsVisible="{Binding !HasOutput}" />
+          </StackPanel>
+
+          <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding HasOutput}">
+            <TextBlock Grid.Column="0" Classes="field" Text="{x:Static res:Strings.BackupOutputLabel}" />
+            <SelectableTextBlock Grid.Column="1" Classes="value" Text="{Binding OutputLocation}" />
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <!-- Generate, and what came of it -->
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <Button Classes="accent"
+                Content="{x:Static res:Strings.BackupGenerate}"
+                Command="{Binding GenerateCommand}" />
+        <Button Content="{x:Static res:Strings.BackupCancel}"
+                Command="{Binding CancelCommand}"
+                IsVisible="{Binding IsBusy}" />
+      </StackPanel>
+
+      <StackPanel Spacing="6" IsVisible="{Binding IsBusy}">
+        <TextBlock Classes="hint" Text="{Binding ProgressText}" />
+        <ProgressBar IsIndeterminate="True" />
+      </StackPanel>
+
+      <Border Classes="notice"
+              IsVisible="{Binding HasMessage}"
+              Classes.success="{Binding Message.IsSuccess}"
+              Classes.warning="{Binding Message.IsWarning}"
+              Classes.error="{Binding Message.IsError}">
+        <TextBlock Text="{Binding Message.Text}" TextWrapping="Wrap" />
+      </Border>
+
+    </StackPanel>
+  </ScrollViewer>
+
+</UserControl>
