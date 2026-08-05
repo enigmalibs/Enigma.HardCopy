@@ -49,6 +49,14 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<IFileDialogService>(provider =>
                 new StorageProviderFileDialogService(provider.GetRequiredService<LibraryFileDialogs>()));
 
+            // The three shell seams the pages report through. Each wraps one of the library's host-backed
+            // services and is registered by implementation type rather than by factory, which is what keeps
+            // the library's own service names — IOverlayService, IInfoBarService, IContentDialogService — out
+            // of this file and its IFileDialogService unambiguous.
+            services.AddSingleton<IProgressOverlay, ProgressOverlay>();
+            services.AddSingleton<INotificationService, NotificationService>();
+            services.AddSingleton<IConfirmationService, ConfirmationService>();
+
             // Pages: the view fresh each time, the ViewModel kept.
             services.AddTransient<BackupView>();
             services.AddTransient<RecoverView>();

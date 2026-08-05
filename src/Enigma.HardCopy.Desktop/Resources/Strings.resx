@@ -216,6 +216,9 @@
   <data name="RecoverManualHint" xml:space="preserve">
     <value>Paste or type one or more codes. Line breaks and lower case are fine.</value>
   </data>
+  <data name="RecoverManualCodesTitle" xml:space="preserve">
+    <value>Codes</value>
+  </data>
   <data name="RecoverManualPlaceholder" xml:space="preserve">
     <value>EHC1:…</value>
   </data>
@@ -399,5 +402,74 @@
   </data>
   <data name="DialogFilterAllFiles" xml:space="preserve">
     <value>All files</value>
+  </data>
+
+  <!-- ===== Progress overlay ===== -->
+  <!-- One title per long-running operation. The stage text underneath it is the same BackupStage* /
+       RecoverStage* string the inline progress block used to show. -->
+  <data name="OverlayReadTitle" xml:space="preserve">
+    <value>Reading the file</value>
+  </data>
+  <data name="OverlayGenerateTitle" xml:space="preserve">
+    <value>Generating the backup</value>
+  </data>
+  <data name="OverlayImportTitle" xml:space="preserve">
+    <value>Importing scanned pages</value>
+  </data>
+  <data name="OverlayAssembleTitle" xml:space="preserve">
+    <value>Rebuilding the file</value>
+  </data>
+  <data name="OverlaySaveTitle" xml:space="preserve">
+    <value>Saving the file</value>
+  </data>
+
+  <!-- ===== Notifications ===== -->
+  <!-- The info bar's title line, chosen by severity; the message beneath it is the outcome text the page
+       already produced. -->
+  <data name="NotificationInformationTitle" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="NotificationSuccessTitle" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="NotificationWarningTitle" xml:space="preserve">
+    <value>Worth reading</value>
+  </data>
+  <data name="NotificationErrorTitle" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+
+  <!-- ===== Confirmations ===== -->
+  <!-- Neither dialog may ever carry code text: a ContentDialog keeps its content until the next one is
+       shown, and the codes are the secret this application exists to protect. Hashes and prose only. -->
+  <data name="ConfirmUnverifiedSaveTitle" xml:space="preserve">
+    <value>Save bytes that failed their check?</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveBody" xml:space="preserve">
+    <value>The rebuilt file's SHA-256 does not match the hash the backup recorded, so these bytes are not provably the file that was backed up. Save them only if you understand what you are looking at.</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveExpectedLabel" xml:space="preserve">
+    <value>Recorded in the backup</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveActualLabel" xml:space="preserve">
+    <value>The rebuilt bytes</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveConfirm" xml:space="preserve">
+    <value>Save unverified</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ConfirmStartOverTitle" xml:space="preserve">
+    <value>Discard this recovery?</value>
+  </data>
+  <data name="ConfirmStartOverBody" xml:space="preserve">
+    <value>Every code read so far, and the whole activity log, will be forgotten. The printed pages are unaffected — you can feed them in again.</value>
+  </data>
+  <data name="ConfirmStartOverConfirm" xml:space="preserve">
+    <value>Start over</value>
+  </data>
+  <data name="ConfirmStartOverCancel" xml:space="preserve">
+    <value>Keep going</value>
   </data>
 </root>

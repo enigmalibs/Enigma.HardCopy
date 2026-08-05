@@ -28,7 +28,9 @@ namespace Enigma.HardCopy.Desktop.ViewModels;
 /// <b>A hash mismatch never saves silently.</b> The rebuilt bytes are held back, the two hashes are shown side
 /// by side, and only an explicit second action writes them — under a message that says they are not the file
 /// that was backed up. That refusal is the point of the whole application, so it is a state of this ViewModel
-/// rather than a detail of a dialog.
+/// rather than a detail of a dialog. Since the second action is still one click, it is now also guarded by a
+/// confirmation that names both hashes; the guard is asked <i>before</i> the destination picker, so declining
+/// costs nothing and leaves the offer exactly where it was.
 /// </para>
 /// <para>
 /// Command handlers run on the UI thread and push the CPU-bound work — barcode reading, decompression,
@@ -53,6 +55,9 @@ public sealed class RecoverViewModel : ObservableObject
 
     private readonly IFileDialogService _dialogs;
     private readonly ILogger<RecoverViewModel> _logger;
+    private readonly IProgressOverlay _overlay;
+    private readonly INotificationService _notifications;
+    private readonly IConfirmationService _confirmations;
 
     private RecoverySession _session = new();
     private RecoveryStatus _status;
@@ -61,14 +66,28 @@ public sealed class RecoverViewModel : ObservableObject
     /// <summary>Initializes a new instance of the <see cref="RecoverViewModel"/> class.</summary>
     /// <param name="dialogs">Asks the user for the images to import and where to write the recovered file.</param>
     /// <param name="logger">Records failures for diagnosis; the user sees the friendly message instead.</param>
+    /// <param name="overlay">Puts a long run behind a modal card carrying its stage.</param>
+    /// <param name="notifications">Carries each outcome to the window's info bar.</param>
+    /// <param name="confirmations">Asks before the two things a recovery cannot take back.</param>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null"/>.</exception>
-    public RecoverViewModel(IFileDialogService dialogs, ILogger<RecoverViewModel> logger)
+    public RecoverViewModel(
+        IFileDialogService dialogs,
+        ILogger<RecoverViewModel> logger,
+        IProgressOverlay overlay,
+        INotificationService notifications,
+        IConfirmationService confirmations)
     {
         ArgumentNullException.ThrowIfNull(dialogs);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(overlay);
+        ArgumentNullException.ThrowIfNull(notifications);
+        ArgumentNullException.ThrowIfNull(confirmations);
 
         _dialogs = dialogs;
         _logger = logger;
+        _overlay = overlay;
+        _notifications = notifications;
+        _confirmations = confirmations;
         _status = _session.Status;
 
         ImportImagesCommand = new AsyncRelayCommand(OnImportImagesAsync, () => !IsBusy);
@@ -76,7 +95,7 @@ public sealed class RecoverViewModel : ObservableObject
         AddCodesCommand = new RelayCommand(OnAddCodes, CanAddCodes);
         AssembleCommand = new AsyncRelayCommand(OnAssembleAsync, CanAssemble);
         SaveAnywayCommand = new AsyncRelayCommand(OnSaveAnywayAsync, () => !IsBusy && _unverified is not null);
-        StartOverCommand = new RelayCommand(OnStartOver, () => !IsBusy);
+        StartOverCommand = new AsyncRelayCommand(OnStartOverAsync, () => !IsBusy);
     }
 
     /// <summary>Gets what has happened so far, newest first.</summary>
@@ -174,13 +193,28 @@ public sealed class RecoverViewModel : ObservableObject
     }
 
     /// <summary>Gets the stage currently running, or <see langword="null"/> when nothing is.</summary>
+    /// <remarks>
+    /// Setting it also writes the stage onto the overlay card. Clearing it does not: the card is about to be
+    /// taken down by the same <c>finally</c> that cleared this.
+    /// </remarks>
     public string? ProgressText
     {
         get;
-        private set => SetProperty(ref field, value);
+        private set
+        {
+            if (SetProperty(ref field, value) && value is not null)
+            {
+                _overlay.Update(value);
+            }
+        }
     }
 
     /// <summary>Gets the outcome of the last thing the user asked for, or <see langword="null"/>.</summary>
+    /// <remarks>
+    /// Setting it to an outcome also publishes that outcome as a notification — exactly once, because this is
+    /// the single place the page records one. Clearing it publishes nothing, and the activity log is
+    /// deliberately not published: it is a record to scroll, not a banner.
+    /// </remarks>
     public StatusMessage? Message
     {
         get;
@@ -189,6 +223,11 @@ public sealed class RecoverViewModel : ObservableObject
             if (SetProperty(ref field, value))
             {
                 OnPropertyChanged(nameof(HasMessage));
+
+                if (value is not null)
+                {
+                    _notifications.Publish(value);
+                }
             }
         }
     }
@@ -215,7 +254,7 @@ public sealed class RecoverViewModel : ObservableObject
     public AsyncRelayCommand SaveAnywayCommand { get; }
 
     /// <summary>Gets the command that discards the session and starts a new recovery.</summary>
-    public RelayCommand StartOverCommand { get; }
+    public AsyncRelayCommand StartOverCommand { get; }
 
     /// <summary>
     /// Splits typed or pasted text into candidate codes, on the leading <c>EHC1</c> of each.
@@ -273,8 +312,12 @@ public sealed class RecoverViewModel : ObservableObject
 
         DiscardUnverified();
         IsBusy = true;
-        ProgressText = Strings.RecoverStageImporting;
         Message = null;
+
+        // Raised before the stage is named: an Update that arrives before the card does is a no-op. No cancel
+        // button — importing takes no cancellation token, and offering a dead one would be worse than none.
+        await _overlay.ShowAsync(Strings.OverlayImportTitle);
+        ProgressText = Strings.RecoverStageImporting;
         try
         {
             foreach (IPickedFile image in images)
@@ -287,6 +330,7 @@ public sealed class RecoverViewModel : ObservableObject
             IsBusy = false;
             ProgressText = null;
             RefreshStatus();
+            await _overlay.HideAsync();
         }
     }
 
@@ -342,8 +386,10 @@ public sealed class RecoverViewModel : ObservableObject
     private async Task OnAssembleAsync()
     {
         IsBusy = true;
-        ProgressText = Strings.RecoverStageAssembling;
         Message = null;
+
+        await _overlay.ShowAsync(Strings.OverlayAssembleTitle);
+        ProgressText = Strings.RecoverStageAssembling;
 
         AssemblyResult result;
         try
@@ -354,6 +400,7 @@ public sealed class RecoverViewModel : ObservableObject
         {
             IsBusy = false;
             ProgressText = null;
+            await _overlay.HideAsync();
         }
 
         StatusMessage described = OutcomeMessages.Describe(result);
@@ -384,6 +431,17 @@ public sealed class RecoverViewModel : ObservableObject
             return;
         }
 
+        // Asked before the destination picker, so declining costs the user nothing and leaves the offer
+        // standing. Only an explicit agreement gets past here — a dismissed dialog is a refusal.
+        bool agreed = await _confirmations.ConfirmUnverifiedSaveAsync(
+            result.Metadata?.Sha256Hex ?? string.Empty,
+            result.Sha256Hex ?? string.Empty);
+
+        if (!agreed)
+        {
+            return;
+        }
+
         if (await SaveAsync(content, result.Metadata?.FileName, verified: false))
         {
             // The decision has been made and acted on; leaving the button there would only invite a second
@@ -403,6 +461,7 @@ public sealed class RecoverViewModel : ObservableObject
         }
 
         IsBusy = true;
+        await _overlay.ShowAsync(Strings.OverlaySaveTitle);
         ProgressText = Strings.RecoverStageWriting;
         try
         {
@@ -430,11 +489,19 @@ public sealed class RecoverViewModel : ObservableObject
         {
             IsBusy = false;
             ProgressText = null;
+            await _overlay.HideAsync();
         }
     }
 
-    private void OnStartOver()
+    private async Task OnStartOverAsync()
     {
+        // Only a session that has actually read something is worth guarding: asking to confirm the discarding
+        // of nothing is noise, and this button is the one a user reaches for between two recoveries.
+        if (HasAnyCode && !await _confirmations.ConfirmStartOverAsync())
+        {
+            return;
+        }
+
         _session = new RecoverySession();
         _unverified = null;
         Activity.Clear();

@@ -29,6 +29,12 @@ public static class AppIcons
     /// <summary>Abandoning a run that is already under way.</summary>
     public static Geometry Cancel { get; } = Resolve(PhosphorIcon.XCircle);
 
+    /// <summary>The dialog that asks before a half-fed recovery is thrown away.</summary>
+    public static Geometry ConfirmStartOver { get; } = Resolve(PhosphorIcon.WarningCircle);
+
+    /// <summary>The dialog that asks before bytes which failed their hash check are written.</summary>
+    public static Geometry ConfirmUnverifiedSave { get; } = Resolve(PhosphorIcon.ShieldWarning);
+
     /// <summary>The recovery page, on the navigation rail: the backup being turned back into the file.</summary>
     public static Geometry Recover { get; } = Resolve(PhosphorIcon.ArrowsCounterClockwise);
 

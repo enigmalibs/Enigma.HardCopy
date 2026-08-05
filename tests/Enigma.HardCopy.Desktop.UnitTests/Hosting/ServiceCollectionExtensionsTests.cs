@@ -7,7 +7,10 @@ using Enigma.HardCopy.Desktop.ViewModels;
 using Enigma.HardCopy.Desktop.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using AppConfirmations = Enigma.HardCopy.Desktop.Services.IConfirmationService;
 using AppFileDialogs = Enigma.HardCopy.Desktop.Services.IFileDialogService;
+using AppNotifications = Enigma.HardCopy.Desktop.Services.INotificationService;
+using AppProgressOverlay = Enigma.HardCopy.Desktop.Services.IProgressOverlay;
 
 namespace Enigma.HardCopy.Desktop.UnitTests.Hosting;
 
@@ -94,6 +97,9 @@ public sealed class ServiceCollectionExtensionsTests
     [InlineData(typeof(IBackupEncoder), ServiceLifetime.Singleton)]
     [InlineData(typeof(IPdfComposer), ServiceLifetime.Singleton)]
     [InlineData(typeof(AppFileDialogs), ServiceLifetime.Singleton)]
+    [InlineData(typeof(AppProgressOverlay), ServiceLifetime.Singleton)]
+    [InlineData(typeof(AppNotifications), ServiceLifetime.Singleton)]
+    [InlineData(typeof(AppConfirmations), ServiceLifetime.Singleton)]
     [InlineData(typeof(MainWindow), ServiceLifetime.Singleton)]
     [InlineData(typeof(MainWindowViewModel), ServiceLifetime.Singleton)]
     public void AddEnigmaHardCopyDesktop_RegistersTheShellsService_WithTheRightLifetime(Type service, ServiceLifetime lifetime)
@@ -154,6 +160,25 @@ public sealed class ServiceCollectionExtensionsTests
         Assert.NotNull(provider.GetRequiredService<AppFileDialogs>());
         Assert.NotNull(provider.GetRequiredService<BackupViewModel>());
         Assert.NotNull(provider.GetRequiredService<RecoverViewModel>());
+    }
+
+    /// <summary>
+    /// The three shell seams are required constructor dependencies of both pages, so a missing one is a
+    /// startup failure rather than a page that quietly stops reporting anything.
+    /// </summary>
+    [Fact]
+    public void TheShellSeams_AreResolvable_OverTheLibrarysHostBackedServices()
+    {
+        ServiceCollection services = [];
+        services.AddLogging();
+        services.AddEnigmaAvaloniaDesktop();
+        services.AddEnigmaHardCopyDesktop();
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        Assert.NotNull(provider.GetRequiredService<AppProgressOverlay>());
+        Assert.NotNull(provider.GetRequiredService<AppNotifications>());
+        Assert.NotNull(provider.GetRequiredService<AppConfirmations>());
     }
 
     [Fact]

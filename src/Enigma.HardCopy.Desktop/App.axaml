@@ -22,6 +22,11 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="avares://Enigma.Avalonia.Desktop/Themes/Fluent.axaml" />
+
+        <!-- The application's own controls, merged AFTER the library so their themes resolve against the
+             Enigma* brushes above — and so any key of ours that shadowed one of the library's would win
+             rather than be silently ignored. -->
+        <ResourceInclude Source="avares://Enigma.HardCopy.Desktop/Views/ProgressOverlayCard.axaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>
@@ -84,7 +89,9 @@
       <Setter Property="FontFamily" Value="Cascadia Mono,Consolas,DejaVu Sans Mono,Liberation Mono,Menlo,monospace" />
     </Style>
 
-    <Style Selector="TextBox.mono">
+    <!-- :is(TextBox), not TextBox: the recovery page's code box is the library's MultiLineTextEditor, which
+         derives from TextBox, and an exact-type selector would not reach it. -->
+    <Style Selector=":is(TextBox).mono">
       <Setter Property="FontFamily" Value="Cascadia Mono,Consolas,DejaVu Sans Mono,Liberation Mono,Menlo,monospace" />
       <Setter Property="FontSize" Value="12" />
     </Style>
@@ -105,16 +112,13 @@
     </Style>
 
     <!-- The severity fills come as a Background/Border pair — the same pair the library's own InfoBar uses —
-         so the border takes Enigma…BorderBrush while the text inside takes the accent (Enigma…Brush). -->
-    <Style Selector="Border.notice.success">
-      <Setter Property="Background" Value="{DynamicResource EnigmaSuccessBackgroundBrush}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaSuccessBorderBrush}" />
-    </Style>
+         so the border takes Enigma…BorderBrush while the text inside takes the accent (Enigma…Brush).
 
-    <Style Selector="Border.notice.success > TextBlock">
-      <Setter Property="Foreground" Value="{DynamicResource EnigmaSuccessBrush}" />
-    </Style>
-
+         Only the warning pair survives. An outcome now goes to the InfoBar, so notice.success and
+         notice.error had no user left; the two things still drawn as an inline notice — a backup that will
+         run to many pages, and a recovery whose metadata code has not arrived — are both standing warnings
+         about the state of the page rather than the result of an action, which is exactly what the info bar
+         is wrong for. -->
     <Style Selector="Border.notice.warning">
       <Setter Property="Background" Value="{DynamicResource EnigmaWarningBackgroundBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource EnigmaWarningBorderBrush}" />
@@ -122,15 +126,6 @@
 
     <Style Selector="Border.notice.warning > TextBlock">
       <Setter Property="Foreground" Value="{DynamicResource EnigmaWarningBrush}" />
-    </Style>
-
-    <Style Selector="Border.notice.error">
-      <Setter Property="Background" Value="{DynamicResource EnigmaErrorBackgroundBrush}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaErrorBorderBrush}" />
-    </Style>
-
-    <Style Selector="Border.notice.error > TextBlock">
-      <Setter Property="Foreground" Value="{DynamicResource EnigmaErrorBrush}" />
     </Style>
 
     <Style Selector=":is(TextBlock).success">

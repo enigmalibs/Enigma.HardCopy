@@ -169,6 +169,9 @@ public static class Strings
     /// <summary>The hint describing what may be typed or pasted.</summary>
     public static string RecoverManualHint => Get(nameof(RecoverManualHint));
 
+    /// <summary>The title above the manual-entry box.</summary>
+    public static string RecoverManualCodesTitle => Get(nameof(RecoverManualCodesTitle));
+
     /// <summary>The placeholder shown in the empty manual-entry box.</summary>
     public static string RecoverManualPlaceholder => Get(nameof(RecoverManualPlaceholder));
 
@@ -336,6 +339,69 @@ public static class Strings
 
     /// <summary>The name of the unrestricted file-type filter.</summary>
     public static string DialogFilterAllFiles => Get(nameof(DialogFilterAllFiles));
+
+    // ===== Progress overlay =====
+
+    /// <summary>The overlay title while the chosen file is being read and hashed.</summary>
+    public static string OverlayReadTitle => Get(nameof(OverlayReadTitle));
+
+    /// <summary>The overlay title while the backup PDF is being produced.</summary>
+    public static string OverlayGenerateTitle => Get(nameof(OverlayGenerateTitle));
+
+    /// <summary>The overlay title while scanned pages are being read.</summary>
+    public static string OverlayImportTitle => Get(nameof(OverlayImportTitle));
+
+    /// <summary>The overlay title while the file is being rebuilt from the codes.</summary>
+    public static string OverlayAssembleTitle => Get(nameof(OverlayAssembleTitle));
+
+    /// <summary>The overlay title while a recovered file is being written.</summary>
+    public static string OverlaySaveTitle => Get(nameof(OverlaySaveTitle));
+
+    // ===== Notifications =====
+
+    /// <summary>The info bar's title for a plain informational outcome.</summary>
+    public static string NotificationInformationTitle => Get(nameof(NotificationInformationTitle));
+
+    /// <summary>The info bar's title for an outcome that worked.</summary>
+    public static string NotificationSuccessTitle => Get(nameof(NotificationSuccessTitle));
+
+    /// <summary>The info bar's title for an outcome the user has to look at.</summary>
+    public static string NotificationWarningTitle => Get(nameof(NotificationWarningTitle));
+
+    /// <summary>The info bar's title for a failure.</summary>
+    public static string NotificationErrorTitle => Get(nameof(NotificationErrorTitle));
+
+    // ===== Confirmations =====
+
+    /// <summary>The title of the dialog guarding a save of unverified bytes.</summary>
+    public static string ConfirmUnverifiedSaveTitle => Get(nameof(ConfirmUnverifiedSaveTitle));
+
+    /// <summary>The prose explaining what unverified bytes are.</summary>
+    public static string ConfirmUnverifiedSaveBody => Get(nameof(ConfirmUnverifiedSaveBody));
+
+    /// <summary>The label of the hash the backup recorded.</summary>
+    public static string ConfirmUnverifiedSaveExpectedLabel => Get(nameof(ConfirmUnverifiedSaveExpectedLabel));
+
+    /// <summary>The label of the hash the rebuilt bytes actually have.</summary>
+    public static string ConfirmUnverifiedSaveActualLabel => Get(nameof(ConfirmUnverifiedSaveActualLabel));
+
+    /// <summary>The label of the button that goes ahead with an unverified save.</summary>
+    public static string ConfirmUnverifiedSaveConfirm => Get(nameof(ConfirmUnverifiedSaveConfirm));
+
+    /// <summary>The label of the button that abandons an unverified save.</summary>
+    public static string ConfirmUnverifiedSaveCancel => Get(nameof(ConfirmUnverifiedSaveCancel));
+
+    /// <summary>The title of the dialog guarding the discarding of a recovery.</summary>
+    public static string ConfirmStartOverTitle => Get(nameof(ConfirmStartOverTitle));
+
+    /// <summary>The prose explaining what starting over throws away.</summary>
+    public static string ConfirmStartOverBody => Get(nameof(ConfirmStartOverBody));
+
+    /// <summary>The label of the button that discards the recovery.</summary>
+    public static string ConfirmStartOverConfirm => Get(nameof(ConfirmStartOverConfirm));
+
+    /// <summary>The label of the button that keeps the recovery.</summary>
+    public static string ConfirmStartOverCancel => Get(nameof(ConfirmStartOverCancel));
 
     /// <summary>
     /// Reads one string from the resources. Throws rather than returning a placeholder: a key that is not

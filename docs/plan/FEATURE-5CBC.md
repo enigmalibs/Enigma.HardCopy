@@ -372,7 +372,7 @@ survives switching away and back (a chosen file, a half-fed session, typed text)
 file, images, PDF destination, recovered-file destination) still return usable paths, and drag-and-drop onto
 the recovery page still imports. Screenshots of both variants.
 
-### PHASE03 — Page restyle, overlay, InfoBar & confirmations (TODO)
+### PHASE03 — Page restyle, overlay, InfoBar & confirmations (DONE)
 
 Branch: `feature/feature-5cbc-phase03-page-restyle`
 
