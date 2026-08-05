@@ -328,7 +328,7 @@ suite green with **no test changes at all**; the app launches and every panel, l
 still reads correctly in both variants (screenshots in the completion doc); no retired brush key remains
 anywhere in the solution (`grep`).
 
-### PHASE02 — NavigationView shell, hosts & pickers (TODO)
+### PHASE02 — NavigationView shell, hosts & pickers (DONE)
 
 Branch: `feature/feature-5cbc-phase02-shell-services`
 

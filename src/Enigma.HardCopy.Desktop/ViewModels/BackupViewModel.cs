@@ -5,6 +5,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Enigma.HardCopy.Core;
 using Enigma.HardCopy.Desktop.Resources;
@@ -35,7 +36,7 @@ namespace Enigma.HardCopy.Desktop.ViewModels;
 /// no marshaling.
 /// </para>
 /// </remarks>
-public sealed class BackupViewModel : PageViewModel
+public sealed class BackupViewModel : ObservableObject
 {
     /// <summary>
     /// The page count above which the user is warned. Not a limit — there is deliberately none — but the point
@@ -80,9 +81,6 @@ public sealed class BackupViewModel : PageViewModel
         GenerateCommand = new AsyncRelayCommand(OnGenerateAsync, CanGenerate);
         CancelCommand = new RelayCommand(OnCancel, () => IsBusy);
     }
-
-    /// <inheritdoc/>
-    public override string Title => Strings.NavBackup;
 
     /// <summary>Gets the barcode-density options offered.</summary>
     public IReadOnlyList<ChunkSizeOption> ChunkSizes => ChunkSizeOption.All;

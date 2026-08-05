@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Enigma.HardCopy.Core;
 using Enigma.HardCopy.Desktop.Resources;
@@ -35,7 +36,7 @@ namespace Enigma.HardCopy.Desktop.ViewModels;
 /// thread, and need no marshaling.
 /// </para>
 /// </remarks>
-public sealed class RecoverViewModel : PageViewModel
+public sealed class RecoverViewModel : ObservableObject
 {
     /// <summary>
     /// How many missing indexes are listed before the rest are summarised as a count. A user hunting for
@@ -77,9 +78,6 @@ public sealed class RecoverViewModel : PageViewModel
         SaveAnywayCommand = new AsyncRelayCommand(OnSaveAnywayAsync, () => !IsBusy && _unverified is not null);
         StartOverCommand = new RelayCommand(OnStartOver, () => !IsBusy);
     }
-
-    /// <inheritdoc/>
-    public override string Title => Strings.NavRecover;
 
     /// <summary>Gets what has happened so far, newest first.</summary>
     public ObservableCollection<StatusMessage> Activity { get; } = [];

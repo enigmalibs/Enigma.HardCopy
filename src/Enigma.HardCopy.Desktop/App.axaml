@@ -1,13 +1,10 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:Enigma.HardCopy.Desktop"
              x:Class="Enigma.HardCopy.Desktop.App"
              RequestedThemeVariant="Default">
 
-  <!-- ViewModel-first navigation: a page ViewModel bound as content is rendered by its matching view. -->
-  <Application.DataTemplates>
-    <local:ViewLocator />
-  </Application.DataTemplates>
+  <!-- No application-level DataTemplates: a page is declared once, as a NavigationItem carrying its view type
+       and its ViewModel type, and the navigation service's PageFactory resolves both from the container. -->
 
   <!-- The house control library's theme: one Color per variant, one SolidColorBrush per Color, and a
        ControlTheme for every control the library ships. It has a ResourceDictionary root, so it is merged

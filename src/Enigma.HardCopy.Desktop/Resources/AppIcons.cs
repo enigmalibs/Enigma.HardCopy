@@ -23,8 +23,14 @@ namespace Enigma.HardCopy.Desktop.Resources;
 /// </remarks>
 public static class AppIcons
 {
+    /// <summary>The backup page, on the navigation rail: what a printed backup looks like.</summary>
+    public static Geometry Backup { get; } = Resolve(PhosphorIcon.QrCode);
+
     /// <summary>Abandoning a run that is already under way.</summary>
     public static Geometry Cancel { get; } = Resolve(PhosphorIcon.XCircle);
+
+    /// <summary>The recovery page, on the navigation rail: the backup being turned back into the file.</summary>
+    public static Geometry Recover { get; } = Resolve(PhosphorIcon.ArrowsCounterClockwise);
 
     /// <summary>Resolves one Phosphor glyph, at the regular weight, into its outline.</summary>
     /// <param name="icon">The icon to resolve.</param>

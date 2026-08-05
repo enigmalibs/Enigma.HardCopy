@@ -1,69 +1,106 @@
 using System;
-using System.Collections.Generic;
+using Avalonia.Controls;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Enigma.Avalonia.Desktop.Controls.Navigation;
+using Enigma.Avalonia.Desktop.Services;
 using Enigma.HardCopy.Desktop.Resources;
+using Enigma.HardCopy.Desktop.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Enigma.HardCopy.Desktop.ViewModels;
 
 /// <summary>
-/// ViewModel of the application shell: the window title, and which of the two pages is showing.
+/// ViewModel of the application shell: the window title, and the navigation rail the two pages hang off.
 /// </summary>
 /// <remarks>
-/// Navigation is ViewModel-first — the shell selects a <see cref="PageViewModel"/> and the
-/// <see cref="ViewLocator"/> finds the view for it. Both pages are constructed once, at startup, and kept:
-/// each holds work in progress — a file chosen for backup, a recovery half fed with codes — and moving between
-/// tabs must not discard it.
 /// <para>
-/// The selection is held as an index rather than as a page reference so that it has a valid default with no
-/// constructor gymnastics, and <see cref="CurrentPage"/> is derived from it: there is one piece of navigation
-/// state, and it cannot get out of step with itself.
+/// <see cref="INavigationService"/> is exposed for binding rather than wrapped, and it is the one library
+/// service a ViewModel in this application names: its <c>CurrentPage</c> is an Avalonia
+/// <see cref="Control"/> by definition, so a wrapper would only move the type one file over.
+/// </para>
+/// <para>
+/// A <see cref="NavigationItem"/> is the single declaration site for a page — its rail header, its icon, its
+/// view type and its ViewModel type — which is why nothing here needs a page base class or a name-matching
+/// view locator. <see cref="CreatePage"/> resolves both halves from the container, so a page and its
+/// ViewModel may take constructor dependencies; views are registered transient and page ViewModels singleton,
+/// so revisiting a page gets a fresh control and the state it was left in.
+/// </para>
+/// <para>
+/// <b>The constructor navigates nowhere.</b> It builds the rail and stops: the first item is selected by
+/// <see cref="App"/> once the container is up, which keeps this ViewModel constructible — and the rail
+/// assertable — with no windowing platform behind it.
+/// </para>
+/// <para>
+/// The two rail icons are handed in rather than resolved here. Turning a Phosphor glyph into a
+/// <see cref="Geometry"/> builds a <c>StreamGeometry</c>, which needs Avalonia's platform render interface:
+/// present in the running app, absent in a test process. The container's factory passes
+/// <see cref="AppIcons"/>, and a test passes its own.
 /// </para>
 /// </remarks>
 public sealed class MainWindowViewModel : ObservableObject
 {
-    /// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
-    /// <param name="backup">The backup page.</param>
-    /// <param name="recover">The recovery page.</param>
-    /// <exception cref="ArgumentNullException">Either argument is <see langword="null"/>.</exception>
-    public MainWindowViewModel(BackupViewModel backup, RecoverViewModel recover)
-    {
-        ArgumentNullException.ThrowIfNull(backup);
-        ArgumentNullException.ThrowIfNull(recover);
+    private readonly IServiceProvider _services;
 
-        Backup = backup;
-        Recover = recover;
-        Pages = [backup, recover];
+    /// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
+    /// <param name="services">Resolves each page and its ViewModel when the rail navigates.</param>
+    /// <param name="navigation">Owns the rail's items, its selection and the page showing.</param>
+    /// <param name="backupIcon">The backup page's rail icon.</param>
+    /// <param name="recoverIcon">The recovery page's rail icon.</param>
+    /// <exception cref="ArgumentNullException">Any argument is <see langword="null"/>.</exception>
+    public MainWindowViewModel(
+        IServiceProvider services,
+        INavigationService navigation,
+        Geometry backupIcon,
+        Geometry recoverIcon)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(navigation);
+        ArgumentNullException.ThrowIfNull(backupIcon);
+        ArgumentNullException.ThrowIfNull(recoverIcon);
+
+        _services = services;
+        Navigation = navigation;
+        Navigation.PageFactory = CreatePage;
+
+        Navigation.Items.Add(new NavigationItem
+        {
+            Header = Strings.NavBackup,
+            IconData = backupIcon,
+            PageType = typeof(BackupView),
+            PageViewModelType = typeof(BackupViewModel),
+        });
+
+        Navigation.Items.Add(new NavigationItem
+        {
+            Header = Strings.NavRecover,
+            IconData = recoverIcon,
+            PageType = typeof(RecoverView),
+            PageViewModelType = typeof(RecoverViewModel),
+        });
     }
 
     /// <summary>Gets the window title.</summary>
     public string Title => Strings.AppTitle;
 
-    /// <summary>Gets the backup page.</summary>
-    public BackupViewModel Backup { get; }
-
-    /// <summary>Gets the recovery page.</summary>
-    public RecoverViewModel Recover { get; }
-
-    /// <summary>Gets both pages, in navigation order.</summary>
-    public IReadOnlyList<PageViewModel> Pages { get; }
+    /// <summary>Gets the navigation state the shell binds to: the rail's items, its selection and the page showing.</summary>
+    public INavigationService Navigation { get; }
 
     /// <summary>
-    /// Gets or sets the index of the page showing. Values outside the range of <see cref="Pages"/> are clamped
-    /// into it rather than throwing: this is bound to a control's selection, and an empty selection arriving as
-    /// <c>-1</c> during template application should leave the shell on a valid page.
+    /// Builds the page a rail item stands for, with the ViewModel it is bound to already attached.
     /// </summary>
-    public int SelectedPageIndex
+    /// <param name="item">The item being navigated to.</param>
+    /// <returns>The page, ready to be shown.</returns>
+    /// <remarks>
+    /// A failure here is reported on <see cref="INavigationService.NavigationFailed"/> rather than thrown —
+    /// the service swallows it and empties the content area — which is why <see cref="App"/> subscribes to
+    /// that event and logs it.
+    /// </remarks>
+    private Control CreatePage(NavigationItem item)
     {
-        get;
-        set
-        {
-            if (SetProperty(ref field, Math.Clamp(value, 0, Pages.Count - 1)))
-            {
-                OnPropertyChanged(nameof(CurrentPage));
-            }
-        }
-    }
+        Control page = (Control)_services.GetRequiredService(item.PageType);
+        page.DataContext = _services.GetRequiredService(item.PageViewModelType);
 
-    /// <summary>Gets the page currently showing.</summary>
-    public PageViewModel CurrentPage => Pages[SelectedPageIndex];
+        return page;
+    }
 }

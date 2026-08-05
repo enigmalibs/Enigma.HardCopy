@@ -2,8 +2,8 @@ using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Enigma.HardCopy.Core;
-using Enigma.HardCopy.Desktop.Services;
+using Enigma.Avalonia.Desktop.Services;
+using Enigma.HardCopy.Desktop.Hosting;
 using Enigma.HardCopy.Desktop.ViewModels;
 using Enigma.HardCopy.Desktop.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +14,8 @@ namespace Enigma.HardCopy.Desktop;
 
 /// <summary>
 /// The Avalonia application. Owns the <see cref="IHost"/> that provides configuration, logging and
-/// dependency injection to the whole app.
+/// dependency injection to the whole app, and performs the one-time wiring the control library's services
+/// need before any of them is used.
 /// </summary>
 public partial class App : Application
 {
@@ -33,17 +34,36 @@ public partial class App : Application
         builder.Logging.AddConsole();
         builder.Logging.AddDebug();
 
-        ConfigureServices(builder.Services);
+        builder.Services.AddEnigmaAvaloniaDesktop();
+        builder.Services.AddEnigmaHardCopyDesktop();
 
         _host = builder.Build();
         _host.Start();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // The window is resolved rather than constructed: the file-dialog service needs this very window to
-            // own its dialogs, so the container has to be the one place that knows which window that is.
-            MainWindow window = _host.Services.GetRequiredService<MainWindow>();
-            window.DataContext = _host.Services.GetRequiredService<MainWindowViewModel>();
+            IServiceProvider services = _host.Services;
+
+            // The window is resolved rather than constructed: the library's services need this very window's
+            // hosts and its storage provider, so the container has to be the one place that knows which
+            // window that is.
+            MainWindow window = services.GetRequiredService<MainWindow>();
+            window.DataContext = services.GetRequiredService<MainWindowViewModel>();
+
+            // All five run before the window is shown. Each of these services throws
+            // InvalidOperationException from its first call if its host — or its storage provider — was never
+            // handed over, and the first call is a user clicking a button.
+            //
+            // IFileDialogService below is the LIBRARY's: this file imports Enigma.Avalonia.Desktop.Services and
+            // not the application's own Services namespace, which declares an interface of the same name.
+            // The application's own picker service wraps this one and is never touched here.
+            services.GetRequiredService<IOverlayService>().RegisterHost(window.HostOverlay);
+            services.GetRequiredService<IContentDialogService>().RegisterHost(window.HostDialog);
+            services.GetRequiredService<IInfoBarService>().RegisterHost(window.HostInfoBar);
+            services.GetRequiredService<IFileDialogService>().SetStorageProvider(window.StorageProvider);
+            services.GetRequiredService<IFolderDialogService>().SetStorageProvider(window.StorageProvider);
+
+            StartNavigation(services);
 
             desktop.MainWindow = window;
             desktop.Exit += (_, _) => _host.StopAsync().GetAwaiter().GetResult();
@@ -53,28 +73,31 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// Registers everything the application resolves. Core's services are singletons because they are
-    /// stateless, and both pages are singletons because each holds work in progress — a file chosen for backup,
-    /// a recovery half fed with codes — that must survive moving between tabs.
+    /// Subscribes to navigation failures and shows the first page.
     /// </summary>
-    /// <param name="services">The collection to register into.</param>
-    private static void ConfigureServices(IServiceCollection services)
+    /// <param name="services">The container the shell was built from.</param>
+    /// <remarks>
+    /// <para>
+    /// Nothing on <see cref="INavigationService"/> throws: a page that cannot be built is reported on
+    /// <see cref="INavigationService.NavigationFailed"/> and leaves the content area empty. Without this
+    /// subscription a wiring mistake would show as a blank window and no error anywhere, so the handler is
+    /// registered <i>before</i> the first navigation is asked for.
+    /// </para>
+    /// <para>
+    /// The first selection is made here, and not in <see cref="MainWindowViewModel"/>'s constructor, so that
+    /// the shell ViewModel stays constructible — and its rail assertable — with no windowing platform behind
+    /// it. It is also the only navigation requested at startup: the service serializes navigation with a
+    /// zero-timeout semaphore, so a second one fired straight after this would be dropped, not queued.
+    /// </para>
+    /// </remarks>
+    private static void StartNavigation(IServiceProvider services)
     {
-        // Core.
-        services.AddSingleton(TimeProvider.System);
-        services.AddSingleton<IBackupIdGenerator, RandomBackupIdGenerator>();
-        services.AddSingleton<IBackupEncoder, BackupEncoder>();
-        services.AddSingleton<IPdfComposer, PdfComposer>();
+        INavigationService navigation = services.GetRequiredService<INavigationService>();
+        ILogger<App> logger = services.GetRequiredService<ILogger<App>>();
 
-        // Shell and platform services. The dialog service is built by hand because its constructor is
-        // internal, and the container's activator only considers public ones.
-        services.AddSingleton<MainWindow>();
-        services.AddSingleton<IFileDialogService>(provider =>
-            new StorageProviderFileDialogService(provider.GetRequiredService<MainWindow>()));
+        navigation.NavigationFailed += (_, e) =>
+            logger.LogError(e.Exception, "Navigation failed in phase {Phase}.", e.Phase);
 
-        // Pages and shell.
-        services.AddSingleton<BackupViewModel>();
-        services.AddSingleton<RecoverViewModel>();
-        services.AddSingleton<MainWindowViewModel>();
+        navigation.SelectedItem = navigation.Items[0];
     }
 }
