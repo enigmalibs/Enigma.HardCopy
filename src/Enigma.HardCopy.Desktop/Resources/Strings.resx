@@ -77,6 +77,9 @@
   <data name="NavRecover" xml:space="preserve">
     <value>Recover</value>
   </data>
+  <data name="NavSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
 
   <!-- ===== Backup view ===== -->
   <data name="BackupHeader" xml:space="preserve">
@@ -330,6 +333,31 @@
   </data>
   <data name="RecoverDefaultFileName" xml:space="preserve">
     <value>recovered-file</value>
+  </data>
+
+  <!-- ===== Settings view ===== -->
+  <!-- The appearance is the only preference this application keeps. The barcode density is deliberately not
+       here: it is chosen per run, on the backup page, because the page layout is tuned around the default. -->
+  <data name="SettingsHeader" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SettingsIntro" xml:space="preserve">
+    <value>How the application looks. Everything about a backup — the file, the density, the destination — is chosen on the page that uses it, and starts from the default every time.</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="SettingsThemeNote" xml:space="preserve">
+    <value>Which colours the application is painted in. Kept between runs.</value>
+  </data>
+  <data name="SettingsThemeSystem" xml:space="preserve">
+    <value>Follow the system</value>
+  </data>
+  <data name="SettingsThemeLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="SettingsThemeDark" xml:space="preserve">
+    <value>Dark</value>
   </data>
 
   <!-- ===== One code's outcome ===== -->

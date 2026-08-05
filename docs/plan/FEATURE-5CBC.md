@@ -422,7 +422,7 @@ failing run still removes the scrim, the InfoBar reports every outcome at the ri
 confirmations behave on button, `Escape` and scrim click, and the whole app reads correctly in Light and Dark
 (screenshots).
 
-### PHASE04 — Settings page & theme preference (TODO)
+### PHASE04 — Settings page & theme preference (DONE)
 
 Branch: `feature/feature-5cbc-phase04-settings`
 

@@ -2,9 +2,11 @@ using System;
 using Enigma.HardCopy.Core;
 using Enigma.HardCopy.Desktop.Resources;
 using Enigma.HardCopy.Desktop.Services;
+using Enigma.HardCopy.Desktop.Settings;
 using Enigma.HardCopy.Desktop.ViewModels;
 using Enigma.HardCopy.Desktop.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using LibraryFileDialogs = Enigma.Avalonia.Desktop.Services.IFileDialogService;
 using LibraryNavigation = Enigma.Avalonia.Desktop.Services.INavigationService;
 
@@ -57,11 +59,21 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<IConfirmationService, ConfirmationService>();
 
+            // The preference file and the variant it selects. The store is built by hand because its path is
+            // a plain string the container has no way to supply — and passing it in is what lets a test point
+            // the same class at a temporary file.
+            services.AddSingleton<IAppSettingsStore>(provider => new AppSettingsStore(
+                provider.GetRequiredService<ILogger<AppSettingsStore>>(),
+                AppSettingsStore.DefaultFilePath));
+            services.AddSingleton<IThemeService, ThemeService>();
+
             // Pages: the view fresh each time, the ViewModel kept.
             services.AddTransient<BackupView>();
             services.AddTransient<RecoverView>();
+            services.AddTransient<SettingsView>();
             services.AddSingleton<BackupViewModel>();
             services.AddSingleton<RecoverViewModel>();
+            services.AddSingleton<SettingsViewModel>();
 
             // The shell's rail icons are passed in rather than resolved by the container: turning a Phosphor
             // glyph into a Geometry needs Avalonia's platform render interface, so resolving them from a type
@@ -71,7 +83,8 @@ public static class ServiceCollectionExtensions
                 provider,
                 provider.GetRequiredService<LibraryNavigation>(),
                 AppIcons.Backup,
-                AppIcons.Recover));
+                AppIcons.Recover,
+                AppIcons.Settings));
         }
     }
 }

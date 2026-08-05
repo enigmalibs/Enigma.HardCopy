@@ -38,6 +38,9 @@ public static class AppIcons
     /// <summary>The recovery page, on the navigation rail: the backup being turned back into the file.</summary>
     public static Geometry Recover { get; } = Resolve(PhosphorIcon.ArrowsCounterClockwise);
 
+    /// <summary>The settings page, on the navigation rail's footer.</summary>
+    public static Geometry Settings { get; } = Resolve(PhosphorIcon.Gear);
+
     /// <summary>Resolves one Phosphor glyph, at the regular weight, into its outline.</summary>
     /// <param name="icon">The icon to resolve.</param>
     /// <returns>The glyph's outline, ready for a <c>PathIcon.Data</c> or any other geometry slot.</returns>

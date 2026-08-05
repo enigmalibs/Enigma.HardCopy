@@ -4,11 +4,13 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Enigma.Avalonia.Desktop.Services;
 using Enigma.HardCopy.Desktop.Hosting;
+using Enigma.HardCopy.Desktop.Settings;
 using Enigma.HardCopy.Desktop.ViewModels;
 using Enigma.HardCopy.Desktop.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using AppTheming = Enigma.HardCopy.Desktop.Services.IThemeService;
 
 namespace Enigma.HardCopy.Desktop;
 
@@ -63,6 +65,7 @@ public partial class App : Application
             services.GetRequiredService<IFileDialogService>().SetStorageProvider(window.StorageProvider);
             services.GetRequiredService<IFolderDialogService>().SetStorageProvider(window.StorageProvider);
 
+            ApplyStoredTheme(services);
             StartNavigation(services);
 
             desktop.MainWindow = window;
@@ -70,6 +73,24 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    /// <summary>
+    /// Paints the application in the variant the user last chose.
+    /// </summary>
+    /// <param name="services">The container the shell was built from.</param>
+    /// <remarks>
+    /// Before the window is shown, so the first frame is already in the right colours rather than flashing
+    /// the operating system's variant and then correcting itself. <c>App.axaml</c> declares
+    /// <c>RequestedThemeVariant="Default"</c>, which is what the application looks like until this runs — and
+    /// what it goes on looking like when the preference is <see cref="AppTheme.System"/> or there is no
+    /// readable preference file at all.
+    /// </remarks>
+    private static void ApplyStoredTheme(IServiceProvider services)
+    {
+        AppSettings settings = services.GetRequiredService<IAppSettingsStore>().Load();
+
+        services.GetRequiredService<AppTheming>().Apply(settings.Theme);
     }
 
     /// <summary>

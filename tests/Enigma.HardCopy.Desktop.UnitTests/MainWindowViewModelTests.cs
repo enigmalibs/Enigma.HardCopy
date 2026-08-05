@@ -12,9 +12,9 @@ using Xunit;
 namespace Enigma.HardCopy.Desktop.UnitTests;
 
 /// <summary>
-/// The shell's navigation rail: two items, in order, each declaring the view and the ViewModel of its page —
-/// and a constructor that navigates nowhere, which is both a design rule and what keeps the rail assertable
-/// with no windowing platform behind it.
+/// The shell's navigation rail: two items, in order, each declaring the view and the ViewModel of its page,
+/// settings pinned to the footer — and a constructor that navigates nowhere, which is both a design rule and
+/// what keeps the rail assertable with no windowing platform behind it.
 /// </summary>
 /// <remarks>
 /// The icons are passed in as sentinels rather than resolved from the Phosphor pack: a real icon
@@ -27,6 +27,7 @@ public sealed class MainWindowViewModelTests
 {
     private static readonly Geometry BackupIcon = new PathGeometry();
     private static readonly Geometry RecoverIcon = new PathGeometry();
+    private static readonly Geometry SettingsIcon = new PathGeometry();
 
     [Fact]
     public void Title_IsTheApplicationName() => Assert.Equal(Strings.AppTitle, Create().Title);
@@ -64,9 +65,21 @@ public sealed class MainWindowViewModelTests
             });
     }
 
+    /// <summary>
+    /// Settings is pinned to the footer rather than added to the list: it is not one of the two things this
+    /// application is for, and which collection it lands in is the whole of that statement.
+    /// </summary>
     [Fact]
-    public void FooterItems_AreEmpty_UntilTheSettingsPageExists()
-        => Assert.Empty(Create().Navigation.FooterItems);
+    public void FooterItems_AreSettingsAlone_WithItsViewAndViewModel()
+    {
+        MainWindowViewModel viewModel = Create();
+
+        NavigationItem item = Assert.Single(viewModel.Navigation.FooterItems);
+        Assert.Equal(Strings.NavSettings, item.Header);
+        Assert.Equal(typeof(SettingsView), item.PageType);
+        Assert.Equal(typeof(SettingsViewModel), item.PageViewModelType);
+        Assert.Same(SettingsIcon, item.IconData);
+    }
 
     [Fact]
     public void Constructor_NavigatesNowhere()
@@ -103,10 +116,11 @@ public sealed class MainWindowViewModelTests
     {
         ServiceProvider services = new ServiceCollection().BuildServiceProvider();
 
-        Assert.Throws<ArgumentNullException>(() => new MainWindowViewModel(null!, new NavigationService(), BackupIcon, RecoverIcon));
-        Assert.Throws<ArgumentNullException>(() => new MainWindowViewModel(services, null!, BackupIcon, RecoverIcon));
-        Assert.Throws<ArgumentNullException>(() => new MainWindowViewModel(services, new NavigationService(), null!, RecoverIcon));
-        Assert.Throws<ArgumentNullException>(() => new MainWindowViewModel(services, new NavigationService(), BackupIcon, null!));
+        Assert.Throws<ArgumentNullException>(() => new MainWindowViewModel(null!, new NavigationService(), BackupIcon, RecoverIcon, SettingsIcon));
+        Assert.Throws<ArgumentNullException>(() => new MainWindowViewModel(services, null!, BackupIcon, RecoverIcon, SettingsIcon));
+        Assert.Throws<ArgumentNullException>(() => new MainWindowViewModel(services, new NavigationService(), null!, RecoverIcon, SettingsIcon));
+        Assert.Throws<ArgumentNullException>(() => new MainWindowViewModel(services, new NavigationService(), BackupIcon, null!, SettingsIcon));
+        Assert.Throws<ArgumentNullException>(() => new MainWindowViewModel(services, new NavigationService(), BackupIcon, RecoverIcon, null!));
     }
 
     private static MainWindowViewModel Create(
@@ -116,7 +130,8 @@ public sealed class MainWindowViewModelTests
             services ?? new ServiceCollection().BuildServiceProvider(),
             navigation ?? new NavigationService(),
             BackupIcon,
-            RecoverIcon);
+            RecoverIcon,
+            SettingsIcon);
 
     private sealed class StubPage : UserControl;
 

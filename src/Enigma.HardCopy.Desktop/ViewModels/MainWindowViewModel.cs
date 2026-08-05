@@ -11,7 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Enigma.HardCopy.Desktop.ViewModels;
 
 /// <summary>
-/// ViewModel of the application shell: the window title, and the navigation rail the two pages hang off.
+/// ViewModel of the application shell: the window title, and the navigation rail the pages hang off — the two
+/// the application is for in the list, and settings in the footer.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -32,7 +33,7 @@ namespace Enigma.HardCopy.Desktop.ViewModels;
 /// assertable — with no windowing platform behind it.
 /// </para>
 /// <para>
-/// The two rail icons are handed in rather than resolved here. Turning a Phosphor glyph into a
+/// The rail icons are handed in rather than resolved here. Turning a Phosphor glyph into a
 /// <see cref="Geometry"/> builds a <c>StreamGeometry</c>, which needs Avalonia's platform render interface:
 /// present in the running app, absent in a test process. The container's factory passes
 /// <see cref="AppIcons"/>, and a test passes its own.
@@ -47,17 +48,20 @@ public sealed class MainWindowViewModel : ObservableObject
     /// <param name="navigation">Owns the rail's items, its selection and the page showing.</param>
     /// <param name="backupIcon">The backup page's rail icon.</param>
     /// <param name="recoverIcon">The recovery page's rail icon.</param>
+    /// <param name="settingsIcon">The settings page's rail icon.</param>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null"/>.</exception>
     public MainWindowViewModel(
         IServiceProvider services,
         INavigationService navigation,
         Geometry backupIcon,
-        Geometry recoverIcon)
+        Geometry recoverIcon,
+        Geometry settingsIcon)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(navigation);
         ArgumentNullException.ThrowIfNull(backupIcon);
         ArgumentNullException.ThrowIfNull(recoverIcon);
+        ArgumentNullException.ThrowIfNull(settingsIcon);
 
         _services = services;
         Navigation = navigation;
@@ -77,6 +81,16 @@ public sealed class MainWindowViewModel : ObservableObject
             IconData = recoverIcon,
             PageType = typeof(RecoverView),
             PageViewModelType = typeof(RecoverViewModel),
+        });
+
+        // Settings goes in the footer rather than the list: it is not one of the two things this application
+        // is for, and the rail's footer is where a page that serves the app rather than the work belongs.
+        Navigation.FooterItems.Add(new NavigationItem
+        {
+            Header = Strings.NavSettings,
+            IconData = settingsIcon,
+            PageType = typeof(SettingsView),
+            PageViewModelType = typeof(SettingsViewModel),
         });
     }
 

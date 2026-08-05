@@ -39,6 +39,9 @@ public static class Strings
     /// <summary>The navigation label of the recovery view.</summary>
     public static string NavRecover => Get(nameof(NavRecover));
 
+    /// <summary>The navigation label of the settings view, on the rail's footer.</summary>
+    public static string NavSettings => Get(nameof(NavSettings));
+
     // ===== Backup view =====
 
     /// <summary>The backup view's heading.</summary>
@@ -273,6 +276,29 @@ public static class Strings
 
     /// <summary>The file name suggested when the metadata code did not supply one.</summary>
     public static string RecoverDefaultFileName => Get(nameof(RecoverDefaultFileName));
+
+    // ===== Settings view =====
+
+    /// <summary>The settings view's heading.</summary>
+    public static string SettingsHeader => Get(nameof(SettingsHeader));
+
+    /// <summary>The paragraph saying what is kept here and what is not.</summary>
+    public static string SettingsIntro => Get(nameof(SettingsIntro));
+
+    /// <summary>The label of the appearance row.</summary>
+    public static string SettingsThemeLabel => Get(nameof(SettingsThemeLabel));
+
+    /// <summary>The sentence describing what the appearance row does.</summary>
+    public static string SettingsThemeNote => Get(nameof(SettingsThemeNote));
+
+    /// <summary>The appearance choice that follows the operating system.</summary>
+    public static string SettingsThemeSystem => Get(nameof(SettingsThemeSystem));
+
+    /// <summary>The appearance choice that is always light.</summary>
+    public static string SettingsThemeLight => Get(nameof(SettingsThemeLight));
+
+    /// <summary>The appearance choice that is always dark.</summary>
+    public static string SettingsThemeDark => Get(nameof(SettingsThemeDark));
 
     // ===== One code's outcome =====
 

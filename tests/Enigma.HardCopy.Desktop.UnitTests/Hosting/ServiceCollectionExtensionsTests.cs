@@ -3,6 +3,7 @@ using System.Linq;
 using Enigma.Avalonia.Desktop.Services;
 using Enigma.HardCopy.Core;
 using Enigma.HardCopy.Desktop.Hosting;
+using Enigma.HardCopy.Desktop.Settings;
 using Enigma.HardCopy.Desktop.ViewModels;
 using Enigma.HardCopy.Desktop.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ using AppConfirmations = Enigma.HardCopy.Desktop.Services.IConfirmationService;
 using AppFileDialogs = Enigma.HardCopy.Desktop.Services.IFileDialogService;
 using AppNotifications = Enigma.HardCopy.Desktop.Services.INotificationService;
 using AppProgressOverlay = Enigma.HardCopy.Desktop.Services.IProgressOverlay;
+using AppTheming = Enigma.HardCopy.Desktop.Services.IThemeService;
 
 namespace Enigma.HardCopy.Desktop.UnitTests.Hosting;
 
@@ -100,6 +102,8 @@ public sealed class ServiceCollectionExtensionsTests
     [InlineData(typeof(AppProgressOverlay), ServiceLifetime.Singleton)]
     [InlineData(typeof(AppNotifications), ServiceLifetime.Singleton)]
     [InlineData(typeof(AppConfirmations), ServiceLifetime.Singleton)]
+    [InlineData(typeof(IAppSettingsStore), ServiceLifetime.Singleton)]
+    [InlineData(typeof(AppTheming), ServiceLifetime.Singleton)]
     [InlineData(typeof(MainWindow), ServiceLifetime.Singleton)]
     [InlineData(typeof(MainWindowViewModel), ServiceLifetime.Singleton)]
     public void AddEnigmaHardCopyDesktop_RegistersTheShellsService_WithTheRightLifetime(Type service, ServiceLifetime lifetime)
@@ -120,6 +124,7 @@ public sealed class ServiceCollectionExtensionsTests
     [Theory]
     [InlineData(typeof(BackupView), typeof(BackupViewModel))]
     [InlineData(typeof(RecoverView), typeof(RecoverViewModel))]
+    [InlineData(typeof(SettingsView), typeof(SettingsViewModel))]
     public void AddEnigmaHardCopyDesktop_RegistersPageViewsTransient_AndPageViewModelsSingleton(Type view, Type viewModel)
     {
         ServiceCollection services = [];
@@ -160,6 +165,25 @@ public sealed class ServiceCollectionExtensionsTests
         Assert.NotNull(provider.GetRequiredService<AppFileDialogs>());
         Assert.NotNull(provider.GetRequiredService<BackupViewModel>());
         Assert.NotNull(provider.GetRequiredService<RecoverViewModel>());
+        Assert.NotNull(provider.GetRequiredService<SettingsViewModel>());
+    }
+
+    /// <summary>
+    /// The preference seams. The store is registered by factory rather than by type — its path is a plain
+    /// string the container cannot supply — so resolving it is the only way to know the factory is right.
+    /// </summary>
+    [Fact]
+    public void ThePreferenceSeams_AreResolvable()
+    {
+        ServiceCollection services = [];
+        services.AddLogging();
+        services.AddEnigmaAvaloniaDesktop();
+        services.AddEnigmaHardCopyDesktop();
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        Assert.NotNull(provider.GetRequiredService<IAppSettingsStore>());
+        Assert.NotNull(provider.GetRequiredService<AppTheming>());
     }
 
     /// <summary>
@@ -193,6 +217,7 @@ public sealed class ServiceCollectionExtensionsTests
 
         Assert.Same(provider.GetRequiredService<BackupViewModel>(), provider.GetRequiredService<BackupViewModel>());
         Assert.Same(provider.GetRequiredService<RecoverViewModel>(), provider.GetRequiredService<RecoverViewModel>());
+        Assert.Same(provider.GetRequiredService<SettingsViewModel>(), provider.GetRequiredService<SettingsViewModel>());
     }
 
     private static ServiceDescriptor DescriptorFor(IServiceCollection services, Type service)
