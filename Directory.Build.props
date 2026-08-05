@@ -10,7 +10,7 @@
          carry the same number, so a printed PDF can always be traced back to the build that made it.
          The app.manifest's assemblyIdentity version is maintained alongside it (Windows requires the
          4-part form there). Bump both together. -->
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <LangVersion>14</LangVersion>
     <Nullable>enable</Nullable>
     <!-- Explicit usings everywhere: every file declares its own using directives. -->

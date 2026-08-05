@@ -1,6 +1,6 @@
 # FEATURE-5CBC — Enigma.Avalonia.Desktop adoption & 1.1.0 release
 
-**Status:** IN PROGRESS
+**Status:** DONE
 **Type:** multi-phase feature (5 phases)
 **Branches (created by `/build`, each from `HEAD`):** one per phase, see *Phases*
 
@@ -449,7 +449,7 @@ footer item opens the page, each of the three choices repaints the app immediate
 restart, deleting `settings.json` returns the app to following the OS, and a hand-corrupted `settings.json`
 still starts the app. Screenshots of both variants **and** of the Settings page.
 
-### PHASE05 — Release readiness: 1.1.0 (TODO)
+### PHASE05 — Release readiness: 1.1.0 (DONE)
 
 Branch: `feature/feature-5cbc-phase05-release`
 

@@ -9,10 +9,13 @@ images or from code contents typed in by hand, with end-to-end SHA-256 integrity
 printed backup also carries a plain-text description of its own format, so the data can be recovered
 without this application.
 
-Cross-platform desktop app (Windows + Linux), built with Avalonia.
+Cross-platform desktop app (Windows + Linux), built with Avalonia and the `Enigma.Avalonia.Desktop`
+control library, with icons from `Enigma.Icons.Phosphor`.
 
-> **What's new in 1.0** — the first release: both flows complete, self-contained artifacts for
-> `win-x64` and `linux-x64`. See [RELEASENOTES.md](RELEASENOTES.md).
+> **What's new in 1.1.0** — a redrawn interface: a navigation rail instead of tabs, a Settings page with a
+> remembered light/dark preference, a progress overlay, an information bar for outcomes, and an in-window
+> confirmation before writing bytes that failed their hash. **The format is untouched — every backup printed
+> by 1.0 still recovers.** See [RELEASENOTES.md](RELEASENOTES.md).
 
 ## Why paper
 
@@ -29,15 +32,25 @@ required on the machine that runs it**.
 
 | Platform | Archive | Run |
 |---|---|---|
-| Windows (x64) | `Enigma.HardCopy-1.0.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
-| Linux (x64) | `Enigma.HardCopy-1.0.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
+| Windows (x64) | `Enigma.HardCopy-1.1.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
+| Linux (x64) | `Enigma.HardCopy-1.1.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
 
 On Linux, if the archive was produced on Windows the executable bit does not survive the zip — run
 `chmod +x Enigma.HardCopy.Desktop` once after unpacking.
 
+## Getting around
+
+The window has a navigation rail down its left edge: **Backup** and **Recover**, with **Settings** at the
+foot of it. Switching pages never disturbs the one you left — a chosen file, a half-fed recovery session and
+text you have typed are all still there when you come back.
+
+Long operations dim the window behind a card naming what is running and how far along it is. Every outcome —
+a PDF written, a recovery completed, a code rejected — is announced in a bar across the top of the window,
+while the detail stays on the page that owns it.
+
 ## Backing up a file
 
-Open the **Backup** page.
+Open the **Backup** page from the rail.
 
 1. **Choose the file.** Its size and SHA-256 appear immediately. Compare that hash against your own
    (`sha256sum <file>`, or `Get-FileHash <file>` on Windows) if you want to be sure the right bytes
@@ -48,8 +61,8 @@ Open the **Backup** page.
 3. **Check the estimate.** The page shows how many codes and pages the backup will take. Past roughly
    twenty pages a warning appears — printing and re-scanning that many sheets is real work, and a
    larger density is usually the better answer.
-4. **Choose the destination** and press **Generate PDF**. Long backups run in the background and can
-   be cancelled; nothing is written if you do.
+4. **Choose the destination** and press **Generate PDF**. A long backup runs behind a progress card that
+   names the stage it has reached and offers **Cancel**; nothing is written if you cancel.
 
 Then **print it, and check the print.** Every symbol must be sharp and complete — a smudged or clipped
 code is a chunk you cannot recover, and no other code can reconstruct it. Store the sheets somewhere
@@ -60,8 +73,8 @@ carries the recovery instructions described below.
 
 ## Recovering a file
 
-Open the **Recover** page. Both routes below feed **one** recovery session, so they can be mixed
-freely: scan what scans, type in what does not. Codes may arrive in any order, and duplicates are
+Open the **Recover** page from the rail. Both routes below feed **one** recovery session, so they can be
+mixed freely: scan what scans, type in what does not. Codes may arrive in any order, and duplicates are
 harmless.
 
 ### From scans or photographs
@@ -83,9 +96,32 @@ exactly which indexes are **still missing**. When they are all in, press **Recov
 where to save it.
 
 The file is only reported as recovered when its SHA-256 matches the one recorded at backup time. If it
-does not, **nothing is saved**: the app shows both hashes and requires an explicit **Save anyway**,
-because bytes that fail their hash are not provably the file you backed up. Adding another code
-withdraws that offer and re-checks from scratch.
+does not, **nothing is saved**: the app shows both hashes and requires an explicit **Save anyway**, which
+then asks you to confirm — the dialog names both hashes again and the button reads **Save unverified** —
+because bytes that fail their hash are not provably the file you backed up. Adding another code withdraws
+that offer and re-checks from scratch.
+
+**Start over** discards the session and its log. It asks first, if any codes have been read; the printed
+pages are of course unaffected, and can be fed in again.
+
+## Settings
+
+The **Settings** page, at the foot of the rail, holds one choice: **Appearance** — *Follow the system*,
+*Light* or *Dark*. It takes effect the moment you pick it and is remembered between runs. New installations
+follow the system.
+
+The choice is kept in a small JSON file, written only once you make one:
+
+| Platform | Path |
+|---|---|
+| Windows | `%APPDATA%\Enigma.HardCopy\settings.json` |
+| Linux | `~/.config/Enigma.HardCopy/settings.json` |
+
+Delete it and the app goes back to following the system. Nothing in it can stop the app starting: a file
+that is missing, damaged or written by a later version is reported in the log and replaced by the defaults.
+
+The barcode density is deliberately *not* remembered — it is a per-backup decision, and a remembered *Large*
+would quietly change how many sheets your next backup takes.
 
 ## Recovering without this application
 
@@ -152,3 +188,6 @@ follow.
 ## License
 
 MIT — see [LICENSE.md](LICENSE.md).
+
+The interface is built on `Enigma.Avalonia.Desktop` and the `Enigma.Icons` family; the icons themselves are
+[Phosphor Icons](https://phosphoricons.com), by Phosphor Icons, used under the MIT licence.
