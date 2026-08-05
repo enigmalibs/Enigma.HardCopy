@@ -26,6 +26,15 @@
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <!-- The house control library: its Fluent theme dictionary, navigation shell, dialog/overlay/info-bar
+         services, picker services, settings cards and typed editors. Enigma.Icons.Avalonia supplies the
+         Geometry every icon slot in that library takes; the two packages beneath it (the icon model and
+         the Phosphor artwork) would arrive transitively and are referenced explicitly to keep the
+         version visible here rather than inherited. -->
+    <PackageReference Include="Enigma.Avalonia.Desktop" />
+    <PackageReference Include="Enigma.Icons" />
+    <PackageReference Include="Enigma.Icons.Phosphor" />
+    <PackageReference Include="Enigma.Icons.Avalonia" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />

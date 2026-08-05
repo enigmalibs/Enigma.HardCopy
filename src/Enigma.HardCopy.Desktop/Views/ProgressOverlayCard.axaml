@@ -1,0 +1,70 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:res="using:Enigma.HardCopy.Desktop.Resources"
+                    xmlns:views="using:Enigma.HardCopy.Desktop.Views">
+
+  <!-- The theme of the application's own progress card. This dictionary is merged into App.axaml AFTER the
+       library's Fluent.axaml: on a duplicate key the last dictionary wins, and every colour below resolves
+       an Enigma* brush as a DynamicResource so the card follows a theme-variant switch like everything else.
+
+       The card sits on EnigmaSurfaceHighBrush — the same surface the library gives a ContentDialog — because
+       it is read through the overlay's scrim and has to lift off it. -->
+  <ControlTheme x:Key="{x:Type views:ProgressOverlayCard}" TargetType="views:ProgressOverlayCard">
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Template">
+      <ControlTemplate TargetType="views:ProgressOverlayCard">
+        <Border Background="{DynamicResource EnigmaSurfaceHighBrush}"
+                BorderBrush="{DynamicResource EnigmaBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="20"
+                MinWidth="360"
+                MaxWidth="460">
+          <StackPanel Spacing="12">
+
+            <TextBlock Text="{TemplateBinding Title}"
+                       FontSize="15"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap" />
+
+            <!-- The stage line. Hidden rather than left blank, so a card raised before its first Update does
+                 not reserve an empty row that then jumps. -->
+            <TextBlock Text="{TemplateBinding Message}"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource EnigmaForegroundSecondaryBrush}"
+                       IsVisible="{Binding Message,
+                                           RelativeSource={RelativeSource TemplatedParent},
+                                           Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <ProgressBar Minimum="0"
+                         Maximum="100"
+                         IsIndeterminate="{TemplateBinding IsIndeterminate}"
+                         Value="{TemplateBinding Progress}" />
+
+            <ContentPresenter Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              IsVisible="{Binding Content,
+                                                  RelativeSource={RelativeSource TemplatedParent},
+                                                  Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+            <!-- No CancelCommand, no button: the import, the rebuild and the write have no cancellation
+                 token behind them, and a permanently dead button would only invite a click. -->
+            <Button HorizontalAlignment="Right"
+                    Command="{TemplateBinding CancelCommand}"
+                    IsVisible="{Binding CancelCommand,
+                                        RelativeSource={RelativeSource TemplatedParent},
+                                        Converter={x:Static ObjectConverters.IsNotNull}}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <PathIcon Data="{x:Static res:AppIcons.Cancel}" Width="16" Height="16" />
+                <TextBlock Text="{x:Static res:Strings.BackupCancel}" />
+              </StackPanel>
+            </Button>
+
+          </StackPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+</ResourceDictionary>

@@ -439,15 +439,30 @@ public sealed class RecoverViewModelTests
     [Fact]
     public void Constructor_RejectsMissingDependencies()
     {
-        Assert.Throws<ArgumentNullException>(() => new RecoverViewModel(null!, NullLogger<RecoverViewModel>.Instance));
-        Assert.Throws<ArgumentNullException>(() => new RecoverViewModel(new FakeFileDialogService(), null!));
+        FakeFileDialogService dialogs = new();
+        NullLogger<RecoverViewModel> logger = NullLogger<RecoverViewModel>.Instance;
+        FakeProgressOverlay overlay = new();
+        FakeNotificationService notifications = new();
+        FakeConfirmationService confirmations = new();
+
+        Assert.Throws<ArgumentNullException>(() => new RecoverViewModel(null!, logger, overlay, notifications, confirmations));
+        Assert.Throws<ArgumentNullException>(() => new RecoverViewModel(dialogs, null!, overlay, notifications, confirmations));
+        Assert.Throws<ArgumentNullException>(() => new RecoverViewModel(dialogs, logger, null!, notifications, confirmations));
+        Assert.Throws<ArgumentNullException>(() => new RecoverViewModel(dialogs, logger, overlay, null!, confirmations));
+        Assert.Throws<ArgumentNullException>(() => new RecoverViewModel(dialogs, logger, overlay, notifications, null!));
     }
 
     private static (RecoverViewModel ViewModel, FakeFileDialogService Dialogs) Create()
     {
         FakeFileDialogService dialogs = new();
+        RecoverViewModel viewModel = new(
+            dialogs,
+            NullLogger<RecoverViewModel>.Instance,
+            new FakeProgressOverlay(),
+            new FakeNotificationService(),
+            new FakeConfirmationService());
 
-        return (new RecoverViewModel(dialogs, NullLogger<RecoverViewModel>.Instance), dialogs);
+        return (viewModel, dialogs);
     }
 
     /// <summary>

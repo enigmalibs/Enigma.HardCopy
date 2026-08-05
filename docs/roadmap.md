@@ -9,3 +9,9 @@
 | - PHASE04    | Core recovery pipeline                       | DONE        | (in FEATURE-79FF.md)      |
 | - PHASE05    | Avalonia desktop app                         | DONE        | (in FEATURE-79FF.md)      |
 | - PHASE06    | Release readiness                            | DONE        | (in FEATURE-79FF.md)      |
+| FEATURE-5CBC | Enigma.Avalonia.Desktop adoption & 1.1.0     | DONE        | docs/plan/FEATURE-5CBC.md |
+| - PHASE01    | Package, theme & icon foundation             | DONE        | (in FEATURE-5CBC.md)      |
+| - PHASE02    | NavigationView shell, hosts & pickers        | DONE        | (in FEATURE-5CBC.md)      |
+| - PHASE03    | Page restyle, overlay, InfoBar & confirms    | DONE        | (in FEATURE-5CBC.md)      |
+| - PHASE04    | Settings page & theme preference             | DONE        | (in FEATURE-5CBC.md)      |
+| - PHASE05    | Release readiness: 1.1.0                     | DONE        | (in FEATURE-5CBC.md)      |

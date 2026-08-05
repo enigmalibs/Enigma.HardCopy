@@ -2,12 +2,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:editors="using:Enigma.Avalonia.Desktop.Controls.Editors"
+             xmlns:ei="https://github.com/josueclement/Enigma.Icons"
              xmlns:res="using:Enigma.HardCopy.Desktop.Resources"
              xmlns:vm="using:Enigma.HardCopy.Desktop.ViewModels"
              mc:Ignorable="d"
              x:Class="Enigma.HardCopy.Desktop.Views.RecoverView"
              x:DataType="vm:RecoverViewModel"
              DragDrop.AllowDrop="True">
+
+  <!-- No progress block and no outcome panel on this page: a run goes to the modal overlay card and its
+       outcome to the window's info bar. Everything else stays exactly where it was — the completeness bar and
+       the missing-index list are state a user reads while standing at a scanner, not activity, and a
+       three-hundred-entry log cannot be replaced by a one-line banner. -->
+
+  <UserControl.Styles>
+    <!-- The code box's height, reached through the editor's text presenter.
+
+         The library's BaseEditor template sizes its input area from the text and honours neither MinLines nor
+         the control's own MinHeight — both were tried, and both only pad the control around an unchanged
+         three-line box. This is the page's primary input: one code at the sparsest density is nine hundred
+         characters, so a box that small would be scrolled through rather than read. The template part is
+         Avalonia's own TextBox contract (TextBox.OnApplyTemplate requires it), which is what makes it a
+         reasonable thing to reach for; should a later library version rename it, the style stops applying and
+         the box goes back to its natural size — smaller, never broken. -->
+    <Style Selector="editors|MultiLineTextEditor.mono /template/ TextPresenter#PART_TextPresenter">
+      <Setter Property="MinHeight" Value="110" />
+    </Style>
+  </UserControl.Styles>
 
   <Grid RowDefinitions="Auto,*" Margin="24">
 
@@ -25,53 +47,61 @@
           <Border Classes="card">
             <StackPanel Spacing="10">
               <TextBlock Classes="h2" Text="{x:Static res:Strings.RecoverImportHeader}" />
-              <Button Content="{x:Static res:Strings.RecoverImportImages}"
-                      Command="{Binding ImportImagesCommand}"
-                      HorizontalAlignment="Left" />
+              <Button Command="{Binding ImportImagesCommand}" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <PathIcon Data="{ei:IconGeometry Images}" Width="16" Height="16" />
+                  <TextBlock Text="{x:Static res:Strings.RecoverImportImages}" />
+                </StackPanel>
+              </Button>
               <TextBlock Classes="hint" Text="{x:Static res:Strings.RecoverDropHint}" />
             </StackPanel>
           </Border>
 
+          <!-- The code box is the library's MultiLineTextEditor: it brings the title row, the placeholder and
+               the trailing action slot the plain TextBox needed three extra elements for. It derives from
+               TextBox, so the mono class still reaches it — through the :is(TextBox) selector in App.axaml. -->
           <Border Classes="card">
             <StackPanel Spacing="10">
               <TextBlock Classes="h2" Text="{x:Static res:Strings.RecoverManualHeader}" />
               <TextBlock Classes="hint" Text="{x:Static res:Strings.RecoverManualHint}" />
-              <TextBox Classes="mono"
-                       Text="{Binding ManualEntry}"
-                       PlaceholderText="{x:Static res:Strings.RecoverManualPlaceholder}"
-                       AcceptsReturn="True"
-                       TextWrapping="Wrap"
-                       MinHeight="110"
-                       MaxHeight="220" />
-              <Button Content="{x:Static res:Strings.RecoverAddCodes}"
-                      Command="{Binding AddCodesCommand}"
-                      HorizontalAlignment="Left" />
+              <editors:MultiLineTextEditor Classes="mono"
+                                           Title="{x:Static res:Strings.RecoverManualCodesTitle}"
+                                           Text="{Binding ManualEntry}"
+                                           PlaceholderText="{x:Static res:Strings.RecoverManualPlaceholder}"
+                                           MinHeight="110"
+                                           MaxHeight="220">
+                <editors:MultiLineTextEditor.ActionContent>
+                  <Button Command="{Binding AddCodesCommand}" Padding="8,4" FontSize="12">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                      <PathIcon Data="{ei:IconGeometry Keyboard}" Width="14" Height="14" />
+                      <TextBlock Text="{x:Static res:Strings.RecoverAddCodes}" />
+                    </StackPanel>
+                  </Button>
+                </editors:MultiLineTextEditor.ActionContent>
+              </editors:MultiLineTextEditor>
             </StackPanel>
           </Border>
 
           <StackPanel Orientation="Horizontal" Spacing="12">
-            <Button Classes="accent"
-                    Content="{x:Static res:Strings.RecoverAssemble}"
-                    Command="{Binding AssembleCommand}" />
-            <Button Content="{x:Static res:Strings.RecoverSaveAnyway}"
-                    Command="{Binding SaveAnywayCommand}"
-                    IsVisible="{Binding CanSaveAnyway}" />
-            <Button Content="{x:Static res:Strings.RecoverStartOver}"
-                    Command="{Binding StartOverCommand}" />
+            <Button Classes="accent" Command="{Binding AssembleCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <PathIcon Data="{ei:IconGeometry ShieldCheck}" Width="16" Height="16" />
+                <TextBlock Text="{x:Static res:Strings.RecoverAssemble}" />
+              </StackPanel>
+            </Button>
+            <Button Command="{Binding SaveAnywayCommand}" IsVisible="{Binding CanSaveAnyway}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <PathIcon Data="{x:Static res:AppIcons.ConfirmUnverifiedSave}" Width="16" Height="16" />
+                <TextBlock Text="{x:Static res:Strings.RecoverSaveAnyway}" />
+              </StackPanel>
+            </Button>
+            <Button Command="{Binding StartOverCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <PathIcon Data="{ei:IconGeometry Broom}" Width="16" Height="16" />
+                <TextBlock Text="{x:Static res:Strings.RecoverStartOver}" />
+              </StackPanel>
+            </Button>
           </StackPanel>
-
-          <StackPanel Spacing="6" IsVisible="{Binding IsBusy}">
-            <TextBlock Classes="hint" Text="{Binding ProgressText}" />
-            <ProgressBar IsIndeterminate="True" />
-          </StackPanel>
-
-          <Border Classes="notice"
-                  IsVisible="{Binding HasMessage}"
-                  Classes.success="{Binding Message.IsSuccess}"
-                  Classes.warning="{Binding Message.IsWarning}"
-                  Classes.error="{Binding Message.IsError}">
-            <TextBlock Text="{Binding Message.Text}" TextWrapping="Wrap" />
-          </Border>
 
         </StackPanel>
       </ScrollViewer>

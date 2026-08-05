@@ -5,6 +5,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Enigma.HardCopy.Core;
 using Enigma.HardCopy.Desktop.Resources;
@@ -27,7 +28,9 @@ namespace Enigma.HardCopy.Desktop.ViewModels;
 /// <para>
 /// Progress is reported by stage rather than by percentage. Core's encoder and composer are single calls with
 /// no progress callback, so a percentage would be invented; naming the stage is honest and is what makes the
-/// wait legible.
+/// wait legible. The stage goes to the modal <see cref="IProgressOverlay"/> and the outcome to the
+/// <see cref="INotificationService"/>: <see cref="ProgressText"/> and <see cref="Message"/> are still this
+/// ViewModel's own state and still say exactly what they said before, they are simply also published.
 /// </para>
 /// <para>
 /// Every command handler runs on the UI thread and moves the CPU-bound work — encoding, composing — onto a
@@ -35,7 +38,7 @@ namespace Enigma.HardCopy.Desktop.ViewModels;
 /// no marshaling.
 /// </para>
 /// </remarks>
-public sealed class BackupViewModel : PageViewModel
+public sealed class BackupViewModel : ObservableObject
 {
     /// <summary>
     /// The page count above which the user is warned. Not a limit — there is deliberately none — but the point
@@ -48,6 +51,8 @@ public sealed class BackupViewModel : PageViewModel
     private readonly IPdfComposer _composer;
     private readonly IFileDialogService _dialogs;
     private readonly ILogger<BackupViewModel> _logger;
+    private readonly IProgressOverlay _overlay;
+    private readonly INotificationService _notifications;
 
     private SourceFile? _source;
     private ISaveTarget? _output;
@@ -58,31 +63,36 @@ public sealed class BackupViewModel : PageViewModel
     /// <param name="composer">Turns those codes into the printable PDF.</param>
     /// <param name="dialogs">Asks the user for the file and the destination.</param>
     /// <param name="logger">Records failures for diagnosis; the user sees the friendly message instead.</param>
+    /// <param name="overlay">Puts a long run behind a modal card carrying its stage.</param>
+    /// <param name="notifications">Carries each outcome to the window's info bar.</param>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null"/>.</exception>
     public BackupViewModel(
         IBackupEncoder encoder,
         IPdfComposer composer,
         IFileDialogService dialogs,
-        ILogger<BackupViewModel> logger)
+        ILogger<BackupViewModel> logger,
+        IProgressOverlay overlay,
+        INotificationService notifications)
     {
         ArgumentNullException.ThrowIfNull(encoder);
         ArgumentNullException.ThrowIfNull(composer);
         ArgumentNullException.ThrowIfNull(dialogs);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(overlay);
+        ArgumentNullException.ThrowIfNull(notifications);
 
         _encoder = encoder;
         _composer = composer;
         _dialogs = dialogs;
         _logger = logger;
+        _overlay = overlay;
+        _notifications = notifications;
 
         ChooseFileCommand = new AsyncRelayCommand(OnChooseFileAsync, () => !IsBusy);
         ChooseOutputCommand = new AsyncRelayCommand(OnChooseOutputAsync, () => !IsBusy);
         GenerateCommand = new AsyncRelayCommand(OnGenerateAsync, CanGenerate);
         CancelCommand = new RelayCommand(OnCancel, () => IsBusy);
     }
-
-    /// <inheritdoc/>
-    public override string Title => Strings.NavBackup;
 
     /// <summary>Gets the barcode-density options offered.</summary>
     public IReadOnlyList<ChunkSizeOption> ChunkSizes => ChunkSizeOption.All;
@@ -175,13 +185,27 @@ public sealed class BackupViewModel : PageViewModel
     }
 
     /// <summary>Gets the stage currently running, or <see langword="null"/> when nothing is.</summary>
+    /// <remarks>
+    /// Setting it also writes the stage onto the overlay card. Clearing it does not: the card is about to be
+    /// taken down by the same <c>finally</c> that cleared this.
+    /// </remarks>
     public string? ProgressText
     {
         get;
-        private set => SetProperty(ref field, value);
+        private set
+        {
+            if (SetProperty(ref field, value) && value is not null)
+            {
+                _overlay.Update(value);
+            }
+        }
     }
 
     /// <summary>Gets the outcome of the last thing the user asked for, or <see langword="null"/>.</summary>
+    /// <remarks>
+    /// Setting it to an outcome also publishes that outcome as a notification — exactly once, because this is
+    /// the single place the page records one. Clearing it publishes nothing.
+    /// </remarks>
     public StatusMessage? Message
     {
         get;
@@ -190,6 +214,11 @@ public sealed class BackupViewModel : PageViewModel
             if (SetProperty(ref field, value))
             {
                 OnPropertyChanged(nameof(HasMessage));
+
+                if (value is not null)
+                {
+                    _notifications.Publish(value);
+                }
             }
         }
     }
@@ -220,8 +249,11 @@ public sealed class BackupViewModel : PageViewModel
         }
 
         IsBusy = true;
-        ProgressText = Strings.BackupStageReading;
         Message = null;
+
+        // Raised before the stage is named: an Update that arrives before the card does is a no-op.
+        await _overlay.ShowAsync(Strings.OverlayReadTitle);
+        ProgressText = Strings.BackupStageReading;
         try
         {
             byte[] content = await file.ReadAllBytesAsync();
@@ -239,6 +271,7 @@ public sealed class BackupViewModel : PageViewModel
         {
             IsBusy = false;
             ProgressText = null;
+            await _overlay.HideAsync();
         }
     }
 
@@ -271,6 +304,9 @@ public sealed class BackupViewModel : PageViewModel
 
         IsBusy = true;
         Message = null;
+
+        // The one operation with a cancellation token behind it, so the one card that offers a way out.
+        await _overlay.ShowAsync(Strings.OverlayGenerateTitle, CancelCommand);
         try
         {
             ProgressText = Strings.BackupStageEncoding;
@@ -322,6 +358,7 @@ public sealed class BackupViewModel : PageViewModel
             _generation = null;
             IsBusy = false;
             ProgressText = null;
+            await _overlay.HideAsync();
         }
     }
 
