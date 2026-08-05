@@ -8,6 +8,7 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/app.ico"
         Title="{Binding Title}"
+        Background="{DynamicResource EnigmaBackgroundBrush}"
         Width="1040" Height="760"
         MinWidth="760" MinHeight="560"
         WindowStartupLocation="CenterScreen">

@@ -9,51 +9,36 @@
     <local:ViewLocator />
   </Application.DataTemplates>
 
-  <!-- The application's semantic palette, declared per theme variant.
+  <!-- The house control library's theme: one Color per variant, one SolidColorBrush per Color, and a
+       ControlTheme for every control the library ships. It has a ResourceDictionary root, so it is merged
+       here as a ResourceInclude — a StyleInclude fails the build with AVLN2000.
 
-       These are defined here rather than taken from the Fluent theme because the theme does not offer them:
-       Avalonia 12's Fluent brushes are the SystemControl* family, which has no notion of "this message is a
-       warning". The values are the WinUI semantic colours, and a message that says a recovered file is
-       unverified has to stay legible in both light and dark — so both variants are given, not one plus a
-       hope. -->
+       This replaces the nine App-local semantic brushes this file used to declare per variant
+       (SubtleForeground, CardBackground/Border and the Success/Warning/Error foreground+background pairs).
+       The dictionary's Enigma* keys cover every one of them, in both variants, and each brush follows a
+       RequestedThemeVariant switch on its own — which is why every reference below is a DynamicResource:
+       a StaticResource freezes the colour at load and the control stops following the variant.
+
+       Order matters inside MergedDictionaries: on a duplicate key the last dictionary wins, so any
+       dictionary of ours that overrides an Enigma* key has to be merged AFTER this one. -->
   <Application.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.ThemeDictionaries>
-
-        <ResourceDictionary x:Key="Light">
-          <SolidColorBrush x:Key="SubtleForegroundBrush" Color="#5D5D5D" />
-          <SolidColorBrush x:Key="CardBackgroundBrush" Color="#F9F9F9" />
-          <SolidColorBrush x:Key="CardBorderBrush" Color="#E5E5E5" />
-          <SolidColorBrush x:Key="SuccessForegroundBrush" Color="#0F7B0F" />
-          <SolidColorBrush x:Key="SuccessBackgroundBrush" Color="#DFF6DD" />
-          <SolidColorBrush x:Key="WarningForegroundBrush" Color="#9D5D00" />
-          <SolidColorBrush x:Key="WarningBackgroundBrush" Color="#FFF4CE" />
-          <SolidColorBrush x:Key="ErrorForegroundBrush" Color="#C42B1C" />
-          <SolidColorBrush x:Key="ErrorBackgroundBrush" Color="#FDE7E9" />
-        </ResourceDictionary>
-
-        <ResourceDictionary x:Key="Dark">
-          <SolidColorBrush x:Key="SubtleForegroundBrush" Color="#C5C5C5" />
-          <SolidColorBrush x:Key="CardBackgroundBrush" Color="#2C2C2C" />
-          <SolidColorBrush x:Key="CardBorderBrush" Color="#3D3D3D" />
-          <SolidColorBrush x:Key="SuccessForegroundBrush" Color="#6CCB5F" />
-          <SolidColorBrush x:Key="SuccessBackgroundBrush" Color="#393D1B" />
-          <SolidColorBrush x:Key="WarningForegroundBrush" Color="#FCE100" />
-          <SolidColorBrush x:Key="WarningBackgroundBrush" Color="#433519" />
-          <SolidColorBrush x:Key="ErrorForegroundBrush" Color="#FF99A4" />
-          <SolidColorBrush x:Key="ErrorBackgroundBrush" Color="#442726" />
-        </ResourceDictionary>
-
-      </ResourceDictionary.ThemeDictionaries>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://Enigma.Avalonia.Desktop/Themes/Fluent.axaml" />
+      </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>
 
   <Application.Styles>
+    <!-- The base FluentTheme stays: the library declares a ControlTheme only for its own controls plus
+         TextBox and ComboBox, so dropping it would leave every other framework control — including the
+         ones nested inside the library's own templates — without a template. -->
     <FluentTheme />
 
-    <!-- The application's whole visual vocabulary. Stock Fluent controls throughout (a validated decision):
-         these are type-scale, spacing and severity-colour classes over the theme's own brushes, not a
-         restyling of the controls. -->
+    <!-- The application's whole visual vocabulary: type-scale, spacing and severity-colour classes over
+         the library theme's Enigma* brushes, not a restyling of the controls. TextBox and ComboBox are
+         deliberately absent — the library's dictionary restyles those two by overriding FluentTheme's own
+         TextControl* / ComboBox* keys, so hand-styling them here would only fight it. -->
 
     <Style Selector="StackPanel.page">
       <Setter Property="Margin" Value="24" />
@@ -76,13 +61,13 @@
 
     <Style Selector="TextBlock.body">
       <Setter Property="TextWrapping" Value="Wrap" />
-      <Setter Property="Foreground" Value="{DynamicResource SubtleForegroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaForegroundSecondaryBrush}" />
     </Style>
 
     <Style Selector="TextBlock.hint">
       <Setter Property="FontSize" Value="12" />
       <Setter Property="TextWrapping" Value="Wrap" />
-      <Setter Property="Foreground" Value="{DynamicResource SubtleForegroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaForegroundSecondaryBrush}" />
     </Style>
 
     <Style Selector=":is(TextBlock).field">
@@ -108,8 +93,8 @@
     </Style>
 
     <Style Selector="Border.card">
-      <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+      <Setter Property="Background" Value="{DynamicResource EnigmaSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaBorderSubtleBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="6" />
       <Setter Property="Padding" Value="16" />
@@ -119,46 +104,48 @@
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="4" />
       <Setter Property="Padding" Value="12,10" />
-      <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaBorderSubtleBrush}" />
     </Style>
 
+    <!-- The severity fills come as a Background/Border pair — the same pair the library's own InfoBar uses —
+         so the border takes Enigma…BorderBrush while the text inside takes the accent (Enigma…Brush). -->
     <Style Selector="Border.notice.success">
-      <Setter Property="Background" Value="{DynamicResource SuccessBackgroundBrush}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource SuccessForegroundBrush}" />
+      <Setter Property="Background" Value="{DynamicResource EnigmaSuccessBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaSuccessBorderBrush}" />
     </Style>
 
     <Style Selector="Border.notice.success > TextBlock">
-      <Setter Property="Foreground" Value="{DynamicResource SuccessForegroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaSuccessBrush}" />
     </Style>
 
     <Style Selector="Border.notice.warning">
-      <Setter Property="Background" Value="{DynamicResource WarningBackgroundBrush}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource WarningForegroundBrush}" />
+      <Setter Property="Background" Value="{DynamicResource EnigmaWarningBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaWarningBorderBrush}" />
     </Style>
 
     <Style Selector="Border.notice.warning > TextBlock">
-      <Setter Property="Foreground" Value="{DynamicResource WarningForegroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaWarningBrush}" />
     </Style>
 
     <Style Selector="Border.notice.error">
-      <Setter Property="Background" Value="{DynamicResource ErrorBackgroundBrush}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource ErrorForegroundBrush}" />
+      <Setter Property="Background" Value="{DynamicResource EnigmaErrorBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaErrorBorderBrush}" />
     </Style>
 
     <Style Selector="Border.notice.error > TextBlock">
-      <Setter Property="Foreground" Value="{DynamicResource ErrorForegroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaErrorBrush}" />
     </Style>
 
     <Style Selector=":is(TextBlock).success">
-      <Setter Property="Foreground" Value="{DynamicResource SuccessForegroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaSuccessBrush}" />
     </Style>
 
     <Style Selector=":is(TextBlock).warning">
-      <Setter Property="Foreground" Value="{DynamicResource WarningForegroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaWarningBrush}" />
     </Style>
 
     <Style Selector=":is(TextBlock).error">
-      <Setter Property="Foreground" Value="{DynamicResource ErrorForegroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaErrorBrush}" />
     </Style>
 
     <!-- The activity log is a list for the scrolling and the virtualization, not for the selection. -->

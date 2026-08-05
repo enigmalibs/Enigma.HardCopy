@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ei="https://github.com/josueclement/Enigma.Icons"
              xmlns:res="using:Enigma.HardCopy.Desktop.Resources"
              xmlns:vm="using:Enigma.HardCopy.Desktop.ViewModels"
              mc:Ignorable="d"
@@ -89,14 +90,26 @@
         </StackPanel>
       </Border>
 
-      <!-- Generate, and what came of it -->
+      <!-- Generate, and what came of it.
+
+           The two icons here deliberately take the two different routes into the Phosphor pack, so that a
+           build and a launch prove both before the later phases lean on them: {ei:IconGeometry} resolves the
+           path data at XAML load time, while AppIcons resolves it in C# through
+           PhosphorIconSet.Instance.GetGlyph(...).ToGeometry(). Neither carries a brush — a PathIcon inherits
+           its Foreground from the button, so both follow a theme-variant switch. -->
       <StackPanel Orientation="Horizontal" Spacing="12">
-        <Button Classes="accent"
-                Content="{x:Static res:Strings.BackupGenerate}"
-                Command="{Binding GenerateCommand}" />
-        <Button Content="{x:Static res:Strings.BackupCancel}"
-                Command="{Binding CancelCommand}"
-                IsVisible="{Binding IsBusy}" />
+        <Button Classes="accent" Command="{Binding GenerateCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <PathIcon Data="{ei:IconGeometry FilePdf}" Width="16" Height="16" />
+            <TextBlock Text="{x:Static res:Strings.BackupGenerate}" />
+          </StackPanel>
+        </Button>
+        <Button Command="{Binding CancelCommand}" IsVisible="{Binding IsBusy}">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <PathIcon Data="{x:Static res:AppIcons.Cancel}" Width="16" Height="16" />
+            <TextBlock Text="{x:Static res:Strings.BackupCancel}" />
+          </StackPanel>
+        </Button>
       </StackPanel>
 
       <StackPanel Spacing="6" IsVisible="{Binding IsBusy}">

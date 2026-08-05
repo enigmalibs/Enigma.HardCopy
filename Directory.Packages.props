@@ -40,6 +40,20 @@
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.1" />
     <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <!-- The house control library and its icon packs. Enigma.Avalonia.Desktop pins Avalonia 12.1.1,
+         Avalonia.Themes.Fluent 12.1.1 and CommunityToolkit.Mvvm 8.4.2 — exactly the versions above —
+         so it belongs to this same version-coupled group and moves with it. Enigma.Icons.Avalonia
+         needs Avalonia >= 12.1.0 and is coupled for the same reason.
+         Enigma.Icons and Enigma.Icons.Phosphor arrive transitively through Enigma.Icons.Avalonia;
+         they are listed here to pin the versions rather than inherit them, exactly as
+         Avalonia.Themes.Fluent and CommunityToolkit.Mvvm are. Enigma.Core (and its
+         BouncyCastle.Cryptography dependency) also arrives transitively with the control library:
+         nothing in this app calls it, it backs the library's binary editors, and there is no way
+         to opt out short of not referencing the library. -->
+    <PackageVersion Include="Enigma.Avalonia.Desktop" Version="1.0.0" />
+    <PackageVersion Include="Enigma.Icons" Version="1.0.0" />
+    <PackageVersion Include="Enigma.Icons.Phosphor" Version="1.0.0" />
+    <PackageVersion Include="Enigma.Icons.Avalonia" Version="1.0.0" />
   </ItemGroup>
 
   <!-- Tests (MTP-native: xunit.v3 only; coverlet.collector for coverage). No Microsoft.NET.Test.Sdk. -->
