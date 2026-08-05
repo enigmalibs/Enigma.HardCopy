@@ -1,37 +1,44 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Enigma.HardCopy.Desktop.Resources;
+using LibraryFileDialogs = Enigma.Avalonia.Desktop.Services.IFileDialogService;
 
 namespace Enigma.HardCopy.Desktop.Services;
 
 /// <summary>
-/// The <see cref="IFileDialogService"/> backed by the platform's own pickers, through the main window's
-/// <see cref="TopLevel.StorageProvider"/>.
+/// The <see cref="IFileDialogService"/> backed by the platform's own pickers, through the control library's
+/// picker service.
 /// </summary>
 /// <remarks>
-/// It depends on the window rather than on a storage provider because the provider is a property of a live
-/// top-level: it exists once the window does, and taking the window lets this service be constructed at
-/// startup while the provider is only fetched when a dialog is actually opened. The application has exactly
-/// one window, so there is no ambiguity about which one owns the dialog.
+/// <para>
+/// The library's service is reached through an alias because it shares this interface's simple name: inside
+/// this namespace a bare <c>IFileDialogService</c> is always the application's own, and the library's has to be
+/// named some other way.
+/// </para>
+/// <para>
+/// Both layers of the library's API were considered and the <b>options-object</b> overloads are used
+/// deliberately. Its string-path overloads project the selection through <c>TryGetLocalPath()</c> and silently
+/// drop every item without one, and this application needs the <see cref="IStorageFile"/> handles anyway: a
+/// picked file is read as a stream, and the drop handler on the recovery page adapts the very same handles.
+/// </para>
 /// </remarks>
 internal sealed class StorageProviderFileDialogService : IFileDialogService
 {
-    private readonly Window _owner;
+    private readonly LibraryFileDialogs _dialogs;
 
-    internal StorageProviderFileDialogService(Window owner)
+    internal StorageProviderFileDialogService(LibraryFileDialogs dialogs)
     {
-        ArgumentNullException.ThrowIfNull(owner);
+        ArgumentNullException.ThrowIfNull(dialogs);
 
-        _owner = owner;
+        _dialogs = dialogs;
     }
 
     /// <inheritdoc/>
     public async Task<IPickedFile?> ChooseFileToBackUpAsync()
     {
-        IReadOnlyList<IStorageFile> files = await _owner.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        IReadOnlyList<IStorageFile> files = await _dialogs.ShowOpenFileDialogAsync(new FilePickerOpenOptions
         {
             Title = Strings.DialogChooseFileTitle,
             AllowMultiple = false,
@@ -43,7 +50,7 @@ internal sealed class StorageProviderFileDialogService : IFileDialogService
     /// <inheritdoc/>
     public async Task<IReadOnlyList<IPickedFile>> ChooseImagesAsync()
     {
-        IReadOnlyList<IStorageFile> files = await _owner.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        IReadOnlyList<IStorageFile> files = await _dialogs.ShowOpenFileDialogAsync(new FilePickerOpenOptions
         {
             Title = Strings.DialogChooseImagesTitle,
             AllowMultiple = true,
@@ -56,7 +63,7 @@ internal sealed class StorageProviderFileDialogService : IFileDialogService
     /// <inheritdoc/>
     public async Task<ISaveTarget?> ChoosePdfDestinationAsync(string suggestedFileName)
     {
-        IStorageFile? file = await _owner.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        IStorageFile? file = await _dialogs.ShowSaveFileDialogAsync(new FilePickerSaveOptions
         {
             Title = Strings.DialogSavePdfTitle,
             SuggestedFileName = suggestedFileName,
@@ -71,7 +78,7 @@ internal sealed class StorageProviderFileDialogService : IFileDialogService
     /// <inheritdoc/>
     public async Task<ISaveTarget?> ChooseRecoveredFileDestinationAsync(string suggestedFileName)
     {
-        IStorageFile? file = await _owner.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        IStorageFile? file = await _dialogs.ShowSaveFileDialogAsync(new FilePickerSaveOptions
         {
             Title = Strings.DialogSaveRecoveredTitle,
             SuggestedFileName = suggestedFileName,

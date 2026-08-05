@@ -253,11 +253,16 @@ public sealed class BackupViewModelTests
         BackupEncoder encoder = new(new FixedBackupIdGenerator(BackupFixtures.BackupId), TimeProvider.System);
         FakePdfComposer composer = new();
         FakeFileDialogService dialogs = new();
+        NullLogger<BackupViewModel> logger = NullLogger<BackupViewModel>.Instance;
+        FakeProgressOverlay overlay = new();
+        FakeNotificationService notifications = new();
 
-        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(null!, composer, dialogs, NullLogger<BackupViewModel>.Instance));
-        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(encoder, null!, dialogs, NullLogger<BackupViewModel>.Instance));
-        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(encoder, composer, null!, NullLogger<BackupViewModel>.Instance));
-        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(encoder, composer, dialogs, null!));
+        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(null!, composer, dialogs, logger, overlay, notifications));
+        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(encoder, null!, dialogs, logger, overlay, notifications));
+        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(encoder, composer, null!, logger, overlay, notifications));
+        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(encoder, composer, dialogs, null!, overlay, notifications));
+        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(encoder, composer, dialogs, logger, null!, notifications));
+        Assert.Throws<ArgumentNullException>(() => new BackupViewModel(encoder, composer, dialogs, logger, overlay, null!));
     }
 
     private static (BackupViewModel ViewModel, FakeFileDialogService Dialogs, IPdfComposer Composer) Create(
@@ -269,7 +274,9 @@ public sealed class BackupViewModelTests
             new BackupEncoder(new FixedBackupIdGenerator(BackupFixtures.BackupId), TimeProvider.System),
             pdf,
             dialogs,
-            NullLogger<BackupViewModel>.Instance);
+            NullLogger<BackupViewModel>.Instance,
+            new FakeProgressOverlay(),
+            new FakeNotificationService());
 
         return (viewModel, dialogs, pdf);
     }

@@ -1,6 +1,6 @@
 # FEATURE-5CBC — Enigma.Avalonia.Desktop adoption & 1.1.0 release
 
-**Status:** TODO
+**Status:** DONE
 **Type:** multi-phase feature (5 phases)
 **Branches (created by `/build`, each from `HEAD`):** one per phase, see *Phases*
 
@@ -306,7 +306,7 @@ moves; the Avalonia set is *not* bumped as part of this item.
 
 ## Phases
 
-### PHASE01 — Package, theme & icon foundation (TODO)
+### PHASE01 — Package, theme & icon foundation (DONE)
 
 Branch: `feature/feature-5cbc-phase01-theme-foundation`
 
@@ -328,7 +328,7 @@ suite green with **no test changes at all**; the app launches and every panel, l
 still reads correctly in both variants (screenshots in the completion doc); no retired brush key remains
 anywhere in the solution (`grep`).
 
-### PHASE02 — NavigationView shell, hosts & pickers (TODO)
+### PHASE02 — NavigationView shell, hosts & pickers (DONE)
 
 Branch: `feature/feature-5cbc-phase02-shell-services`
 
@@ -372,7 +372,7 @@ survives switching away and back (a chosen file, a half-fed session, typed text)
 file, images, PDF destination, recovered-file destination) still return usable paths, and drag-and-drop onto
 the recovery page still imports. Screenshots of both variants.
 
-### PHASE03 — Page restyle, overlay, InfoBar & confirmations (TODO)
+### PHASE03 — Page restyle, overlay, InfoBar & confirmations (DONE)
 
 Branch: `feature/feature-5cbc-phase03-page-restyle`
 
@@ -422,7 +422,7 @@ failing run still removes the scrim, the InfoBar reports every outcome at the ri
 confirmations behave on button, `Escape` and scrim click, and the whole app reads correctly in Light and Dark
 (screenshots).
 
-### PHASE04 — Settings page & theme preference (TODO)
+### PHASE04 — Settings page & theme preference (DONE)
 
 Branch: `feature/feature-5cbc-phase04-settings`
 
@@ -449,7 +449,7 @@ footer item opens the page, each of the three choices repaints the app immediate
 restart, deleting `settings.json` returns the app to following the OS, and a hand-corrupted `settings.json`
 still starts the app. Screenshots of both variants **and** of the Settings page.
 
-### PHASE05 — Release readiness: 1.1.0 (TODO)
+### PHASE05 — Release readiness: 1.1.0 (DONE)
 
 Branch: `feature/feature-5cbc-phase05-release`
 
