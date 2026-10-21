@@ -3,6 +3,10 @@
      behalf is ever copied to a cloud backup either. (Debug builds get INTERNET injected by the SDK for the
      debugger and fast deployment; Release builds request no network access at all.) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- The only permission: reading the codes is the whole point. Asked for when the user starts scanning. -->
+  <uses-permission android:name="android.permission.CAMERA" />
+  <!-- Any camera will do — the back one is preferred, a front one still scans a code held up to it. -->
+  <uses-feature android:name="android.hardware.camera.any" android:required="true" />
   <application android:icon="@mipmap/app_icon"
                android:roundIcon="@mipmap/app_icon"
                android:allowBackup="false"

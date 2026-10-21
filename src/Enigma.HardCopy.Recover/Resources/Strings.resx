@@ -117,6 +117,9 @@
   <data name="SessionComplete" xml:space="preserve">
     <value>Every code is in. Save the recovered file.</value>
   </data>
+  <data name="CameraPreviewName" xml:space="preserve">
+    <value>Camera preview</value>
+  </data>
   <data name="LastScanLabel" xml:space="preserve">
     <value>Last code read</value>
   </data>

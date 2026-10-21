@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:Enigma.HardCopy.Recover.Controls"
              xmlns:contentDialog="using:Enigma.Avalonia.Desktop.Controls.ContentDialog"
              xmlns:infoBar="using:Enigma.Avalonia.Desktop.Controls.InfoBar"
              xmlns:res="using:Enigma.HardCopy.Recover.Resources"
@@ -46,12 +47,20 @@
           </StackPanel>
         </Border>
 
-        <!-- The camera area, while the camera is on: how to use it. The live preview takes its place at the top of
-             this card once a platform head draws frames. -->
-        <Border x:Name="CameraHost"
-                Classes="card"
-                IsVisible="{Binding IsScanning}">
-          <TextBlock Classes="hint" Text="{x:Static res:Strings.ScanningHint}" />
+        <!-- The camera area: the live preview, then how to use it. App.axaml.cs hands the preview its camera, the
+             same way it hands the hosts to their services. -->
+        <Border Classes="card"
+                IsVisible="{Binding IsScanning}"
+                Padding="0"
+                ClipToBounds="True">
+          <StackPanel>
+            <controls:CameraPreview x:Name="Preview"
+                                    Height="320"
+                                    AutomationProperties.Name="{x:Static res:Strings.CameraPreviewName}" />
+            <TextBlock Classes="hint"
+                       Margin="16,10"
+                       Text="{x:Static res:Strings.ScanningHint}" />
+          </StackPanel>
         </Border>
 
         <Border Classes="card" IsVisible="{Binding IsStarting}">

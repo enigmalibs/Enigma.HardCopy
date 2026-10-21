@@ -59,6 +59,20 @@
     <PackageVersion Include="Enigma.Icons.Avalonia" Version="1.0.0" />
   </ItemGroup>
 
+  <!-- Android camera (src/Enigma.HardCopy.Recover.Android only): the CameraX bindings. One release line —
+       camera-camera2 pins camera-core to its own patch range, so the three move together. CameraX is the
+       AndroidX camera library Google recommends over raw Camera2; its frames are decoded in-process by ZXing
+       through Core, so no barcode SDK and no Play Services are involved.
+       1.6.1, not the newer 1.6.1.1 / 1.6.2: those move AndroidX Lifecycle to 2.11, while Avalonia.Android 12.1.1
+       pins its Lifecycle packages to the 2.10 line (NU1608). Bump CameraX together with the Avalonia group, once
+       Avalonia's AndroidX set has moved. -->
+
+  <ItemGroup>
+    <PackageVersion Include="Xamarin.AndroidX.Camera.Camera2" Version="1.6.1" />
+    <PackageVersion Include="Xamarin.AndroidX.Camera.Core" Version="1.6.1" />
+    <PackageVersion Include="Xamarin.AndroidX.Camera.Lifecycle" Version="1.6.1" />
+  </ItemGroup>
+
   <!-- Tests (MTP-native: xunit.v3 only; coverlet.collector for coverage). No Microsoft.NET.Test.Sdk. -->
   <ItemGroup>
     <PackageVersion Include="xunit.v3" Version="3.2.2" />

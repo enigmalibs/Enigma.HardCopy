@@ -52,7 +52,7 @@ has registered its own, so the app runs — and explains why nothing scans — u
 
 **Created** (`tests/Enigma.HardCopy.Recover.UnitTests/`)
 
-- `ScanSessionViewModelTests.cs` (22), `IndexRangesTests.cs` (11), `OutcomeMessagesTests.cs` (13),
+- `ScanSessionViewModelTests.cs` (23), `IndexRangesTests.cs` (11), `OutcomeMessagesTests.cs` (13),
   `BackupFixtures.cs`, `TestDoubles/` (camera, haptics, saver, save target, notifications, confirmations, backup-ID
   generator).
 - `docs/done/FEATURE-E931-PHASE03.md` — this file.

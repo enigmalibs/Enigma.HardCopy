@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Enigma.HardCopy.Recover.Camera;
 using Enigma.HardCopy.Recover.Services;
 
 namespace Enigma.HardCopy.Recover.UnitTests.TestDoubles;
@@ -12,6 +13,14 @@ internal sealed class FakeCameraScanner : ICameraScanner
 {
     /// <inheritdoc/>
     public event EventHandler<CodesScannedEventArgs>? CodesScanned;
+
+    /// <inheritdoc/>
+    /// <remarks>The session never looks at frames — the preview does — so none are produced.</remarks>
+    public event EventHandler<CameraFrameEventArgs>? FrameAvailable
+    {
+        add { }
+        remove { }
+    }
 
     /// <summary>Gets or sets what the next <see cref="StartAsync"/> reports.</summary>
     internal CameraStartResult NextStartResult { get; set; } = CameraStartResult.Started;
