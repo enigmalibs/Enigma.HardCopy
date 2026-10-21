@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Enigma.HardCopy.Recover.Camera;
 
 namespace Enigma.HardCopy.Recover.Services;
 
@@ -16,6 +17,14 @@ public sealed class UnavailableCameraScanner : ICameraScanner
     /// <inheritdoc/>
     /// <remarks>Never raised, so subscriptions are not even kept.</remarks>
     public event EventHandler<CodesScannedEventArgs>? CodesScanned
+    {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc/>
+    /// <remarks>Never raised, so subscriptions are not even kept.</remarks>
+    public event EventHandler<CameraFrameEventArgs>? FrameAvailable
     {
         add { }
         remove { }

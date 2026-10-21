@@ -79,6 +79,9 @@ public static class Strings
     /// <summary>Announced when the last missing code arrives.</summary>
     public static string SessionComplete => Get(nameof(SessionComplete));
 
+    /// <summary>The camera preview's name, for screen readers.</summary>
+    public static string CameraPreviewName => Get(nameof(CameraPreviewName));
+
     /// <summary>The caption of the last-code line.</summary>
     public static string LastScanLabel => Get(nameof(LastScanLabel));
 

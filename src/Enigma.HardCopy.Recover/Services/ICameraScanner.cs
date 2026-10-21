@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Enigma.HardCopy.Recover.Camera;
 
 namespace Enigma.HardCopy.Recover.Services;
 
@@ -24,6 +25,12 @@ public interface ICameraScanner
     /// may touch bound state directly.
     /// </summary>
     event EventHandler<CodesScannedEventArgs>? CodesScanned;
+
+    /// <summary>
+    /// Occurs for every frame the camera delivers, for the live preview. Raised on a camera thread, many times a
+    /// second: a handler must be quick, must not touch the UI directly, and must not keep the frame's buffers.
+    /// </summary>
+    event EventHandler<CameraFrameEventArgs>? FrameAvailable;
 
     /// <summary>
     /// Starts the camera, asking the user for the permission first when it has not been granted.

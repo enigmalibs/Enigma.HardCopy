@@ -5,6 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Enigma.Avalonia.Desktop.Services;
 using Enigma.HardCopy.Recover.Hosting;
+using Enigma.HardCopy.Recover.Services;
 using Enigma.HardCopy.Recover.ViewModels;
 using Enigma.HardCopy.Recover.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -106,6 +107,10 @@ public partial class App : Application
 
         MainView view = services.GetRequiredService<MainView>();
         view.DataContext = services.GetRequiredService<ScanSessionViewModel>();
+
+        // The preview draws the camera's frames. Wired here rather than through the ViewModel, which has no business
+        // handing a camera to a control: it only ever sees the codes.
+        view.Preview.Source = services.GetRequiredService<ICameraScanner>();
 
         services.GetRequiredService<IContentDialogService>().RegisterHost(view.HostDialog);
         services.GetRequiredService<IInfoBarService>().RegisterHost(view.HostInfoBar);

@@ -28,6 +28,10 @@
          Referencing the package here with its native assets excluded keeps the managed assembly Core links
          against and drops the rest. -->
     <PackageReference Include="QuestPDF" ExcludeAssets="native" />
+    <!-- The camera: frames only (ImageAnalysis), bound to the activity's lifecycle. -->
+    <PackageReference Include="Xamarin.AndroidX.Camera.Camera2" />
+    <PackageReference Include="Xamarin.AndroidX.Camera.Core" />
+    <PackageReference Include="Xamarin.AndroidX.Camera.Lifecycle" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Enigma.HardCopy.Recover/Enigma.HardCopy.Recover.csproj" />

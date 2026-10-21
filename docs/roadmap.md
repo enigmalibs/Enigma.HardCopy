@@ -19,5 +19,5 @@
 | - PHASE01    | Core camera-frame decoding                   | DONE        | (in FEATURE-E931.md)      |
 | - PHASE02    | Recover app & Android head scaffold          | DONE        | (in FEATURE-E931.md)      |
 | - PHASE03    | Scan session page & save flow                | DONE        | (in FEATURE-E931.md)      |
-| - PHASE04    | CameraX scanner & live preview               | TODO        | (in FEATURE-E931.md)      |
+| - PHASE04    | CameraX scanner & live preview               | DONE        | (in FEATURE-E931.md)      |
 | - PHASE05    | README & Android guide                       | TODO        | (in FEATURE-E931.md)      |

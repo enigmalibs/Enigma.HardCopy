@@ -194,7 +194,7 @@ Branch: `feature/feature-e931-phase03-scan-session`
 **Acceptance:** zero warnings; suite green; emulator launch shows the start card; pressing start reports the
 camera as unavailable (no scanner yet) without crashing.
 
-### PHASE04 — CameraX scanner & live preview (TODO)
+### PHASE04 — CameraX scanner & live preview (DONE)
 
 Branch: `feature/feature-e931-phase04-camera`
 
