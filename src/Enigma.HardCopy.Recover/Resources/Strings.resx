@@ -82,4 +82,208 @@
   <data name="PrivacyNote" xml:space="preserve">
     <value>Nothing is kept on this phone. The codes stay in memory until you save the file or close the app, and screenshots of this app are blocked.</value>
   </data>
+
+  <!-- ===== Scan session ===== -->
+  <data name="StartScanning" xml:space="preserve">
+    <value>Start scanning</value>
+  </data>
+  <data name="ResumeScanning" xml:space="preserve">
+    <value>Resume scanning</value>
+  </data>
+  <data name="StopScanning" xml:space="preserve">
+    <value>Pause scanning</value>
+  </data>
+  <data name="NewSession" xml:space="preserve">
+    <value>New session</value>
+  </data>
+  <data name="SaveFile" xml:space="preserve">
+    <value>Save the recovered file</value>
+  </data>
+  <data name="SaveAnyway" xml:space="preserve">
+    <value>Save anyway</value>
+  </data>
+  <data name="CameraStarting" xml:space="preserve">
+    <value>Starting the camera…</value>
+  </data>
+  <data name="ScanningHint" xml:space="preserve">
+    <value>Hold the phone over the printed codes, one page at a time — every code in view is read. Codes can come in any order, and a code read twice is ignored.</value>
+  </data>
+  <data name="CameraPermissionDenied" xml:space="preserve">
+    <value>The camera permission was refused, so nothing can be scanned. Tap Start scanning to be asked again — or, if Android no longer asks, allow the camera for HardCopy Recover in the system settings.</value>
+  </data>
+  <data name="CameraUnavailable" xml:space="preserve">
+    <value>No camera could be started on this device.</value>
+  </data>
+  <data name="SessionComplete" xml:space="preserve">
+    <value>Every code is in. Save the recovered file.</value>
+  </data>
+  <data name="LastScanLabel" xml:space="preserve">
+    <value>Last code read</value>
+  </data>
+
+  <!-- ===== Progress ===== -->
+  <data name="ProgressHeader" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="BackupIdLabel" xml:space="preserve">
+    <value>Backup ID</value>
+  </data>
+  <data name="FileNameLabel" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="FileSizeLabel" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="ExpectedSha256Label" xml:space="preserve">
+    <value>SHA-256 recorded in the backup</value>
+  </data>
+  <data name="MissingLabel" xml:space="preserve">
+    <value>Still missing</value>
+  </data>
+  <data name="CodesProgressFormat" xml:space="preserve">
+    <value>{0} of {1} data codes</value>
+    <comment>{0} = data codes received, {1} = data codes in the backup.</comment>
+  </data>
+  <data name="CodesProgressUnknown" xml:space="preserve">
+    <value>No code read yet</value>
+  </data>
+  <data name="MetadataReceived" xml:space="preserve">
+    <value>Metadata code (index 0): read</value>
+  </data>
+  <data name="MetadataMissing" xml:space="preserve">
+    <value>Metadata code (index 0): not yet read — it names the file and holds its hash</value>
+  </data>
+  <data name="MissingOverflowFormat" xml:space="preserve">
+    <value>{0} and {1} more</value>
+    <comment>{0} = the ranges listed, {1} = how many indexes are not listed.</comment>
+  </data>
+  <data name="FileSizeFormat" xml:space="preserve">
+    <value>{0:N0} bytes</value>
+    <comment>{0} = the file's size in bytes.</comment>
+  </data>
+  <data name="UnknownValue" xml:space="preserve">
+    <value>unknown</value>
+  </data>
+
+  <!-- ===== Code outcomes ===== -->
+  <data name="CodeAcceptedMetadata" xml:space="preserve">
+    <value>Metadata code read.</value>
+  </data>
+  <data name="CodeAcceptedFormat" xml:space="preserve">
+    <value>Code {0} read.</value>
+    <comment>{0} = the code's index.</comment>
+  </data>
+  <data name="CodeDuplicateFormat" xml:space="preserve">
+    <value>Code {0} was already read — nothing changed.</value>
+    <comment>{0} = the code's index.</comment>
+  </data>
+  <data name="CodeBadCrcFormat" xml:space="preserve">
+    <value>Code {0} is damaged: it failed its own checksum. Scan it again, or from another print of the page.</value>
+    <comment>{0} = the code's index.</comment>
+  </data>
+  <data name="CodeConflictFormat" xml:space="preserve">
+    <value>Code {0} contradicts a code already read; one of the two is damaged.</value>
+    <comment>{0} = the code's index.</comment>
+  </data>
+  <data name="CodeWrongBackupFormat" xml:space="preserve">
+    <value>Code {0} belongs to backup {1}, but this session is recovering backup {2}, so it was ignored. If {2} is the wrong backup, start a new session.</value>
+    <comment>{0} = the code's index, {1} = the code's backup ID, {2} = the session's backup ID.</comment>
+  </data>
+  <data name="CodeMalformed" xml:space="preserve">
+    <value>That QR code is not an Enigma.HardCopy code. It was ignored.</value>
+  </data>
+  <data name="CodeMalformedFormat" xml:space="preserve">
+    <value>Code {0} is not a valid Enigma.HardCopy code.</value>
+    <comment>{0} = the code's index.</comment>
+  </data>
+
+  <!-- ===== Rebuilding the file ===== -->
+  <data name="AssemblyVerified" xml:space="preserve">
+    <value>The file was rebuilt and its SHA-256 matches the backup.</value>
+  </data>
+  <data name="AssemblyHashMismatch" xml:space="preserve">
+    <value>The file was rebuilt, but its hash does not match the backup.</value>
+  </data>
+  <data name="AssemblyHashMismatchFormat" xml:space="preserve">
+    <value>The rebuilt file's SHA-256 is {0}, but the backup recorded {1}. These bytes are not the file that was backed up — save them only if you understand what you are looking at.</value>
+    <comment>{0} = the rebuilt bytes' SHA-256, {1} = the recorded SHA-256.</comment>
+  </data>
+  <data name="AssemblyEncryptionUnsupported" xml:space="preserve">
+    <value>This backup is marked as encrypted, which this version cannot undo. It was written by a newer build.</value>
+  </data>
+  <data name="AssemblyDecompressionFailed" xml:space="preserve">
+    <value>The codes are each intact but do not form the compressed file the metadata describes.</value>
+  </data>
+  <data name="AssemblyIncomplete" xml:space="preserve">
+    <value>Some codes are still missing.</value>
+  </data>
+
+  <!-- ===== Saving ===== -->
+  <data name="SavePickerTitle" xml:space="preserve">
+    <value>Save the recovered file</value>
+  </data>
+  <data name="SavePickerFileType" xml:space="preserve">
+    <value>Any file</value>
+  </data>
+  <data name="DefaultFileName" xml:space="preserve">
+    <value>recovered-file</value>
+  </data>
+  <data name="SavedFormat" xml:space="preserve">
+    <value>Saved as {0}. The file matches its backup.</value>
+    <comment>{0} = the destination's name.</comment>
+  </data>
+  <data name="SavedUnverifiedFormat" xml:space="preserve">
+    <value>Saved as {0} — unverified: these bytes did not match the backup's hash.</value>
+    <comment>{0} = the destination's name.</comment>
+  </data>
+  <data name="SaveFailedFormat" xml:space="preserve">
+    <value>The file could not be written: {0}</value>
+    <comment>{0} = the system's error message.</comment>
+  </data>
+
+  <!-- ===== Notifications ===== -->
+  <data name="NotificationInformationTitle" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="NotificationSuccessTitle" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="NotificationWarningTitle" xml:space="preserve">
+    <value>Worth reading</value>
+  </data>
+  <data name="NotificationErrorTitle" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+
+  <!-- ===== Confirmations ===== -->
+  <data name="ConfirmUnverifiedSaveTitle" xml:space="preserve">
+    <value>Save bytes that failed their check?</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveBody" xml:space="preserve">
+    <value>The rebuilt file's SHA-256 does not match the hash the backup recorded, so these bytes are not provably the file that was backed up. Save them only if you understand what you are looking at.</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveExpectedLabel" xml:space="preserve">
+    <value>Recorded in the backup</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveActualLabel" xml:space="preserve">
+    <value>The rebuilt bytes</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveConfirm" xml:space="preserve">
+    <value>Save unverified</value>
+  </data>
+  <data name="ConfirmUnverifiedSaveCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ConfirmNewSessionTitle" xml:space="preserve">
+    <value>Discard this session?</value>
+  </data>
+  <data name="ConfirmNewSessionBody" xml:space="preserve">
+    <value>Every code read so far will be forgotten. The printed pages are unaffected — you can scan them again.</value>
+  </data>
+  <data name="ConfirmNewSessionConfirm" xml:space="preserve">
+    <value>Discard</value>
+  </data>
+  <data name="ConfirmNewSessionCancel" xml:space="preserve">
+    <value>Keep going</value>
+  </data>
 </root>
