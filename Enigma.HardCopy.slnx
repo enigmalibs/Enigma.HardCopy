@@ -2,9 +2,12 @@
   <Folder Name="/src/">
     <Project Path="src/Enigma.HardCopy.Core/Enigma.HardCopy.Core.csproj" />
     <Project Path="src/Enigma.HardCopy.Desktop/Enigma.HardCopy.Desktop.csproj" />
+    <Project Path="src/Enigma.HardCopy.Recover/Enigma.HardCopy.Recover.csproj" />
+    <Project Path="src/Enigma.HardCopy.Recover.Android/Enigma.HardCopy.Recover.Android.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Enigma.HardCopy.Core.UnitTests/Enigma.HardCopy.Core.UnitTests.csproj" />
     <Project Path="tests/Enigma.HardCopy.Desktop.UnitTests/Enigma.HardCopy.Desktop.UnitTests.csproj" />
+    <Project Path="tests/Enigma.HardCopy.Recover.UnitTests/Enigma.HardCopy.Recover.UnitTests.csproj" />
   </Folder>
 </Solution>

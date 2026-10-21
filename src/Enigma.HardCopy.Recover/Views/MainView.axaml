@@ -1,0 +1,154 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:Enigma.HardCopy.Recover.Controls"
+             xmlns:contentDialog="using:Enigma.Avalonia.Desktop.Controls.ContentDialog"
+             xmlns:infoBar="using:Enigma.Avalonia.Desktop.Controls.InfoBar"
+             xmlns:res="using:Enigma.HardCopy.Recover.Resources"
+             xmlns:vm="using:Enigma.HardCopy.Recover.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="400" d:DesignHeight="800"
+             x:Class="Enigma.HardCopy.Recover.Views.MainView"
+             x:DataType="vm:ScanSessionViewModel"
+             Background="{DynamicResource EnigmaBackgroundBrush}">
+
+  <!-- The whole application is this one view. Its Padding is the display's safe area, set from code-behind:
+       Android 15 and later always draw edge to edge, so without it the header would sit under the status bar
+       and the last button under the gesture bar. The background is painted by the control itself, so it still
+       runs behind both bars.
+
+       Top to bottom, in the order a user needs them: what this is (until something happens), the camera, what
+       the last code was, how far the recovery has got, and the actions — the primary one first.
+
+       A Panel z-stacks its children, so the two service hosts come LAST and draw over the page. Their x:Names
+       are what App.axaml.cs hands to RegisterHost. -->
+  <Panel>
+
+    <ScrollViewer>
+      <StackPanel Classes="page">
+
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+          <PathIcon Grid.Column="0"
+                    Data="{x:Static res:AppIcons.App}"
+                    Width="32" Height="32"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource EnigmaAccentBrush}" />
+          <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+            <TextBlock Classes="h1" Text="{x:Static res:Strings.AppTitle}" />
+            <TextBlock Classes="hint" Text="{x:Static res:Strings.AppSubtitle}" />
+          </StackPanel>
+        </Grid>
+
+        <Border Classes="card" IsVisible="{Binding ShowIntroduction}">
+          <StackPanel Spacing="12">
+            <TextBlock Classes="body" Text="{x:Static res:Strings.IntroText}" />
+            <TextBlock Classes="hint" Text="{x:Static res:Strings.PrivacyNote}" />
+          </StackPanel>
+        </Border>
+
+        <!-- The camera area: the live preview, then how to use it. App.axaml.cs hands the preview its camera, the
+             same way it hands the hosts to their services. -->
+        <Border Classes="card"
+                IsVisible="{Binding IsScanning}"
+                Padding="0"
+                ClipToBounds="True">
+          <StackPanel>
+            <controls:CameraPreview x:Name="Preview"
+                                    Height="320"
+                                    AutomationProperties.Name="{x:Static res:Strings.CameraPreviewName}" />
+            <TextBlock Classes="hint"
+                       Margin="16,10"
+                       Text="{x:Static res:Strings.ScanningHint}" />
+          </StackPanel>
+        </Border>
+
+        <Border Classes="card" IsVisible="{Binding IsStarting}">
+          <TextBlock Classes="body" Text="{x:Static res:Strings.CameraStarting}" />
+        </Border>
+
+        <Border Classes="notice warning" IsVisible="{Binding HasCameraProblem}">
+          <TextBlock TextWrapping="Wrap" Text="{Binding CameraProblem}" />
+        </Border>
+
+        <StackPanel Spacing="2" IsVisible="{Binding HasLastScan}">
+          <TextBlock Classes="hint" Text="{x:Static res:Strings.LastScanLabel}" />
+          <TextBlock TextWrapping="Wrap"
+                     Text="{Binding LastScan.Text, FallbackValue={x:Null}}"
+                     Classes.success="{Binding LastScan.IsSuccess, FallbackValue=False}"
+                     Classes.warning="{Binding LastScan.IsWarning, FallbackValue=False}"
+                     Classes.error="{Binding LastScan.IsError, FallbackValue=False}" />
+        </StackPanel>
+
+        <Border Classes="card" IsVisible="{Binding HasAnyCode}">
+          <StackPanel Spacing="8">
+            <TextBlock Classes="h2" Text="{x:Static res:Strings.ProgressHeader}" />
+
+            <ProgressBar Minimum="0" Maximum="100" Height="8"
+                         Value="{Binding ProgressPercent}"
+                         AutomationProperties.Name="{x:Static res:Strings.ProgressHeader}" />
+            <TextBlock Classes="value" Text="{Binding CodesText}" />
+            <TextBlock Classes="value"
+                       Text="{Binding MetadataText}"
+                       Classes.success="{Binding HasMetadata}" />
+
+            <StackPanel Spacing="2" IsVisible="{Binding HasMissing}">
+              <TextBlock Classes="field" Text="{x:Static res:Strings.MissingLabel}" />
+              <TextBlock Classes="value" Text="{Binding MissingText}" />
+            </StackPanel>
+
+            <StackPanel Spacing="2">
+              <TextBlock Classes="field" Text="{x:Static res:Strings.BackupIdLabel}" />
+              <SelectableTextBlock Classes="value mono" Text="{Binding BackupId}" />
+            </StackPanel>
+
+            <StackPanel Spacing="2" IsVisible="{Binding HasMetadata}">
+              <TextBlock Classes="field" Text="{x:Static res:Strings.FileNameLabel}" />
+              <SelectableTextBlock Classes="value" TextWrapping="Wrap" Text="{Binding FileName}" />
+              <TextBlock Classes="field" Text="{x:Static res:Strings.FileSizeLabel}" />
+              <TextBlock Classes="value" Text="{Binding FileSizeText}" />
+              <TextBlock Classes="field" Text="{x:Static res:Strings.ExpectedSha256Label}" />
+              <SelectableTextBlock Classes="value mono" TextWrapping="Wrap" FontSize="12" Text="{Binding ExpectedSha256}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <StackPanel Spacing="8">
+          <Button Classes="accent"
+                  HorizontalAlignment="Stretch"
+                  IsVisible="{Binding IsComplete}"
+                  Command="{Binding SaveCommand}"
+                  Content="{x:Static res:Strings.SaveFile}" />
+          <Button Classes="accent"
+                  HorizontalAlignment="Stretch"
+                  IsVisible="{Binding IsReady}"
+                  Command="{Binding StartScanningCommand}"
+                  Content="{Binding StartLabel}" />
+          <Button HorizontalAlignment="Stretch"
+                  IsVisible="{Binding IsScanning}"
+                  Command="{Binding StopScanningCommand}"
+                  Content="{x:Static res:Strings.StopScanning}" />
+          <Button HorizontalAlignment="Stretch"
+                  IsVisible="{Binding CanSaveAnyway}"
+                  Command="{Binding SaveAnywayCommand}"
+                  Content="{x:Static res:Strings.SaveAnyway}" />
+          <Button HorizontalAlignment="Stretch"
+                  IsVisible="{Binding HasAnyCode}"
+                  Command="{Binding NewSessionCommand}"
+                  Content="{x:Static res:Strings.NewSession}" />
+        </StackPanel>
+
+      </StackPanel>
+    </ScrollViewer>
+
+    <!-- Bounded for a phone: narrow enough to leave a margin on a 360-wide screen. -->
+    <contentDialog:ContentDialog x:Name="HostDialog"
+                                 DialogMinWidth="280"
+                                 DialogMaxWidth="480"
+                                 DialogMaxHeight="560" />
+
+    <infoBar:InfoBar x:Name="HostInfoBar" />
+
+  </Panel>
+
+</UserControl>

@@ -10,7 +10,9 @@ printed backup also carries a plain-text description of its own format, so the d
 without this application.
 
 Cross-platform desktop app (Windows + Linux), built with Avalonia and the `Enigma.Avalonia.Desktop`
-control library, with icons from `Enigma.Icons.Phosphor`.
+control library, with icons from `Enigma.Icons.Phosphor` — plus **HardCopy Recover**, an Android app that
+recovers a backup by scanning its codes with the phone's camera and stores nothing on the phone (see
+[Recovering on Android](#recovering-on-android)).
 
 > **What's new in 1.1.0** — a redrawn interface: a navigation rail instead of tabs, a Settings page with a
 > remembered light/dark preference, a progress overlay, an information bar for outcomes, and an in-window
@@ -104,6 +106,44 @@ that offer and re-checks from scratch.
 **Start over** discards the session and its log. It asks first, if any codes have been read; the printed
 pages are of course unaffected, and can be fed in again.
 
+## Recovering on Android
+
+**HardCopy Recover** (`Enigma.HardCopy.Recover.Android`) does the same recovery with a phone: no scanner, no
+computer, and nothing left behind on the device. It looks like the desktop app — same theme, same colours, light
+or dark as the phone is set — and it is built from source and installed as an APK; see
+[docs/android.md](docs/android.md).
+
+1. **Start scanning.** The first time, Android asks for the camera — the only permission the app requests (it has
+   no network access at all). Refuse it and the app says so; if Android stops asking, allow the camera for
+   *HardCopy Recover* in the system settings.
+2. **Hold the phone over the printed codes**, a page at a time. Every code in view is read, in any order. A tick
+   in your hand confirms each new code; a different tick means one was refused. A code held in view is read
+   once, however long it stays there.
+3. **Watch the progress card**: *N of T data codes*, whether the metadata code (index 0, the one that names the
+   file and holds its hash) is in, a bar that counts it too, and the indexes **still missing**, as ranges
+   (`3, 5–8, 12`). The file name, size and expected SHA-256 appear as soon as the metadata code is read.
+4. When the last code arrives the camera stops by itself. Tap **Save the recovered file** and choose where it
+   goes: the phone's storage, **Google Drive**, or any other place Android's save dialog offers.
+
+**Codes from a different backup are refused.** The session belongs to the backup of the first code it reads; a
+code from any other backup is ignored with a warning naming both backup IDs. If the first code you scanned was
+the stray one, tap **New session**. A damaged code, or a QR code that is not an Enigma.HardCopy code, is refused
+the same way.
+
+As on the desktop, the file is only reported as recovered when its SHA-256 matches. Otherwise nothing is
+written; **Save anyway** asks you to confirm, naming both hashes, before it writes the unverified bytes.
+
+**What stays on the phone: nothing.**
+
+- The codes and the rebuilt file live in the app's memory only, until you start a new session or the app is
+  closed. Nothing is written except the file you choose to save, where you choose to save it.
+- The app keeps no settings and no log, and opts out of Android's app-data backup.
+- **Screenshots and screen recordings of the app are blocked**, and the app switcher shows a blank card. Android
+  would otherwise save a picture of the screen — codes, file name, hash — to its own storage.
+
+**Pause scanning** turns the camera off and keeps every code read so far. **New session** forgets everything —
+it asks first if any code has been read — and turns the camera straight back on.
+
 ## Settings
 
 The **Settings** page, at the foot of the rail, holds one choice: **Appearance** — *Follow the system*,
@@ -144,13 +184,17 @@ including the metadata key/value grammar and its two escapes.
 
 ## Build from source
 
-Requires the .NET 10 SDK (pinned in `global.json`).
+Requires the .NET 10 SDK (pinned in `global.json`) and, because the solution includes the Android recovery app,
+the .NET `android` workload (`dotnet workload install android`) with an Android SDK and a JDK.
 
 ```
 dotnet build Enigma.HardCopy.slnx
 dotnet test --solution Enigma.HardCopy.slnx
 dotnet run --project src/Enigma.HardCopy.Desktop
 ```
+
+Building, running and installing the Android app — on an emulator, on a phone over USB, or as a standalone APK —
+is covered step by step in [docs/android.md](docs/android.md).
 
 ## Publishing the release artifacts
 
@@ -173,8 +217,10 @@ follow.
 |---|---|
 | `src/Enigma.HardCopy.Core/` | The format, the encoder, QR rendering, PDF composition and the recovery pipeline. No UI. |
 | `src/Enigma.HardCopy.Desktop/` | The Avalonia application. |
-| `tests/` | The xUnit suites for both. |
-| `docs/` | Roadmap, plans and per-phase completion records. The format specification lives in `docs/plan/FEATURE-79FF.md`. |
+| `src/Enigma.HardCopy.Recover/` | The Android recovery app's platform-neutral half: its UI, ViewModels and seams. |
+| `src/Enigma.HardCopy.Recover.Android/` | The Android recovery app's head: the activity, the manifest and the platform services. |
+| `tests/` | The xUnit suites for Core, the desktop app and the recovery app. |
+| `docs/` | Roadmap, plans and per-phase completion records. The format specification lives in `docs/plan/FEATURE-79FF.md`; the Android build guide in `docs/android.md`. |
 
 ## Limitations
 
@@ -184,10 +230,14 @@ follow.
 - A4 only.
 - English only.
 - Practical for kilobytes, not megabytes: roughly 12 KB per printed sheet at the default density.
+- The Android app reads codes with the camera only: a code that will not scan cannot be typed in on the phone,
+  and photos cannot be imported from the gallery — the desktop app does both. It runs on 64-bit phones
+  (Android 7.0 or later) and is not published to any store.
 
 ## License
 
 MIT — see [LICENSE.md](LICENSE.md).
 
 The interface is built on `Enigma.Avalonia.Desktop` and the `Enigma.Icons` family; the icons themselves are
-[Phosphor Icons](https://phosphoricons.com), by Phosphor Icons, used under the MIT licence.
+[Phosphor Icons](https://phosphoricons.com), by Phosphor Icons, used under the MIT licence. The Android app's
+camera is driven by AndroidX CameraX, used under the Apache License 2.0.

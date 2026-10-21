@@ -1,0 +1,118 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Enigma.HardCopy.Recover.App"
+             RequestedThemeVariant="Default">
+
+  <!-- RequestedThemeVariant="Default" follows the phone's light/dark setting, and nothing overrides it: a
+       remembered preference would be a file, and this application stores nothing. -->
+
+  <!-- The house control library's theme, merged exactly as the desktop app merges it — the same dictionary at
+       the same version, which is what makes the two applications look like one family. It has a
+       ResourceDictionary root, so it is a ResourceInclude here; a StyleInclude fails the build with AVLN2000.
+       Every brush below is a DynamicResource so that it follows a light/dark switch made while the app runs. -->
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://Enigma.Avalonia.Desktop/Themes/Fluent.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+
+  <Application.Styles>
+    <!-- The base FluentTheme stays: the library styles its own controls plus TextBox and ComboBox, and every
+         other framework control needs Fluent's templates. -->
+    <FluentTheme />
+
+    <!-- The desktop app's visual vocabulary, at phone scale: the same class names over the same Enigma*
+         brushes, with tighter margins and finger-sized buttons. -->
+
+    <Style Selector="StackPanel.page">
+      <Setter Property="Margin" Value="16" />
+      <Setter Property="Spacing" Value="12" />
+    </Style>
+
+    <Style Selector="TextBlock.h1">
+      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="TextBlock.h2">
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="TextBlock.body">
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaForegroundSecondaryBrush}" />
+    </Style>
+
+    <Style Selector="TextBlock.hint">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaForegroundSecondaryBrush}" />
+    </Style>
+
+    <Style Selector=":is(TextBlock).field">
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="0,0,12,4" />
+    </Style>
+
+    <Style Selector=":is(TextBlock).value">
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Margin" Value="0,0,0,4" />
+    </Style>
+
+    <!-- "monospace" ends the chain because it is the family Android itself guarantees. -->
+    <Style Selector=":is(TextBlock).mono">
+      <Setter Property="FontFamily" Value="Cascadia Mono,Consolas,DejaVu Sans Mono,Liberation Mono,Menlo,monospace" />
+    </Style>
+
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{DynamicResource EnigmaSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaBorderSubtleBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="16" />
+    </Style>
+
+    <Style Selector="Border.notice">
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Padding" Value="12,10" />
+      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaBorderSubtleBrush}" />
+    </Style>
+
+    <Style Selector="Border.notice.warning">
+      <Setter Property="Background" Value="{DynamicResource EnigmaWarningBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource EnigmaWarningBorderBrush}" />
+    </Style>
+
+    <Style Selector="Border.notice.warning > TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaWarningBrush}" />
+    </Style>
+
+    <Style Selector=":is(TextBlock).success">
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaSuccessBrush}" />
+    </Style>
+
+    <Style Selector=":is(TextBlock).warning">
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaWarningBrush}" />
+    </Style>
+
+    <Style Selector=":is(TextBlock).error">
+      <Setter Property="Foreground" Value="{DynamicResource EnigmaErrorBrush}" />
+    </Style>
+
+    <!-- 48 device-independent pixels is the smallest target a thumb hits reliably (Android's own guideline). -->
+    <Style Selector="Button">
+      <Setter Property="MinHeight" Value="48" />
+      <Setter Property="Padding" Value="16,10" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+  </Application.Styles>
+
+</Application>
