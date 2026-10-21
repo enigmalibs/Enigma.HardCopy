@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- The recovery app's platform-neutral half: App, views, ViewModels and the seams a platform head
+         implements. Everything Android-specific — the activity, the camera, haptics — lives in
+         src/Enigma.HardCopy.Recover.Android, so this project builds and is tested on the desktop test runner
+         with no device and no Android workload. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+  <!-- LangVersion / Nullable / ImplicitUsings / TreatWarningsAsErrors come from Directory.Build.props;
+       package versions from Directory.Packages.props (Central Package Management). -->
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <!-- The house control library, for the same theme dictionary the desktop app merges and for its info bar and
+         content dialog. Desktop-oriented by name, but plain managed code with no desktop backend among its
+         dependencies, so it runs unchanged on Android. The three icon packages are listed for the same reason
+         the desktop app lists them: to pin their versions rather than inherit them. -->
+    <PackageReference Include="Enigma.Avalonia.Desktop" />
+    <PackageReference Include="Enigma.Icons" />
+    <PackageReference Include="Enigma.Icons.Phosphor" />
+    <PackageReference Include="Enigma.Icons.Avalonia" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Enigma.HardCopy.Core/Enigma.HardCopy.Core.csproj" />
+  </ItemGroup>
+</Project>

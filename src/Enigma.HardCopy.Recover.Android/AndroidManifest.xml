@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- allowBackup="false": this application keeps nothing, and makes sure nothing a library might write on its
+     behalf is ever copied to a cloud backup either. (Debug builds get INTERNET injected by the SDK for the
+     debugger and fast deployment; Release builds request no network access at all.) -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <application android:icon="@mipmap/app_icon"
+               android:roundIcon="@mipmap/app_icon"
+               android:allowBackup="false"
+               android:supportsRtl="true" />
+</manifest>

@@ -144,7 +144,8 @@ including the metadata key/value grammar and its two escapes.
 
 ## Build from source
 
-Requires the .NET 10 SDK (pinned in `global.json`).
+Requires the .NET 10 SDK (pinned in `global.json`) and, because the solution includes the Android recovery app,
+the .NET `android` workload (`dotnet workload install android`) with an Android SDK and a JDK.
 
 ```
 dotnet build Enigma.HardCopy.slnx
@@ -173,7 +174,9 @@ follow.
 |---|---|
 | `src/Enigma.HardCopy.Core/` | The format, the encoder, QR rendering, PDF composition and the recovery pipeline. No UI. |
 | `src/Enigma.HardCopy.Desktop/` | The Avalonia application. |
-| `tests/` | The xUnit suites for both. |
+| `src/Enigma.HardCopy.Recover/` | The Android recovery app's platform-neutral half: its UI, ViewModels and seams. |
+| `src/Enigma.HardCopy.Recover.Android/` | The Android recovery app's head: the activity, the manifest and the platform services. |
+| `tests/` | The xUnit suites for Core, the desktop app and the recovery app. |
 | `docs/` | Roadmap, plans and per-phase completion records. The format specification lives in `docs/plan/FEATURE-79FF.md`. |
 
 ## Limitations

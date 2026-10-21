@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pre-API-26 launcher icon: the adaptive artwork on a round badge. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="48dp"
+        android:height="48dp"
+        android:viewportWidth="108"
+        android:viewportHeight="108">
+  <path android:fillColor="@color/app_icon_background"
+        android:pathData="M54,6 A48,48 0 1,1 54,102 A48,48 0 1,1 54,6 Z" />
+  <group android:scaleX="0.78"
+         android:scaleY="0.78"
+         android:pivotX="54"
+         android:pivotY="54">
+    <path android:fillColor="#FFFFFFFF"
+          android:fillType="evenOdd"
+          android:pathData="M27,27h18v18h-18z M30,30v12h12v-12z M33,33h6v6h-6z M63,27h18v18h-18z M66,30v12h12v-12z M69,33h6v6h-6z M27,63h18v18h-18z M30,66v12h12v-12z M33,69h6v6h-6z M63,63h6v6h-6z M75,63h6v6h-6z M69,69h6v6h-6z M63,75h6v6h-6z M75,75h6v6h-6z" />
+  </group>
+</vector>
