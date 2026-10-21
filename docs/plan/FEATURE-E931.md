@@ -1,6 +1,6 @@
 # FEATURE-E931 — Android recovery app (Enigma.HardCopy.Recover.Android)
 
-**Status:** TODO
+**Status:** IN PROGRESS
 **Type:** multi-phase feature (5 phases)
 **Branches (created by the run, each from the run-branch tip):** one per phase, see *Phases*
 **Run:** feature/2026-10-19-android-recover-app
@@ -124,13 +124,15 @@ The hosts are re-registered whenever a `MainView` is attached (the Android lifet
 
 ## Phases
 
-### PHASE01 — Core camera-frame decoding (TODO)
+### PHASE01 — Core camera-frame decoding (DONE)
 
 Branch: `feature/feature-e931-phase01-frame-decoding`
 
 1. `ImageDecoder.ReadCodes(byte[] luminance, int width, int height, int rowStride)` — public, returns every QR
    code text found in an 8-bit luminance frame (a camera's Y plane), never `null`. Multi-symbol pass first, then
    a single-symbol pass; `TryHarder` **off** (documented: live frames are retried by the next frame).
+   **Amended at build time:** `TryHarder` stays **on** — off, the multi-symbol pass misses symbols outright
+   (see `docs/done/FEATURE-E931-PHASE01.md`). The decode worker's frame dropping absorbs the cost.
 2. Argument validation: `ArgumentNullException`; `ArgumentOutOfRangeException` for non-positive sizes, a stride
    below the width, and a buffer shorter than `rowStride × (height − 1) + width` (a camera's last row may be
    unpadded).

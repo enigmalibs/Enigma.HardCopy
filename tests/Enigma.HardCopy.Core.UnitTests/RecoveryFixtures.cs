@@ -242,6 +242,44 @@ internal static class RecoveryFixtures
         return bmp;
     }
 
+    /// <summary>
+    /// Turns an encoded image into the Y plane a camera would deliver for it: one luminance byte per pixel,
+    /// the image framed by a white border — the paper around a symbol — and every row padded to a stride wider
+    /// than the frame, as camera buffers commonly are.
+    /// </summary>
+    /// <param name="image">The encoded image — a rendered symbol or page.</param>
+    /// <param name="border">The white margin added on every side, in pixels.</param>
+    /// <param name="rowPadding">The bytes of padding after each row.</param>
+    /// <param name="trimLastRow">
+    /// Whether the buffer ends at the last row's last pixel instead of at its padding, as the last row of a
+    /// camera plane commonly does.
+    /// </param>
+    /// <returns>The frame.</returns>
+    internal static LuminanceFrame ToLuminanceFrame(byte[] image, int border = 64, int rowPadding = 48, bool trimLastRow = false)
+    {
+        using SKBitmap? bitmap = SKBitmap.Decode(image);
+        Assert.NotNull(bitmap);
+
+        int width = bitmap.Width + (2 * border);
+        int height = bitmap.Height + (2 * border);
+        int stride = width + rowPadding;
+        int length = trimLastRow ? (stride * (height - 1)) + width : stride * height;
+
+        byte[] pixels = new byte[length];
+        Array.Fill(pixels, (byte)0xFF);
+        for (int y = 0; y < bitmap.Height; y++)
+        {
+            for (int x = 0; x < bitmap.Width; x++)
+            {
+                SKColor color = bitmap.GetPixel(x, y);
+                pixels[((y + border) * stride) + x + border] =
+                    (byte)(((color.Red * 299) + (color.Green * 587) + (color.Blue * 114)) / 1000);
+            }
+        }
+
+        return new LuminanceFrame(pixels, width, height, stride);
+    }
+
     /// <summary>Bytes that are not an image at all.</summary>
     internal static byte[] NotAnImage() => Encoding.UTF8.GetBytes("This file is text, whatever its extension claims.");
 
