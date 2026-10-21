@@ -166,7 +166,7 @@ Branch: `feature/feature-e931-phase02-scaffold`
 APK installs and launches on the `Pixel6_API36` emulator without a crash (logcat clean of fatal exceptions) and
 its accessibility tree shows the app title.
 
-### PHASE03 — Scan session page & save flow (TODO)
+### PHASE03 — Scan session page & save flow (DONE)
 
 Branch: `feature/feature-e931-phase03-scan-session`
 

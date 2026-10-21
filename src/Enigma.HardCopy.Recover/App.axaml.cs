@@ -5,6 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Enigma.Avalonia.Desktop.Services;
 using Enigma.HardCopy.Recover.Hosting;
+using Enigma.HardCopy.Recover.ViewModels;
 using Enigma.HardCopy.Recover.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -65,9 +66,12 @@ public partial class App : Application
         });
         builder.Logging.AddDebug();
 
+        // The platform head first: the application's own platform seams are registered with TryAdd, as defaults
+        // that a head's implementation pre-empts.
+        _addPlatformServices(builder.Services);
+
         builder.Services.AddEnigmaAvaloniaDesktop();
         builder.Services.AddEnigmaHardCopyRecover();
-        _addPlatformServices(builder.Services);
 
         _services = builder.Build().Services;
 
@@ -101,6 +105,7 @@ public partial class App : Application
             ?? throw new InvalidOperationException("The main view was requested before the container was built.");
 
         MainView view = services.GetRequiredService<MainView>();
+        view.DataContext = services.GetRequiredService<ScanSessionViewModel>();
 
         services.GetRequiredService<IContentDialogService>().RegisterHost(view.HostDialog);
         services.GetRequiredService<IInfoBarService>().RegisterHost(view.HostInfoBar);
