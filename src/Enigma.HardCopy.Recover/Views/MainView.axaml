@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:contentDialog="using:Enigma.Avalonia.Desktop.Controls.ContentDialog"
+             xmlns:infoBar="using:Enigma.Avalonia.Desktop.Controls.InfoBar"
+             xmlns:res="using:Enigma.HardCopy.Recover.Resources"
+             mc:Ignorable="d"
+             d:DesignWidth="400" d:DesignHeight="800"
+             x:Class="Enigma.HardCopy.Recover.Views.MainView"
+             Background="{DynamicResource EnigmaBackgroundBrush}">
+
+  <!-- The whole application is this one view. Its Padding is the display's safe area, set from code-behind:
+       Android 15 and later always draw edge to edge, so without it the header would sit under the status bar
+       and the last button under the gesture bar. The background is painted by the control itself, so it still
+       runs behind both bars.
+
+       A Panel z-stacks its children, so the two service hosts come LAST and draw over the page. Their x:Names
+       are what App.axaml.cs hands to RegisterHost. -->
+  <Panel>
+
+    <ScrollViewer>
+      <StackPanel Classes="page">
+
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+          <PathIcon Grid.Column="0"
+                    Data="{x:Static res:AppIcons.App}"
+                    Width="32" Height="32"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource EnigmaAccentBrush}" />
+          <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+            <TextBlock Classes="h1" Text="{x:Static res:Strings.AppTitle}" />
+            <TextBlock Classes="hint" Text="{x:Static res:Strings.AppSubtitle}" />
+          </StackPanel>
+        </Grid>
+
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <TextBlock Classes="body" Text="{x:Static res:Strings.IntroText}" />
+            <TextBlock Classes="hint" Text="{x:Static res:Strings.PrivacyNote}" />
+          </StackPanel>
+        </Border>
+
+      </StackPanel>
+    </ScrollViewer>
+
+    <!-- Bounded for a phone: narrow enough to leave a margin on a 360-wide screen. -->
+    <contentDialog:ContentDialog x:Name="HostDialog"
+                                 DialogMinWidth="280"
+                                 DialogMaxWidth="480"
+                                 DialogMaxHeight="560" />
+
+    <infoBar:InfoBar x:Name="HostInfoBar" />
+
+  </Panel>
+
+</UserControl>

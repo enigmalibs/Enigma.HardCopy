@@ -143,7 +143,7 @@ Branch: `feature/feature-e931-phase01-frame-decoding`
 **Acceptance:** solution builds with zero warnings; full suite green; ZXing types do not appear in the new
 public signature.
 
-### PHASE02 — Recover app & Android head scaffold (TODO)
+### PHASE02 — Recover app & Android head scaffold (DONE)
 
 Branch: `feature/feature-e931-phase02-scaffold`
 
