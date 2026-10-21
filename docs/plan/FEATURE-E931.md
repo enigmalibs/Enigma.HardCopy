@@ -1,6 +1,6 @@
 # FEATURE-E931 — Android recovery app (Enigma.HardCopy.Recover.Android)
 
-**Status:** IN PROGRESS
+**Status:** DONE
 **Type:** multi-phase feature (5 phases)
 **Branches (created by the run, each from the run-branch tip):** one per phase, see *Phases*
 **Run:** feature/2026-10-19-android-recover-app
@@ -215,7 +215,7 @@ Branch: `feature/feature-e931-phase04-camera`
 **Acceptance:** zero warnings; suite green; on the emulator, *Start* raises the permission prompt, granting it
 starts the preview without a crash, and refusing it shows the explanation.
 
-### PHASE05 — README & Android guide (TODO)
+### PHASE05 — README & Android guide (DONE)
 
 Branch: `feature/feature-e931-phase05-docs`
 
