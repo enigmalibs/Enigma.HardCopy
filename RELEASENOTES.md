@@ -1,5 +1,120 @@
 # Enigma.HardCopy Release Notes
 
+## 1.2.0
+
+The first release with **HardCopy Recover**, an Android app that recovers a backup with the phone's camera —
+and that can also check a freshly printed backup before it is filed away. **The format is untouched: every
+backup printed by 1.0 or 1.1 recovers, on the phone and on the desktop alike.** The desktop app works exactly
+as it did in 1.1.0.
+
+### HardCopy Recover for Android
+
+- **Recover with the camera.** Point the phone at the printed pages: every code in view is read, in any order,
+  a code held in view is read once, and a tick in your hand confirms each new one.
+- **Codes from another backup are refused**, with a warning naming both backup IDs. Damaged codes and QR codes
+  that are not Enigma.HardCopy codes are refused too, each with a different tick.
+- **Progress as on the desktop:** *N of T data codes*, whether the metadata code is in, a bar that counts it,
+  the indexes still missing as ranges, and the file name, size and expected SHA-256 once known. The camera
+  stops by itself when the last code arrives.
+- **Save anywhere Android can.** *Save the recovered file* opens Android's own save dialog — the phone's
+  storage, Google Drive, or any other document provider. The file is reported as recovered only when its
+  SHA-256 matches. On a mismatch nothing is written, and *Save anyway* asks first, naming both hashes.
+- **Check a printed backup.** A second way in: scan a printout exactly as for a recovery. Once every code is in,
+  the app rebuilds the file in memory, compares it with the recorded SHA-256 and shows *Check passed* or *Check
+  failed*. Then it lets the bytes go: nothing is saved. A code that will not scan keeps the check from
+  finishing, and the missing list names it.
+- **Nothing stays on the phone.**
+  - The codes and the rebuilt file live in memory only, until a new session or the app is closed.
+  - There are no settings, no log and no cache, and the app opts out of Android's app-data backup.
+  - Screenshots and screen recordings of the app are blocked.
+  - Its only permission is the camera; it has no network access.
+- **It looks like the desktop app** — the same theme, light or dark as the phone is set.
+
+### Installing it
+
+- **Android 7.0 or later, 64-bit.** The APK carries `arm64-v8a` for phones and `x86_64` for emulators and
+  Chromebooks.
+- **It is not in any store.** Download `Enigma.HardCopy.Recover-1.2.0.apk` from the release, open it on the
+  phone, and allow installing apps from that source — or `adb install` it.
+- **It is signed with the project's release key.** The release page gives the signing certificate's SHA-256
+  digest, which `apksigner verify --print-certs` shows for the downloaded file. Later releases are signed with
+  the same key and install over this one as updates.
+- **A phone with a build made from source before this release must uninstall it first.** That build carries a
+  different signature, and Android refuses the update (`INSTALL_FAILED_UPDATE_INCOMPATIBLE`). Nothing is lost:
+  the app stores nothing.
+
+### Compatibility — the paper is unchanged
+
+- The `EHC1` code grammar, the metadata grammar, the recovery instructions printed on page 1, the A4 layout and
+  the SHA-256 verification are exactly those of 1.0 and 1.1.
+- **A backup printed by any of 1.0, 1.1 and 1.2 recovers in all three**, and on the phone.
+- The desktop app's source is untouched since 1.1.0; it moves to 1.2.0 so that every artifact of the release
+  carries one number, and with the dependency patches below.
+- `Enigma.HardCopy.Core` gains one public method, nothing else:
+  `ImageDecoder.ReadCodes(byte[] luminance, int width, int height, int rowStride)`. It reads every QR code in
+  an 8-bit luminance frame, such as a camera's Y plane.
+
+### For developers
+
+- **Three new projects:**
+  - `src/Enigma.HardCopy.Recover` (net10.0) — the app's UI, ViewModels and seams, tested on the desktop;
+  - `src/Enigma.HardCopy.Recover.Android` (net10.0-android) — the Android head;
+  - `tests/Enigma.HardCopy.Recover.UnitTests`.
+- **A full solution build now needs** the .NET `android` workload, an Android SDK and a JDK.
+- **The release APK is built by** `scripts/publish-android.sh` or `scripts/publish-android.ps1`.
+  - They sign it with the release key, read from environment variables, and refuse to build without it.
+  - The APK's `versionCode` derives from `<Version>` (major × 10000 + minor × 100 + patch — `10200` here).
+  - `docs/android.md` covers the key, the variables and the checks.
+- **The suite grows** from 682 to 796 tests.
+
+### Dependencies
+
+**New, Android app only:**
+
+| Package | Version | What it is |
+|---|---|---|
+| `Avalonia.Android` | 12.1.1 | Avalonia's Android platform, in the same coupled set as the rest of Avalonia (MIT) |
+| `Xamarin.AndroidX.Camera.Camera2` / `.Core` / `.Lifecycle` | 1.6.1 | AndroidX CameraX — frames only, decoded in-process by ZXing; no barcode SDK and no Play Services (MIT bindings over Apache-2.0) |
+
+**Updated:**
+
+- `QRCoder` 1.8.0 → 1.8.1
+- `Microsoft.Extensions.Hosting`, `.Logging.Console`, `.Logging.Debug` 10.0.10 → 10.0.13
+- `coverlet.collector` 10.0.1 → 10.1.0 (tests only)
+
+**Deliberately held back:**
+
+- `QuestPDF` stays at 2026.7.2 (2026.9.1 is out). 2026.9 renames a setting the PDF composer relies on, and the
+  engine that lays out the paper gets its own release and its own look at the printed PDF.
+- `ZXing.Net.Bindings.SkiaSharp` stays at 0.16.22. 0.16.24 needs SkiaSharp 4, which is coupled to Avalonia.
+- The Avalonia set stays at 12.1.1 (12.1.4 is out). It moves as a unit, with `Enigma.Avalonia.Desktop`
+  (1.0.0; 1.2.0 is out), SkiaSharp (3.119.4; 4.153.1 is out) and CameraX (1.6.1; 1.6.2 moves AndroidX
+  Lifecycle past what `Avalonia.Android` 12.1.1 pins).
+- `xunit.v3` stays at 3.2.2. 4.0.2 is a migration, not a bump.
+
+No package in the solution has a known vulnerability, direct or transitive.
+
+### What the APK weighs and what it ships
+
+- **The APK is 42.2 MB** (42,231,208 bytes) for both ABIs.
+- **License audit.** Its runtime dependency graph holds 135 packages, all redistributable:
+  - MIT — Avalonia, Microsoft.Extensions, QRCoder, the house `Enigma.*` packages and others;
+  - Apache-2.0 — ZXing.Net and Google's AndroidX/CameraX libraries;
+  - one BSD-3-Clause component, inside CameraX Core;
+  - QuestPDF's managed assembly, under the Community license the desktop app has used since 1.0. The phone never
+    composes a PDF, so it is dead weight; its native libraries are already excluded, and dropping the assembly
+    too is a known follow-up.
+
+### Known limitations
+
+- The phone reads codes with the camera only. A code cannot be typed in and photos cannot be imported — the
+  desktop app does both.
+- Very dense codes (the *Large* density) need the phone closer; a backup printed at *Small* density reads most
+  easily.
+- English only; portrait only; sideloaded, not in a store.
+
+---
+
 ## 1.1.0
 
 A redrawn application on the same format. **Every backup printed by 1.0 still recovers, byte for byte** —

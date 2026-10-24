@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- The Android head of the recovery app: the activity, the manifest and — from the camera phase on — the
+         platform services. Everything else, the whole UI included, lives in src/Enigma.HardCopy.Recover. -->
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <!-- Avalonia.Android 12 is built for Android 7.0 (API 24) and later. -->
+    <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
+    <!-- Reverse-domain id for a project hosted at github.com/enigmalibs, which owns no domain of its own. -->
+    <ApplicationId>io.github.enigmalibs.hardcopy.recover</ApplicationId>
+    <!-- The launcher label: the assembly name is far too long for an icon caption. -->
+    <ApplicationTitle>HardCopy Recover</ApplicationTitle>
+    <!-- versionCode: the integer Android compares to decide what is an upgrade. It is derived from the solution's
+         release version — major × 10000 + minor × 100 + patch, so 1.2.0 is 10200 — so it climbs with every
+         release by construction rather than by a step someone has to remember. The scheme keeps its order only
+         while minor and patch stay below 100, and <Version> must be a plain X.Y.Z: anything else fails to parse
+         here, loudly, at build time. Builds between two releases share a code, which Android installs over one
+         another without complaint. The display version is the release version itself, as for every other
+         artifact of this solution. -->
+    <_ReleaseVersionMajor>$([System.Version]::Parse('$(Version)').Major)</_ReleaseVersionMajor>
+    <_ReleaseVersionMinor>$([System.Version]::Parse('$(Version)').Minor)</_ReleaseVersionMinor>
+    <_ReleaseVersionPatch>$([System.Version]::Parse('$(Version)').Build)</_ReleaseVersionPatch>
+    <ApplicationVersion>$([MSBuild]::Add($([MSBuild]::Add($([MSBuild]::Multiply($(_ReleaseVersionMajor), 10000)), $([MSBuild]::Multiply($(_ReleaseVersionMinor), 100)))), $(_ReleaseVersionPatch)))</ApplicationVersion>
+    <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+    <RootNamespace>Enigma.HardCopy.Recover.Android</RootNamespace>
+  </PropertyGroup>
+  <!-- LangVersion / Nullable / ImplicitUsings / TreatWarningsAsErrors come from Directory.Build.props;
+       package versions from Directory.Packages.props (Central Package Management). -->
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Android" />
+    <!-- QuestPDF arrives with Core, which composes the backup PDFs — something this application never does. Its
+         native libraries are built for desktop Linux, yet Android's RID graph falls back from android-x64 and
+         android-arm64 to linux-x64 and linux-arm64, so without this they would be packed into the APK: megabytes
+         of libraries that cannot load on a phone (and that fail Android's 16 KB page-size check, XA0141).
+         Referencing the package here with its native assets excluded keeps the managed assembly Core links
+         against and drops the rest. -->
+    <PackageReference Include="QuestPDF" ExcludeAssets="native" />
+    <!-- The camera: frames only (ImageAnalysis), bound to the activity's lifecycle. -->
+    <PackageReference Include="Xamarin.AndroidX.Camera.Camera2" />
+    <PackageReference Include="Xamarin.AndroidX.Camera.Core" />
+    <PackageReference Include="Xamarin.AndroidX.Camera.Lifecycle" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Enigma.HardCopy.Recover/Enigma.HardCopy.Recover.csproj" />
+  </ItemGroup>
+</Project>
