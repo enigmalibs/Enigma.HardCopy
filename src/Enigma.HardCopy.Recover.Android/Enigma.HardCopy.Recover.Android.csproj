@@ -10,10 +10,17 @@
     <ApplicationId>io.github.enigmalibs.hardcopy.recover</ApplicationId>
     <!-- The launcher label: the assembly name is far too long for an icon caption. -->
     <ApplicationTitle>HardCopy Recover</ApplicationTitle>
-    <!-- versionCode: an integer Android compares to decide what is an upgrade; bump it with every build handed
-         to a phone that already has one. The display version is the solution's release version, as for every
-         other artifact of this solution. -->
-    <ApplicationVersion>1</ApplicationVersion>
+    <!-- versionCode: the integer Android compares to decide what is an upgrade. It is derived from the solution's
+         release version — major × 10000 + minor × 100 + patch, so 1.2.0 is 10200 — so it climbs with every
+         release by construction rather than by a step someone has to remember. The scheme keeps its order only
+         while minor and patch stay below 100, and <Version> must be a plain X.Y.Z: anything else fails to parse
+         here, loudly, at build time. Builds between two releases share a code, which Android installs over one
+         another without complaint. The display version is the release version itself, as for every other
+         artifact of this solution. -->
+    <_ReleaseVersionMajor>$([System.Version]::Parse('$(Version)').Major)</_ReleaseVersionMajor>
+    <_ReleaseVersionMinor>$([System.Version]::Parse('$(Version)').Minor)</_ReleaseVersionMinor>
+    <_ReleaseVersionPatch>$([System.Version]::Parse('$(Version)').Build)</_ReleaseVersionPatch>
+    <ApplicationVersion>$([MSBuild]::Add($([MSBuild]::Add($([MSBuild]::Multiply($(_ReleaseVersionMajor), 10000)), $([MSBuild]::Multiply($(_ReleaseVersionMinor), 100)))), $(_ReleaseVersionPatch)))</ApplicationVersion>
     <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
     <RootNamespace>Enigma.HardCopy.Recover.Android</RootNamespace>
   </PropertyGroup>

@@ -21,3 +21,8 @@
 | - PHASE03    | Scan session page & save flow                | DONE   | (in FEATURE-E931.md)      |
 | - PHASE04    | CameraX scanner & live preview               | DONE   | (in FEATURE-E931.md)      |
 | - PHASE05    | README & Android guide                       | DONE   | (in FEATURE-E931.md)      |
+| FEATURE-3941 | Android: check a printed backup              | DONE   | docs/plan/FEATURE-3941.md |
+| FEATURE-DFCB | Android app release 1.2.0                    | DONE   | docs/plan/FEATURE-DFCB.md |
+| - PHASE01    | Signed release APK build                     | DONE   | (in FEATURE-DFCB.md)      |
+| - PHASE02    | Dependency refresh                           | DONE   | (in FEATURE-DFCB.md)      |
+| - PHASE03    | Release 1.2.0: version, notes, runbook       | DONE   | (in FEATURE-DFCB.md)      |

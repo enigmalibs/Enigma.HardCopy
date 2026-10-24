@@ -13,7 +13,8 @@ namespace Enigma.HardCopy.Recover.ViewModels;
 /// tested exhaustively. The severities follow the desktop app's judgement: a code from another backup is a
 /// <see cref="MessageSeverity.Warning"/> (it was silently ignored and the user should know why their page did not
 /// help), a damaged code is an <see cref="MessageSeverity.Error"/>, a hash mismatch a warning (the bytes exist and
-/// the decision about them is the user's).
+/// the decision about them is the user's) — except in a check's verdict, where there is nothing to decide; see
+/// <see cref="DescribeCheck"/>.
 /// </remarks>
 public static class OutcomeMessages
 {
@@ -72,6 +73,34 @@ public static class OutcomeMessages
             AssemblyOutcome.EncryptionUnsupported => StatusMessage.Error(Strings.AssemblyEncryptionUnsupported),
             AssemblyOutcome.DecompressionFailed => StatusMessage.Error(Strings.AssemblyDecompressionFailed),
             _ => StatusMessage.Error(Strings.AssemblyIncomplete),
+        };
+    }
+
+    /// <summary>Describes what a check of a printout found once every code was in.</summary>
+    /// <param name="result">The outcome of rebuilding the file in memory.</param>
+    /// <returns>The verdict to show.</returns>
+    /// <remarks>
+    /// Not the recovery's sentences: a check offers nothing to save, so a hash mismatch is not a warning about bytes
+    /// the user may still want but a failed check — every outcome short of <see cref="AssemblyOutcome.Verified"/>
+    /// means the printout cannot be relied on, and is an <see cref="MessageSeverity.Error"/>.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="result"/> is <see langword="null"/>.</exception>
+    public static StatusMessage DescribeCheck(AssemblyResult result)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+
+        if (result is { Outcome: AssemblyOutcome.HashMismatch, Sha256Hex: string actual, Metadata.Sha256Hex: string expected })
+        {
+            return StatusMessage.Error(Format(Strings.CheckHashMismatchFormat, actual, expected));
+        }
+
+        return result.Outcome switch
+        {
+            AssemblyOutcome.Verified => StatusMessage.Success(Strings.CheckPassed),
+            AssemblyOutcome.HashMismatch => StatusMessage.Error(Strings.CheckHashMismatch),
+            AssemblyOutcome.EncryptionUnsupported => StatusMessage.Error(Strings.CheckEncryptionUnsupported),
+            AssemblyOutcome.DecompressionFailed => StatusMessage.Error(Strings.CheckDecompressionFailed),
+            _ => StatusMessage.Error(Strings.CheckIncomplete),
         };
     }
 

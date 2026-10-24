@@ -11,12 +11,17 @@
   <!-- Core library. Targets net10.0 only, so the netstandard2.0-support pair
        (System.Buffers / PolySharp) is deliberately absent. -->
   <ItemGroup>
+    <!-- 2026.7.2, not 2026.9.x: 2026.9 renames Settings.CheckIfAllTextGlyphsAreAvailable to
+         ThrowOnMissingTextGlyphs (CS0618 under TreatWarningsAsErrors). QuestPDF lays out the paper
+         backups, so its next bump comes with that code change and a fresh look at the printed PDF. -->
     <PackageVersion Include="QuestPDF" Version="2026.7.2" />
-    <PackageVersion Include="QRCoder" Version="1.8.0" />
+    <PackageVersion Include="QRCoder" Version="1.8.1" />
     <PackageVersion Include="ZXing.Net" Version="0.16.11" />
+    <!-- 0.16.22, not 0.16.24: from 0.16.24 on the binding requires SkiaSharp >= 4.151.1 (NU1605
+         against the pin below), so it now moves with SkiaSharp and the Avalonia group, not alone. -->
     <PackageVersion Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.22" />
     <!-- SkiaSharp is pinned to the version Avalonia 12.1.1 itself depends on, NOT the newest
-         release (4.151.0): the ZXing SkiaSharp binding and Avalonia.Skia must resolve to one
+         release (4.x): the ZXing SkiaSharp binding and Avalonia.Skia must resolve to one
          Skia runtime. Bump this only together with the Avalonia ecosystem group below. -->
     <PackageVersion Include="SkiaSharp" Version="3.119.4" />
     <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="3.119.4" />
@@ -24,9 +29,9 @@
 
   <!-- Hosting / logging — shared by the Desktop app (and a future CLI). -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.13" />
   </ItemGroup>
 
   <!-- Desktop (Avalonia) — this is a version-coupled ecosystem: bump Avalonia, the Fluent theme,
@@ -73,10 +78,12 @@
     <PackageVersion Include="Xamarin.AndroidX.Camera.Lifecycle" Version="1.6.1" />
   </ItemGroup>
 
-  <!-- Tests (MTP-native: xunit.v3 only; coverlet.collector for coverage). No Microsoft.NET.Test.Sdk. -->
+  <!-- Tests (MTP-native: xunit.v3 only; coverlet.collector for coverage). No Microsoft.NET.Test.Sdk.
+       xunit.v3 stays on the 3.x line: 4.x is a migration of its own (MTP v2 only, analyzer changes, and
+       coverage moving from coverlet.collector to Microsoft.Testing.Extensions.CodeCoverage), not a bump. -->
   <ItemGroup>
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
-    <PackageVersion Include="coverlet.collector" Version="10.0.1" />
+    <PackageVersion Include="coverlet.collector" Version="10.1.0" />
   </ItemGroup>
 
 </Project>

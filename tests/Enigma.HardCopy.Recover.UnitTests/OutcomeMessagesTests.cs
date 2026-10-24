@@ -97,10 +97,44 @@ public sealed class OutcomeMessagesTests
     }
 
     [Fact]
+    public void DescribeCheck_EveryAssemblyOutcome_HasASentence()
+    {
+        foreach (AssemblyOutcome outcome in Enum.GetValues<AssemblyOutcome>())
+        {
+            StatusMessage message = OutcomeMessages.DescribeCheck(ResultFor(outcome));
+
+            Assert.False(string.IsNullOrWhiteSpace(message.Text));
+            Assert.DoesNotContain(outcome.ToString(), message.Text, StringComparison.Ordinal);
+        }
+    }
+
+    // A check either passes or fails: there are no bytes on offer to soften a failure into a warning.
+    [Fact]
+    public void DescribeCheck_AVerifiedFile_IsTheOnlyPass_AndEveryOtherOutcomeAFailure()
+    {
+        foreach (AssemblyOutcome outcome in Enum.GetValues<AssemblyOutcome>())
+        {
+            StatusMessage message = OutcomeMessages.DescribeCheck(ResultFor(outcome));
+
+            Assert.Equal(outcome is AssemblyOutcome.Verified ? MessageSeverity.Success : MessageSeverity.Error, message.Severity);
+        }
+    }
+
+    [Fact]
+    public void DescribeCheck_AHashMismatch_IsAFailureShowingBothHashes()
+    {
+        StatusMessage message = OutcomeMessages.DescribeCheck(
+            AssemblyResult.HashMismatch([1, 2, 3], "aaaa", Metadata("bbbb")));
+
+        Assert.Equal(StatusMessage.Error(Format(Strings.CheckHashMismatchFormat, "aaaa", "bbbb")), message);
+    }
+
+    [Fact]
     public void Describe_NullResults_Throw()
     {
         Assert.Throws<ArgumentNullException>(() => OutcomeMessages.Describe((AddCodeResult)null!, null));
         Assert.Throws<ArgumentNullException>(() => OutcomeMessages.Describe((AssemblyResult)null!));
+        Assert.Throws<ArgumentNullException>(() => OutcomeMessages.DescribeCheck(null!));
     }
 
     private static AssemblyResult ResultFor(AssemblyOutcome outcome) => outcome switch

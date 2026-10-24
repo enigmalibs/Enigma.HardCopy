@@ -14,10 +14,9 @@ control library, with icons from `Enigma.Icons.Phosphor` — plus **HardCopy Rec
 recovers a backup by scanning its codes with the phone's camera and stores nothing on the phone (see
 [Recovering on Android](#recovering-on-android)).
 
-> **What's new in 1.1.0** — a redrawn interface: a navigation rail instead of tabs, a Settings page with a
-> remembered light/dark preference, a progress overlay, an information bar for outcomes, and an in-window
-> confirmation before writing bytes that failed their hash. **The format is untouched — every backup printed
-> by 1.0 still recovers.** See [RELEASENOTES.md](RELEASENOTES.md).
+> **What's new in 1.2.0** — **HardCopy Recover**, an Android app that recovers a backup with the phone's camera,
+> stores nothing on the phone, and can also check a freshly printed backup before you file it away. **The format
+> is untouched — every backup printed by 1.0 or 1.1 still recovers.** See [RELEASENOTES.md](RELEASENOTES.md).
 
 ## Why paper
 
@@ -34,11 +33,16 @@ required on the machine that runs it**.
 
 | Platform | Archive | Run |
 |---|---|---|
-| Windows (x64) | `Enigma.HardCopy-1.1.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
-| Linux (x64) | `Enigma.HardCopy-1.1.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
+| Windows (x64) | `Enigma.HardCopy-1.2.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
+| Linux (x64) | `Enigma.HardCopy-1.2.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
 
 On Linux, if the archive was produced on Windows the executable bit does not survive the zip — run
 `chmod +x Enigma.HardCopy.Desktop` once after unpacking.
+
+The Android app, **HardCopy Recover**, is a single APK: `Enigma.HardCopy.Recover-1.2.0.apk` (Android 7.0 or later,
+64-bit). Open it on the phone and allow installing apps from that source, or `adb install` it. It is signed with
+the project's release key: if a build made from source is already on the phone, uninstall that first, since
+Android refuses an update with a different signature. See [Recovering on Android](#recovering-on-android).
 
 ## Getting around
 
@@ -110,8 +114,8 @@ pages are of course unaffected, and can be fed in again.
 
 **HardCopy Recover** (`Enigma.HardCopy.Recover.Android`) does the same recovery with a phone: no scanner, no
 computer, and nothing left behind on the device. It looks like the desktop app — same theme, same colours, light
-or dark as the phone is set — and it is built from source and installed as an APK; see
-[docs/android.md](docs/android.md).
+or dark as the phone is set. Install the release's APK (see [Install](#install)), or build it from source as
+[docs/android.md](docs/android.md) describes.
 
 1. **Start scanning.** The first time, Android asks for the camera — the only permission the app requests (it has
    no network access at all). Refuse it and the app says so; if Android stops asking, allow the camera for
@@ -143,6 +147,14 @@ written; **Save anyway** asks you to confirm, naming both hashes, before it writ
 
 **Pause scanning** turns the camera off and keeps every code read so far. **New session** forgets everything —
 it asks first if any code has been read — and turns the camera straight back on.
+
+**Checking a printout.** To prove a freshly printed backup before you put it away, tap **Check a printed backup**
+instead of *Start scanning* and scan it the same way. When the last code arrives the app rebuilds the file in
+memory, compares it with the SHA-256 recorded in the backup and shows the verdict — *Check passed* or *Check
+failed* — then lets the bytes go: nothing is saved, and no save button appears. A code that will not scan keeps
+the check from finishing, and **Still missing** names it; reprint that page, or generate the backup again at the
+*Small* density. The first code settles what a session is for: *Resume scanning* carries on a paused check, and
+**New session** after a check starts another check.
 
 ## Settings
 
@@ -210,6 +222,18 @@ The version comes from `<Version>` in `Directory.Build.props` — bump it there 
 follow.
 
 `scripts/publish.sh` needs `zip`; `scripts/publish.ps1` uses PowerShell's built-in `Compress-Archive`.
+
+The Android app has its own pair:
+
+```
+scripts/publish-android.sh            # Linux/macOS
+scripts/publish-android.ps1           # Windows
+```
+
+Each writes `artifacts/Enigma.HardCopy.Recover-<version>.apk`, signed with the project's release key. The scripts
+read the key from environment variables and refuse to build without it, so a debug-signed APK cannot be shipped
+by mistake. Creating the key, the variables, and checking the result are covered in
+[docs/android.md](docs/android.md), *Release APK*.
 
 ## Project layout
 

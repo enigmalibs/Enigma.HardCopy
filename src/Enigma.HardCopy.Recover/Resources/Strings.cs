@@ -172,6 +172,38 @@ public static class Strings
     /// <summary>Codes are still missing.</summary>
     public static string AssemblyIncomplete => Get(nameof(AssemblyIncomplete));
 
+    // ===== Checking a printout =====
+
+    /// <summary>The button that turns the camera on to check a printout instead of recovering the file.</summary>
+    public static string CheckBackup => Get(nameof(CheckBackup));
+
+    /// <summary>The introduction's paragraph on what a check is for and what it does.</summary>
+    public static string CheckIntro => Get(nameof(CheckIntro));
+
+    /// <summary>The progress card's heading while the session is a check.</summary>
+    public static string CheckProgressHeader => Get(nameof(CheckProgressHeader));
+
+    /// <summary>The verdict card's heading.</summary>
+    public static string CheckResultHeader => Get(nameof(CheckResultHeader));
+
+    /// <summary>Every code was read and the rebuilt file matches its hash.</summary>
+    public static string CheckPassed => Get(nameof(CheckPassed));
+
+    /// <summary>Every code was read but the rebuilt file does not match its hash.</summary>
+    public static string CheckHashMismatch => Get(nameof(CheckHashMismatch));
+
+    /// <summary>The same, with both hashes.</summary>
+    public static string CheckHashMismatchFormat => Get(nameof(CheckHashMismatchFormat));
+
+    /// <summary>Every code was read but the chunks do not decompress.</summary>
+    public static string CheckDecompressionFailed => Get(nameof(CheckDecompressionFailed));
+
+    /// <summary>The backup is marked as encrypted, so its hash cannot be checked.</summary>
+    public static string CheckEncryptionUnsupported => Get(nameof(CheckEncryptionUnsupported));
+
+    /// <summary>A check was asked for while codes are still missing.</summary>
+    public static string CheckIncomplete => Get(nameof(CheckIncomplete));
+
     // ===== Saving =====
 
     /// <summary>The save picker's title.</summary>
