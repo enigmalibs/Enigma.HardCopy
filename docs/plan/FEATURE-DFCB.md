@@ -1,6 +1,6 @@
 # FEATURE-DFCB — Android app release 1.2.0
 
-**Status:** IN PROGRESS
+**Status:** DONE
 **Type:** multi-phase feature (3 phases)
 **Branches (created by the run, each from the run-branch tip):** one per phase, see *Phases*
 **Run:** feature/2026-10-24-android-app-release
@@ -100,7 +100,7 @@ Branch: `feature/feature-dfcb-phase02-dependency-refresh`
 green; the Android release APK still builds; every `old → new` and every held-back set recorded in the completion
 doc for PHASE03's release notes.
 
-### PHASE03 — Release 1.2.0: version, notes, runbook
+### PHASE03 — Release 1.2.0: version, notes, runbook (DONE)
 
 Branch: `feature/feature-dfcb-phase03-release-1-2-0`
 
