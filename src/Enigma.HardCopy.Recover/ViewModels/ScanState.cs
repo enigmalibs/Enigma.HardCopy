@@ -17,6 +17,9 @@ public enum ScanState
     /// <summary>The camera is running and every code it reads goes into the session.</summary>
     Scanning,
 
-    /// <summary>Every code is in. The camera has stopped by itself; the file can be saved.</summary>
+    /// <summary>
+    /// Every code is in. The camera has stopped by itself; the file can be saved — or, for a check, is being or
+    /// has been verified.
+    /// </summary>
     Complete,
 }

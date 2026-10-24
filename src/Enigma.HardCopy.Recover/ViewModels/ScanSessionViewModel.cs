@@ -14,7 +14,7 @@ namespace Enigma.HardCopy.Recover.ViewModels;
 
 /// <summary>
 /// The application's one screen: a scan session that collects codes from the camera, in any order, until the file
-/// can be rebuilt and saved.
+/// can be rebuilt — and saved, or, for a check, verified and let go.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -31,6 +31,11 @@ namespace Enigma.HardCopy.Recover.ViewModels;
 /// <para>
 /// <b>A hash mismatch never saves silently.</b> As in the desktop app, the rebuilt bytes are held back and only an
 /// explicit, confirmed second action writes them.
+/// </para>
+/// <para>
+/// <b>A session either recovers or checks.</b> The two scan alike and differ only once every code is in: a
+/// recovery offers to save the file; a check rebuilds it in memory, compares its SHA-256 with the one the backup
+/// recorded, says whether the printout is sound, and lets the bytes go. A check never reaches the save picker.
 /// </para>
 /// <para>
 /// <b>Nothing outlives the process.</b> The session, the texts seen and any rebuilt bytes live in this object only;
@@ -87,10 +92,12 @@ public sealed class ScanSessionViewModel : ObservableObject
         _logger = logger;
         _status = _session.Status;
 
-        StartScanningCommand = new AsyncRelayCommand(StartScanningAsync, () => State is ScanState.Ready && !IsBusy);
+        StartScanningCommand = new AsyncRelayCommand(OnStartScanningAsync, () => State is ScanState.Ready && !IsBusy);
+        StartCheckCommand = new AsyncRelayCommand(OnStartCheckAsync, () => CanStartCheck && !IsBusy);
         StopScanningCommand = new RelayCommand(OnStopScanning, () => State is ScanState.Scanning);
-        SaveCommand = new AsyncRelayCommand(OnSaveAsync, () => State is ScanState.Complete && !IsBusy);
+        SaveCommand = new AsyncRelayCommand(OnSaveAsync, () => CanSave && !IsBusy);
         SaveAnywayCommand = new AsyncRelayCommand(OnSaveAnywayAsync, () => _unverified is not null && !IsBusy);
+        VerifyCommand = new AsyncRelayCommand(OnVerifyAsync, () => State is ScanState.Complete && IsChecking && !IsBusy);
         NewSessionCommand = new AsyncRelayCommand(OnNewSessionAsync, () => State is not ScanState.Starting && !IsBusy);
 
         // The ViewModel is a singleton that lives as long as the process, exactly like the scanner, so the
@@ -111,10 +118,65 @@ public sealed class ScanSessionViewModel : ObservableObject
                 OnPropertyChanged(nameof(IsScanning));
                 OnPropertyChanged(nameof(IsComplete));
                 OnPropertyChanged(nameof(ShowIntroduction));
+                OnPropertyChanged(nameof(CanStartCheck));
+                OnPropertyChanged(nameof(CanSave));
                 NotifyCommands();
             }
         }
     }
+
+    /// <summary>
+    /// Gets what the session is for. The button that turns the camera on for an empty session decides it; resuming
+    /// a session that holds codes keeps it.
+    /// </summary>
+    public SessionPurpose Purpose
+    {
+        get;
+        private set
+        {
+            if (SetProperty(ref field, value))
+            {
+                OnPropertyChanged(nameof(IsChecking));
+                OnPropertyChanged(nameof(ProgressTitle));
+                OnPropertyChanged(nameof(CanSave));
+                NotifyCommands();
+            }
+        }
+    }
+
+    /// <summary>Gets a value indicating whether the session checks a printout rather than recovering the file.</summary>
+    public bool IsChecking => Purpose is SessionPurpose.Check;
+
+    /// <summary>
+    /// Gets the progress card's heading, which says when the session is a check — so nobody finishes a scan
+    /// expecting a save button a check never shows.
+    /// </summary>
+    public string ProgressTitle => IsChecking ? Strings.CheckProgressHeader : Strings.ProgressHeader;
+
+    /// <summary>
+    /// Gets a value indicating whether a check can be started: the camera is off and the session is still empty, so
+    /// what it is for has not been settled by a code yet.
+    /// </summary>
+    public bool CanStartCheck => State is ScanState.Ready && !HasAnyCode;
+
+    /// <summary>Gets a value indicating whether every code is in and the file can be saved — never for a check.</summary>
+    public bool CanSave => State is ScanState.Complete && Purpose is SessionPurpose.Recover;
+
+    /// <summary>Gets whether the checked printout is sound, or <see langword="null"/> until a check is over.</summary>
+    public StatusMessage? CheckVerdict
+    {
+        get;
+        private set
+        {
+            if (SetProperty(ref field, value))
+            {
+                OnPropertyChanged(nameof(HasCheckVerdict));
+            }
+        }
+    }
+
+    /// <summary>Gets a value indicating whether a check is over and its verdict is there to read.</summary>
+    public bool HasCheckVerdict => CheckVerdict is not null;
 
     /// <summary>Gets a value indicating whether the camera is off and more codes can be scanned.</summary>
     public bool IsReady => State is ScanState.Ready;
@@ -125,7 +187,7 @@ public sealed class ScanSessionViewModel : ObservableObject
     /// <summary>Gets a value indicating whether the camera is running.</summary>
     public bool IsScanning => State is ScanState.Scanning;
 
-    /// <summary>Gets a value indicating whether every code is in and the file can be saved.</summary>
+    /// <summary>Gets a value indicating whether every code is in.</summary>
     public bool IsComplete => State is ScanState.Complete;
 
     /// <summary>Gets a value indicating whether the introduction is worth showing: nothing has happened yet.</summary>
@@ -226,8 +288,14 @@ public sealed class ScanSessionViewModel : ObservableObject
     /// </summary>
     public bool CanSaveAnyway => _unverified is not null;
 
-    /// <summary>Gets the command that turns the camera on.</summary>
+    /// <summary>
+    /// Gets the command that turns the camera on — for a recovery when the session is empty, or to carry on with
+    /// whatever the session was started as.
+    /// </summary>
     public AsyncRelayCommand StartScanningCommand { get; }
+
+    /// <summary>Gets the command that turns the camera on to check a printout rather than recover the file.</summary>
+    public AsyncRelayCommand StartCheckCommand { get; }
 
     /// <summary>Gets the command that pauses the camera, keeping every code read so far.</summary>
     public RelayCommand StopScanningCommand { get; }
@@ -238,10 +306,36 @@ public sealed class ScanSessionViewModel : ObservableObject
     /// <summary>Gets the command that writes a rebuilt file whose hash did not match, once confirmed.</summary>
     public AsyncRelayCommand SaveAnywayCommand { get; }
 
+    /// <summary>
+    /// Gets the command that rebuilds the file in memory, checks its SHA-256 and reports the verdict, keeping none
+    /// of the bytes. It runs by itself when a check's last code arrives; it is a command rather than a detached
+    /// task so the work is tracked, awaitable, and fails the way every other command does.
+    /// </summary>
+    public AsyncRelayCommand VerifyCommand { get; }
+
     /// <summary>Gets the command that discards the session and starts scanning a new one.</summary>
     public AsyncRelayCommand NewSessionCommand { get; }
 
-    private async Task StartScanningAsync()
+    private Task OnStartScanningAsync()
+    {
+        // An empty session has not committed to anything, so this button makes it a recovery. A session that holds
+        // codes carries on as whatever it was started as — Resume scanning resumes a check too.
+        if (!HasAnyCode)
+        {
+            Purpose = SessionPurpose.Recover;
+        }
+
+        return StartCameraAsync();
+    }
+
+    private Task OnStartCheckAsync()
+    {
+        Purpose = SessionPurpose.Check;
+
+        return StartCameraAsync();
+    }
+
+    private async Task StartCameraAsync()
     {
         CameraProblem = null;
         State = ScanState.Starting;
@@ -301,7 +395,16 @@ public sealed class ScanSessionViewModel : ObservableObject
         {
             _scanner.Stop();
             State = ScanState.Complete;
-            _notifications.Publish(StatusMessage.Success(Strings.SessionComplete));
+
+            if (IsChecking)
+            {
+                // The verdict is the announcement: an "every code is in" banner would only be covered by it.
+                VerifyCommand.Execute(null);
+            }
+            else
+            {
+                _notifications.Publish(StatusMessage.Success(Strings.SessionComplete));
+            }
         }
     }
 
@@ -356,6 +459,27 @@ public sealed class ScanSessionViewModel : ObservableObject
         }
 
         _notifications.Publish(OutcomeMessages.Describe(result));
+    }
+
+    private async Task OnVerifyAsync()
+    {
+        IsBusy = true;
+        AssemblyResult result;
+        try
+        {
+            // The same rebuild a save does, off the UI thread for the same reason.
+            result = await Task.Run(_session.TryAssemble);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+
+        // Only the verdict is kept. The rebuilt bytes go out of scope with the result — a check never holds them
+        // for a later save, which is what keeps it from ever producing the file.
+        StatusMessage verdict = OutcomeMessages.DescribeCheck(result);
+        CheckVerdict = verdict;
+        _notifications.Publish(verdict);
     }
 
     private async Task OnSaveAnywayAsync()
@@ -424,13 +548,15 @@ public sealed class ScanSessionViewModel : ObservableObject
         _session = new RecoverySession();
         _seen.Clear();
         SetUnverified(null);
+        CheckVerdict = null;
         LastScan = null;
         CameraProblem = null;
         State = ScanState.Ready;
         RefreshStatus();
 
-        // A new session is for scanning: the camera comes straight back on.
-        await StartScanningAsync();
+        // A new session is for scanning, and for the same purpose as the last — checking a stack of printouts one
+        // after the other is the natural follow-up to a check. The camera comes straight back on.
+        await StartCameraAsync();
     }
 
     private void SetUnverified(AssemblyResult? result)
@@ -447,6 +573,8 @@ public sealed class ScanSessionViewModel : ObservableObject
 
         OnPropertyChanged(nameof(HasAnyCode));
         OnPropertyChanged(nameof(ShowIntroduction));
+        OnPropertyChanged(nameof(CanStartCheck));
+        StartCheckCommand.NotifyCanExecuteChanged();
         OnPropertyChanged(nameof(StartLabel));
         OnPropertyChanged(nameof(BackupId));
         OnPropertyChanged(nameof(FileName));
@@ -463,9 +591,11 @@ public sealed class ScanSessionViewModel : ObservableObject
     private void NotifyCommands()
     {
         StartScanningCommand.NotifyCanExecuteChanged();
+        StartCheckCommand.NotifyCanExecuteChanged();
         StopScanningCommand.NotifyCanExecuteChanged();
         SaveCommand.NotifyCanExecuteChanged();
         SaveAnywayCommand.NotifyCanExecuteChanged();
+        VerifyCommand.NotifyCanExecuteChanged();
         NewSessionCommand.NotifyCanExecuteChanged();
     }
 
