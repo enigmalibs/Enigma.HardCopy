@@ -1,6 +1,6 @@
 # FEATURE-DFCB — Android app release 1.2.0
 
-**Status:** TODO
+**Status:** IN PROGRESS
 **Type:** multi-phase feature (3 phases)
 **Branches (created by the run, each from the run-branch tip):** one per phase, see *Phases*
 **Run:** feature/2026-10-24-android-app-release
@@ -59,7 +59,7 @@ Nothing is tagged, pushed, uploaded or published by the run.
 
 ## Phases
 
-### PHASE01 — Signed release APK build
+### PHASE01 — Signed release APK build (DONE)
 
 Branch: `feature/feature-dfcb-phase01-signed-apk`
 

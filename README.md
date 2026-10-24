@@ -219,6 +219,18 @@ follow.
 
 `scripts/publish.sh` needs `zip`; `scripts/publish.ps1` uses PowerShell's built-in `Compress-Archive`.
 
+The Android app has its own pair:
+
+```
+scripts/publish-android.sh            # Linux/macOS
+scripts/publish-android.ps1           # Windows
+```
+
+Each writes `artifacts/Enigma.HardCopy.Recover-<version>.apk`, signed with the project's release key. The scripts
+read the key from environment variables and refuse to build without it, so a debug-signed APK cannot be shipped
+by mistake. Creating the key, the variables, and checking the result are covered in
+[docs/android.md](docs/android.md), *Release APK*.
+
 ## Project layout
 
 | Path | What it is |
