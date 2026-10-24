@@ -85,7 +85,7 @@ one; without the variables the script stops with an explanation and builds nothi
 launches on the emulator; the throwaway key and the artifact are deleted afterwards. The PowerShell twin is run
 if a PowerShell can be obtained locally (scratchpad only), otherwise recorded as not run.
 
-### PHASE02 — Dependency refresh
+### PHASE02 — Dependency refresh (DONE)
 
 Branch: `feature/feature-dfcb-phase02-dependency-refresh`
 
