@@ -363,3 +363,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Android signing keys — the release key is the app's identity and a secret; it lives outside the
+# repository (docs/android.md, "Release APK"), and these patterns keep a copy from being committed by mistake.
+*.keystore
+*.jks
