@@ -150,6 +150,7 @@ nothing, so nothing is lost. The same is true the other way round, to go back to
 | Symptom | Cause and fix |
 |---|---|
 | The app closes instantly after `adb install` of a **Debug** APK; logcat says *No assemblies found … Assuming this is part of Fast Deployment* | Debug builds keep their assemblies out of the APK and push them separately. Install Debug builds with `-t:Install`, or use the Release APK. |
+| `adb install` of a release APK fails with *INSTALL_FAILED_UPDATE_INCOMPATIBLE: … signatures do not match newer version*, or the phone refuses to install it | A build signed with a different key — a debug-signed development build — is already installed. Uninstall it first; the app stores nothing, so nothing is lost. See [Phones that have a development build](#phones-that-have-a-development-build). |
 | A screenshot or screen recording of the app is black | Deliberate: the app blocks screen capture, because the screen shows the secret being recovered. |
 | *The camera permission was refused* and no prompt appears any more | Android stops asking after the permission was refused twice. Allow the camera in *Settings → Apps → HardCopy Recover → Permissions*. |
 | On an emulator, the first *Start scanning* takes up to a minute | CameraX waits for every camera the device claims, and an AVD without a front camera makes it retry its enumeration. Emulator-specific. |
@@ -176,6 +177,10 @@ emulator 36.5 with a `Pixel6_API36` x86_64 AVD whose back camera is *Emulated*):
     `Enigma.HardCopy.Recover-1.1.0.apk` with `versionCode='10100'`, `versionName='1.1.0'`, signed with the
     throwaway certificate rather than the debug one. That APK installs on the emulator once the debug-signed build
     is uninstalled, and starts.
+  - **At 1.2.0:** the release APK reports `versionCode='10200'` and `versionName='1.2.0'`, is signed with APK
+    Signature Schemes v2 and v3, and requests the camera permission only. Installed over a debug-signed
+    development build, it is refused with `INSTALL_FAILED_UPDATE_INCOMPATIBLE: … signatures do not match newer
+    version`. Once that build is uninstalled, it installs and starts.
   - **Not run:** `publish-android.ps1` on Windows.
 - **Not run here:** `dotnet workload install android` (already installed), the emulator with a window, USB
   deployment to a physical phone (`-p:AdbTarget=-d`), and installing the APK by opening it on a phone. **Decoding

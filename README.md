@@ -14,10 +14,9 @@ control library, with icons from `Enigma.Icons.Phosphor` — plus **HardCopy Rec
 recovers a backup by scanning its codes with the phone's camera and stores nothing on the phone (see
 [Recovering on Android](#recovering-on-android)).
 
-> **What's new in 1.1.0** — a redrawn interface: a navigation rail instead of tabs, a Settings page with a
-> remembered light/dark preference, a progress overlay, an information bar for outcomes, and an in-window
-> confirmation before writing bytes that failed their hash. **The format is untouched — every backup printed
-> by 1.0 still recovers.** See [RELEASENOTES.md](RELEASENOTES.md).
+> **What's new in 1.2.0** — **HardCopy Recover**, an Android app that recovers a backup with the phone's camera,
+> stores nothing on the phone, and can also check a freshly printed backup before you file it away. **The format
+> is untouched — every backup printed by 1.0 or 1.1 still recovers.** See [RELEASENOTES.md](RELEASENOTES.md).
 
 ## Why paper
 
@@ -34,11 +33,16 @@ required on the machine that runs it**.
 
 | Platform | Archive | Run |
 |---|---|---|
-| Windows (x64) | `Enigma.HardCopy-1.1.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
-| Linux (x64) | `Enigma.HardCopy-1.1.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
+| Windows (x64) | `Enigma.HardCopy-1.2.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
+| Linux (x64) | `Enigma.HardCopy-1.2.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
 
 On Linux, if the archive was produced on Windows the executable bit does not survive the zip — run
 `chmod +x Enigma.HardCopy.Desktop` once after unpacking.
+
+The Android app, **HardCopy Recover**, is a single APK: `Enigma.HardCopy.Recover-1.2.0.apk` (Android 7.0 or later,
+64-bit). Open it on the phone and allow installing apps from that source, or `adb install` it. It is signed with
+the project's release key: if a build made from source is already on the phone, uninstall that first, since
+Android refuses an update with a different signature. See [Recovering on Android](#recovering-on-android).
 
 ## Getting around
 
@@ -110,8 +114,8 @@ pages are of course unaffected, and can be fed in again.
 
 **HardCopy Recover** (`Enigma.HardCopy.Recover.Android`) does the same recovery with a phone: no scanner, no
 computer, and nothing left behind on the device. It looks like the desktop app — same theme, same colours, light
-or dark as the phone is set — and it is built from source and installed as an APK; see
-[docs/android.md](docs/android.md).
+or dark as the phone is set. Install the release's APK (see [Install](#install)), or build it from source as
+[docs/android.md](docs/android.md) describes.
 
 1. **Start scanning.** The first time, Android asks for the camera — the only permission the app requests (it has
    no network access at all). Refuse it and the app says so; if Android stops asking, allow the camera for
