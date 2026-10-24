@@ -22,3 +22,7 @@
 | - PHASE04    | CameraX scanner & live preview               | DONE   | (in FEATURE-E931.md)      |
 | - PHASE05    | README & Android guide                       | DONE   | (in FEATURE-E931.md)      |
 | FEATURE-3941 | Android: check a printed backup              | DONE   | docs/plan/FEATURE-3941.md |
+| FEATURE-DFCB | Android app release 1.2.0                    | TODO   | docs/plan/FEATURE-DFCB.md |
+| - PHASE01    | Signed release APK build                     | TODO   | (in FEATURE-DFCB.md)      |
+| - PHASE02    | Dependency refresh                           | TODO   | (in FEATURE-DFCB.md)      |
+| - PHASE03    | Release 1.2.0: version, notes, runbook       | TODO   | (in FEATURE-DFCB.md)      |
