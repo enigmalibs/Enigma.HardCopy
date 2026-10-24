@@ -21,4 +21,4 @@
 | - PHASE03    | Scan session page & save flow                | DONE   | (in FEATURE-E931.md)      |
 | - PHASE04    | CameraX scanner & live preview               | DONE   | (in FEATURE-E931.md)      |
 | - PHASE05    | README & Android guide                       | DONE   | (in FEATURE-E931.md)      |
-| FEATURE-3941 | Android: check a printed backup              | TODO   | docs/plan/FEATURE-3941.md |
+| FEATURE-3941 | Android: check a printed backup              | DONE   | docs/plan/FEATURE-3941.md |

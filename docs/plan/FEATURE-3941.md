@@ -1,6 +1,6 @@
 # FEATURE-3941 — Android: check a printed backup
 
-**Status:** TODO
+**Status:** DONE
 **Type:** single-phase feature
 **Branch:** `feature/feature-3941-check-printed-backup`
 **Run:** feature/2026-10-24-check-printed-backup

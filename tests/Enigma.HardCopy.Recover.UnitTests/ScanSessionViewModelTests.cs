@@ -46,6 +46,11 @@ public sealed class ScanSessionViewModelTests
         Assert.True(session.StartScanningCommand.CanExecute(null));
         Assert.False(session.SaveCommand.CanExecute(null));
         Assert.Equal(0, _scanner.StartCount);
+        Assert.Equal(SessionPurpose.Recover, session.Purpose);
+        Assert.Equal(Strings.ProgressHeader, session.ProgressTitle);
+        Assert.True(session.CanStartCheck);
+        Assert.True(session.StartCheckCommand.CanExecute(null));
+        Assert.False(session.HasCheckVerdict);
     }
 
     [Fact]
@@ -102,7 +107,10 @@ public sealed class ScanSessionViewModelTests
         Assert.Equal(0, _haptics.RejectedCount);
         Assert.Equal(100d, session.ProgressPercent);
         Assert.False(session.HasMissing);
+        Assert.True(session.CanSave);
         Assert.True(session.SaveCommand.CanExecute(null));
+        Assert.False(session.VerifyCommand.CanExecute(null));
+        Assert.False(session.HasCheckVerdict);
         Assert.Equal(StatusMessage.Success(Strings.SessionComplete), Assert.Single(_notifications.Published));
     }
 
@@ -398,6 +406,141 @@ public sealed class ScanSessionViewModelTests
     }
 
     [Fact]
+    public async Task StartCheck_TurnsTheCameraOn_ForACheck()
+    {
+        ScanSessionViewModel session = CreateSession();
+
+        await session.StartCheckCommand.ExecuteAsync(null);
+
+        Assert.Equal(ScanState.Scanning, session.State);
+        Assert.True(_scanner.IsRunning);
+        Assert.Equal(SessionPurpose.Check, session.Purpose);
+        Assert.True(session.IsChecking);
+        Assert.Equal(Strings.CheckProgressHeader, session.ProgressTitle);
+        Assert.False(session.CanStartCheck);
+    }
+
+    // The whole point of a check: the same scan, then a verdict on the hash — and never a file.
+    [Fact]
+    public async Task ACompleteCheck_VerifiesTheHash_AndSavesNothing()
+    {
+        EncodedBackup backup = await BackupFixtures.EncodeAsync(BackupFixtures.IncompressibleBytes(1_200));
+        ScanSessionViewModel session = await ScanningSessionAsync(SessionPurpose.Check);
+
+        _scanner.Show([.. Shuffled(backup.Codes)]);
+        await VerificationAsync(session);
+
+        Assert.Equal(ScanState.Complete, session.State);
+        Assert.False(_scanner.IsRunning);
+        Assert.Equal(StatusMessage.Success(Strings.CheckPassed), session.CheckVerdict);
+        Assert.Equal(session.CheckVerdict, Assert.Single(_notifications.Published));
+        Assert.Empty(_saver.SuggestedNames);
+        Assert.Null(_saver.Destination!.Written);
+        Assert.False(session.CanSave);
+        Assert.False(session.SaveCommand.CanExecute(null));
+        Assert.False(session.CanSaveAnyway);
+        Assert.False(session.IsBusy);
+    }
+
+    [Fact]
+    public async Task ACheck_OnAHashMismatch_FailsNamingBothHashes_AndOffersNothingToSave()
+    {
+        (ScanSessionViewModel session, EncodedBackup backup) = await MismatchedSessionAsync(SessionPurpose.Check);
+
+        await VerificationAsync(session);
+
+        StatusMessage? verdict = session.CheckVerdict;
+        Assert.NotNull(verdict);
+        Assert.True(verdict.IsError);
+        Assert.Contains(backup.Metadata.Sha256Hex, verdict.Text, StringComparison.Ordinal);
+        Assert.Contains(WrongHash, verdict.Text, StringComparison.Ordinal);
+        Assert.Equal(verdict, Assert.Single(_notifications.Published));
+        Assert.False(session.CanSave);
+        Assert.False(session.CanSaveAnyway);
+        Assert.False(session.SaveAnywayCommand.CanExecute(null));
+        Assert.Empty(_saver.SuggestedNames);
+        Assert.Equal(0, _confirmations.UnverifiedSaveAsked);
+    }
+
+    [Fact]
+    public async Task ACheckOfAnEmptyFilesBackup_PassesWithTheMetadataCodeAlone()
+    {
+        EncodedBackup backup = await BackupFixtures.EncodeAsync([]);
+        ScanSessionViewModel session = await ScanningSessionAsync(SessionPurpose.Check);
+
+        _scanner.Show(backup.Codes[0]);
+        await VerificationAsync(session);
+
+        Assert.Equal(StatusMessage.Success(Strings.CheckPassed), session.CheckVerdict);
+        Assert.Empty(_saver.SuggestedNames);
+    }
+
+    [Fact]
+    public async Task StartCheck_IsOnlyOfferedWhileTheSessionIsEmpty()
+    {
+        EncodedBackup backup = await BackupFixtures.EncodeAsync(BackupFixtures.IncompressibleBytes(600));
+        ScanSessionViewModel session = await ScanningSessionAsync();
+        Assert.False(session.CanStartCheck);
+
+        _scanner.Show(backup.Codes[1]);
+        session.StopScanningCommand.Execute(null);
+
+        Assert.False(session.CanStartCheck);
+        Assert.False(session.StartCheckCommand.CanExecute(null));
+        Assert.True(session.StartScanningCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task ResumingAPausedCheck_CarriesOnChecking()
+    {
+        EncodedBackup backup = await BackupFixtures.EncodeAsync(BackupFixtures.IncompressibleBytes(1_200));
+        ScanSessionViewModel session = await ScanningSessionAsync(SessionPurpose.Check);
+        _scanner.Show(backup.Codes[1]);
+        session.StopScanningCommand.Execute(null);
+        Assert.Equal(Strings.ResumeScanning, session.StartLabel);
+
+        await session.StartScanningCommand.ExecuteAsync(null);
+        _scanner.Show([.. backup.Codes]);
+        await VerificationAsync(session);
+
+        Assert.Equal(SessionPurpose.Check, session.Purpose);
+        Assert.Equal(StatusMessage.Success(Strings.CheckPassed), session.CheckVerdict);
+        Assert.Empty(_saver.SuggestedNames);
+    }
+
+    // Until a code is in, nothing has been committed to: the user may still change their mind.
+    [Fact]
+    public async Task StartScanning_AfterACheckThatReadNothing_MakesTheSessionARecovery()
+    {
+        ScanSessionViewModel session = await ScanningSessionAsync(SessionPurpose.Check);
+        session.StopScanningCommand.Execute(null);
+        Assert.True(session.CanStartCheck);
+
+        await session.StartScanningCommand.ExecuteAsync(null);
+
+        Assert.Equal(SessionPurpose.Recover, session.Purpose);
+        Assert.Equal(Strings.ProgressHeader, session.ProgressTitle);
+    }
+
+    [Fact]
+    public async Task NewSession_AfterACheck_ForgetsTheVerdict_AndChecksAgain()
+    {
+        EncodedBackup backup = await BackupFixtures.EncodeAsync(BackupFixtures.IncompressibleBytes(600));
+        ScanSessionViewModel session = await ScanningSessionAsync(SessionPurpose.Check);
+        _scanner.Show([.. backup.Codes]);
+        await VerificationAsync(session);
+        _confirmations.NewSessionAnswer = true;
+
+        await session.NewSessionCommand.ExecuteAsync(null);
+
+        Assert.Equal(1, _confirmations.NewSessionAsked);
+        Assert.False(session.HasCheckVerdict);
+        Assert.False(session.HasAnyCode);
+        Assert.Equal(SessionPurpose.Check, session.Purpose);
+        Assert.Equal(ScanState.Scanning, session.State);
+    }
+
+    [Fact]
     public void Constructor_RejectsAMissingDependency()
         => Assert.Throws<ArgumentNullException>(() => new ScanSessionViewModel(
             null!,
@@ -415,12 +558,22 @@ public sealed class ScanSessionViewModelTests
         _confirmations,
         NullLogger<ScanSessionViewModel>.Instance);
 
-    private async Task<ScanSessionViewModel> ScanningSessionAsync()
+    private async Task<ScanSessionViewModel> ScanningSessionAsync(SessionPurpose purpose = SessionPurpose.Recover)
     {
         ScanSessionViewModel session = CreateSession();
-        await session.StartScanningCommand.ExecuteAsync(null);
+        await (purpose is SessionPurpose.Check ? session.StartCheckCommand : session.StartScanningCommand)
+            .ExecuteAsync(null);
 
         return session;
+    }
+
+    /// <summary>Waits for the verification a check starts by itself when its last code arrives.</summary>
+    private static async Task VerificationAsync(ScanSessionViewModel session)
+    {
+        Task? verification = session.VerifyCommand.ExecutionTask;
+        Assert.NotNull(verification);
+
+        await verification;
     }
 
     private async Task<ScanSessionViewModel> CompleteSessionAsync(byte[] content)
@@ -437,13 +590,14 @@ public sealed class ScanSessionViewModelTests
     /// A complete session whose metadata code records a hash the data codes do not have — the one way to reach a
     /// mismatch, since a correct encoder never produces one.
     /// </summary>
-    private async Task<(ScanSessionViewModel Session, EncodedBackup Backup)> MismatchedSessionAsync()
+    private async Task<(ScanSessionViewModel Session, EncodedBackup Backup)> MismatchedSessionAsync(
+        SessionPurpose purpose = SessionPurpose.Recover)
     {
         EncodedBackup backup = await BackupFixtures.EncodeAsync(MismatchedContent);
         Assert.False(backup.Metadata.IsCompressed);
         string doctored = BackupFixtures.MetadataCodeWith(backup, backup.Metadata with { Sha256Hex = WrongHash });
 
-        ScanSessionViewModel session = await ScanningSessionAsync();
+        ScanSessionViewModel session = await ScanningSessionAsync(purpose);
         _scanner.Show([doctored, .. backup.Codes.Skip(1)]);
         Assert.Equal(ScanState.Complete, session.State);
 

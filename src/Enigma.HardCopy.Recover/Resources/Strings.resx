@@ -109,7 +109,7 @@
     <value>Hold the phone over the printed codes, one page at a time — every code in view is read. Codes can come in any order, and a code read twice is ignored.</value>
   </data>
   <data name="CameraPermissionDenied" xml:space="preserve">
-    <value>The camera permission was refused, so nothing can be scanned. Tap Start scanning to be asked again — or, if Android no longer asks, allow the camera for HardCopy Recover in the system settings.</value>
+    <value>The camera permission was refused, so nothing can be scanned. Tap the same button again to be asked once more — or, if Android no longer asks, allow the camera for HardCopy Recover in the system settings.</value>
   </data>
   <data name="CameraUnavailable" xml:space="preserve">
     <value>No camera could be started on this device.</value>
@@ -219,6 +219,39 @@
   </data>
   <data name="AssemblyIncomplete" xml:space="preserve">
     <value>Some codes are still missing.</value>
+  </data>
+
+  <!-- ===== Checking a printout ===== -->
+  <data name="CheckBackup" xml:space="preserve">
+    <value>Check a printed backup</value>
+  </data>
+  <data name="CheckIntro" xml:space="preserve">
+    <value>Just printed a backup? Check it before you put it away: scan every code, and the app rebuilds the file in memory and confirms it matches the SHA-256 the backup recorded. Nothing is saved.</value>
+  </data>
+  <data name="CheckProgressHeader" xml:space="preserve">
+    <value>Checking a printed backup</value>
+  </data>
+  <data name="CheckResultHeader" xml:space="preserve">
+    <value>Check result</value>
+  </data>
+  <data name="CheckPassed" xml:space="preserve">
+    <value>Check passed: every code was read, and the file they rebuild matches the SHA-256 recorded in the backup. This printout can recover the file. Nothing was saved.</value>
+  </data>
+  <data name="CheckHashMismatch" xml:space="preserve">
+    <value>Check failed: every code was read, but the file they rebuild does not match the hash recorded in the backup. Do not rely on this printout.</value>
+  </data>
+  <data name="CheckHashMismatchFormat" xml:space="preserve">
+    <value>Check failed: every code was read, but the file they rebuild has the SHA-256 {0}, not the {1} recorded in the backup. Do not rely on this printout.</value>
+    <comment>{0} = the rebuilt bytes' SHA-256, {1} = the recorded SHA-256.</comment>
+  </data>
+  <data name="CheckDecompressionFailed" xml:space="preserve">
+    <value>Check failed: every code was read and each is intact, but together they do not form the compressed file the metadata describes. Do not rely on this printout.</value>
+  </data>
+  <data name="CheckEncryptionUnsupported" xml:space="preserve">
+    <value>Check failed: this backup is marked as encrypted, which this version cannot undo, so its hash cannot be checked. It was written by a newer build.</value>
+  </data>
+  <data name="CheckIncomplete" xml:space="preserve">
+    <value>Check failed: some codes are still missing.</value>
   </data>
 
   <!-- ===== Saving ===== -->

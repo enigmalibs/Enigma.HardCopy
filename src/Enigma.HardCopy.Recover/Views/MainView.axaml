@@ -18,8 +18,9 @@
        and the last button under the gesture bar. The background is painted by the control itself, so it still
        runs behind both bars.
 
-       Top to bottom, in the order a user needs them: what this is (until something happens), the camera, what
-       the last code was, how far the recovery has got, and the actions — the primary one first.
+       Top to bottom, in the order a user needs them: what this is (until something happens), the camera, a
+       check's verdict, what the last code was, how far the recovery has got, and the actions — the primary one
+       first.
 
        A Panel z-stacks its children, so the two service hosts come LAST and draw over the page. Their x:Names
        are what App.axaml.cs hands to RegisterHost. -->
@@ -43,6 +44,7 @@
         <Border Classes="card" IsVisible="{Binding ShowIntroduction}">
           <StackPanel Spacing="12">
             <TextBlock Classes="body" Text="{x:Static res:Strings.IntroText}" />
+            <TextBlock Classes="body" Text="{x:Static res:Strings.CheckIntro}" />
             <TextBlock Classes="hint" Text="{x:Static res:Strings.PrivacyNote}" />
           </StackPanel>
         </Border>
@@ -71,6 +73,18 @@
           <TextBlock TextWrapping="Wrap" Text="{Binding CameraProblem}" />
         </Border>
 
+        <!-- A check's verdict. It stays on the page once the banner has gone, for whoever picks the phone up
+             after putting the paper down. -->
+        <Border Classes="card" IsVisible="{Binding HasCheckVerdict}">
+          <StackPanel Spacing="8">
+            <TextBlock Classes="h2" Text="{x:Static res:Strings.CheckResultHeader}" />
+            <TextBlock TextWrapping="Wrap"
+                       Text="{Binding CheckVerdict.Text, FallbackValue={x:Null}}"
+                       Classes.success="{Binding CheckVerdict.IsSuccess, FallbackValue=False}"
+                       Classes.error="{Binding CheckVerdict.IsError, FallbackValue=False}" />
+          </StackPanel>
+        </Border>
+
         <StackPanel Spacing="2" IsVisible="{Binding HasLastScan}">
           <TextBlock Classes="hint" Text="{x:Static res:Strings.LastScanLabel}" />
           <TextBlock TextWrapping="Wrap"
@@ -82,11 +96,11 @@
 
         <Border Classes="card" IsVisible="{Binding HasAnyCode}">
           <StackPanel Spacing="8">
-            <TextBlock Classes="h2" Text="{x:Static res:Strings.ProgressHeader}" />
+            <TextBlock Classes="h2" Text="{Binding ProgressTitle}" />
 
             <ProgressBar Minimum="0" Maximum="100" Height="8"
                          Value="{Binding ProgressPercent}"
-                         AutomationProperties.Name="{x:Static res:Strings.ProgressHeader}" />
+                         AutomationProperties.Name="{Binding ProgressTitle}" />
             <TextBlock Classes="value" Text="{Binding CodesText}" />
             <TextBlock Classes="value"
                        Text="{Binding MetadataText}"
@@ -116,7 +130,7 @@
         <StackPanel Spacing="8">
           <Button Classes="accent"
                   HorizontalAlignment="Stretch"
-                  IsVisible="{Binding IsComplete}"
+                  IsVisible="{Binding CanSave}"
                   Command="{Binding SaveCommand}"
                   Content="{x:Static res:Strings.SaveFile}" />
           <Button Classes="accent"
@@ -124,6 +138,12 @@
                   IsVisible="{Binding IsReady}"
                   Command="{Binding StartScanningCommand}"
                   Content="{Binding StartLabel}" />
+          <!-- The other reason to scan: proving a printout sound. Only offered while the session is empty, since
+               the first code settles what the session is for. -->
+          <Button HorizontalAlignment="Stretch"
+                  IsVisible="{Binding CanStartCheck}"
+                  Command="{Binding StartCheckCommand}"
+                  Content="{x:Static res:Strings.CheckBackup}" />
           <Button HorizontalAlignment="Stretch"
                   IsVisible="{Binding IsScanning}"
                   Command="{Binding StopScanningCommand}"

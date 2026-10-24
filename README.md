@@ -144,6 +144,14 @@ written; **Save anyway** asks you to confirm, naming both hashes, before it writ
 **Pause scanning** turns the camera off and keeps every code read so far. **New session** forgets everything —
 it asks first if any code has been read — and turns the camera straight back on.
 
+**Checking a printout.** To prove a freshly printed backup before you put it away, tap **Check a printed backup**
+instead of *Start scanning* and scan it the same way. When the last code arrives the app rebuilds the file in
+memory, compares it with the SHA-256 recorded in the backup and shows the verdict — *Check passed* or *Check
+failed* — then lets the bytes go: nothing is saved, and no save button appears. A code that will not scan keeps
+the check from finishing, and **Still missing** names it; reprint that page, or generate the backup again at the
+*Small* density. The first code settles what a session is for: *Resume scanning* carries on a paused check, and
+**New session** after a check starts another check.
+
 ## Settings
 
 The **Settings** page, at the foot of the rail, holds one choice: **Appearance** — *Follow the system*,
