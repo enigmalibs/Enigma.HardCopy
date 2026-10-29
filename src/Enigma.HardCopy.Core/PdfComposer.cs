@@ -59,7 +59,7 @@ public sealed class PdfComposer : IPdfComposer
         // A file name may hold characters the bundled font has no glyph for — CJK, emoji. Left at its
         // default, QuestPDF would throw and the backup would fail over page furniture. A fallback box in
         // the header is the better trade: the name that matters is the one inside the metadata code.
-        QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable = false;
+        QuestPDF.Settings.ThrowOnMissingTextGlyphs = false;
     }
 
     /// <inheritdoc/>
