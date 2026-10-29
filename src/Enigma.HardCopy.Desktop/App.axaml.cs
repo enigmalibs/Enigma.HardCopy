@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using AppTheming = Enigma.HardCopy.Desktop.Services.IThemeService;
+using ErrorDialog = Enigma.HardCopy.Desktop.Services.ErrorDialog;
+using ExceptionHooks = Enigma.HardCopy.Desktop.Services.UnhandledExceptionHooks;
+using IUnhandledErrorReporter = Enigma.HardCopy.Desktop.Services.IUnhandledErrorReporter;
 
 namespace Enigma.HardCopy.Desktop;
 
@@ -29,6 +32,11 @@ public partial class App : Application
     /// <inheritdoc />
     public override void OnFrameworkInitializationCompleted()
     {
+        // The dispatcher's hook first, now that the platform is set up and before anything else runs on the UI
+        // thread: a command, an async void handler or a posted callback that throws is caught from here on.
+        // Program.Main has already hooked the process-wide events.
+        ExceptionHooks.InstallDispatcher();
+
         HostApplicationBuilder builder = Host.CreateApplicationBuilder();
 
         // Console + Debug sinks only — this app writes no log files (validated decision).
@@ -65,11 +73,24 @@ public partial class App : Application
             services.GetRequiredService<IFileDialogService>().SetStorageProvider(window.StorageProvider);
             services.GetRequiredService<IFolderDialogService>().SetStorageProvider(window.StorageProvider);
 
+            // The safety net takes over from the early hooks: what was reported before the container existed is
+            // handed over now, and the error dialog shows on the same host as every other question.
+            services.GetRequiredService<ErrorDialog>().RegisterHost(window.HostDialog);
+            IUnhandledErrorReporter errors = services.GetRequiredService<IUnhandledErrorReporter>();
+            ExceptionHooks.Attach(errors);
+            desktop.ShutdownRequested += (_, _) => errors.ShutdownStarted();
+
             ApplyStoredTheme(services);
             StartNavigation(services);
 
             desktop.MainWindow = window;
-            desktop.Exit += (_, _) => _host.StopAsync().GetAwaiter().GetResult();
+            desktop.Exit += (_, _) =>
+            {
+                // Detached before the host stops, so a late report does not log through a disposed logger.
+                errors.ShutdownStarted();
+                ExceptionHooks.Detach();
+                _host.StopAsync().GetAwaiter().GetResult();
+            };
         }
 
         base.OnFrameworkInitializationCompleted();

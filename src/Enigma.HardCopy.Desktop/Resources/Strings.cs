@@ -323,6 +323,38 @@ public static class Strings
     /// <summary>The label of the button that closes the About dialog.</summary>
     public static string AboutClose => Get(nameof(AboutClose));
 
+    // ===== Unhandled error dialog =====
+
+    /// <summary>The title of the safety net's dialog.</summary>
+    public static string UnhandledErrorTitle => Get(nameof(UnhandledErrorTitle));
+
+    /// <summary>The sentence that opens the safety net's dialog: the application is still running.</summary>
+    public static string UnhandledErrorLead => Get(nameof(UnhandledErrorLead));
+
+    /// <summary>Says that one more error came after the first.</summary>
+    public static string UnhandledErrorMoreOne => Get(nameof(UnhandledErrorMoreOne));
+
+    /// <summary>Formats how many more errors came after the first, for two or more.</summary>
+    public static string UnhandledErrorMoreFormat => Get(nameof(UnhandledErrorMoreFormat));
+
+    /// <summary>The header of the collapsed details.</summary>
+    public static string UnhandledErrorDetails => Get(nameof(UnhandledErrorDetails));
+
+    /// <summary>The accessible name of the details expander.</summary>
+    public static string UnhandledErrorDetailsName => Get(nameof(UnhandledErrorDetailsName));
+
+    /// <summary>The accessible name of the details text.</summary>
+    public static string UnhandledErrorDetailsTextName => Get(nameof(UnhandledErrorDetailsTextName));
+
+    /// <summary>The label of the button that copies the details.</summary>
+    public static string UnhandledErrorCopyDetails => Get(nameof(UnhandledErrorCopyDetails));
+
+    /// <summary>The tooltip of the button that copies the details.</summary>
+    public static string UnhandledErrorCopyDetailsTip => Get(nameof(UnhandledErrorCopyDetailsTip));
+
+    /// <summary>The label of the button that closes the safety net's dialog.</summary>
+    public static string UnhandledErrorClose => Get(nameof(UnhandledErrorClose));
+
     // ===== One code's outcome =====
 
     /// <summary>Reports that the metadata code was accepted.</summary>

@@ -54,6 +54,9 @@ Long operations dim the window behind a card naming what is running and how far 
 a PDF written, a recovery completed, a code rejected — is announced in a bar across the top of the window,
 while the detail stays on the page that owns it.
 
+Should something fail that the application does not expect, a *Something went wrong* dialog says so and the
+application keeps running; its collapsed *Details* hold what to paste into a bug report (*Copy details*).
+
 ## Backing up a file
 
 Open the **Backup** page from the rail.
