@@ -1,6 +1,6 @@
 # FEATURE-3D14 — Linux install and uninstall scripts
 
-**Status:** TODO
+**Status:** DONE
 **Type:** FEATURE
 **Branch:** `feature/feature-3d14-linux-install`
 **Run:** feature/2026-10-29-uniform-enigma-apps
