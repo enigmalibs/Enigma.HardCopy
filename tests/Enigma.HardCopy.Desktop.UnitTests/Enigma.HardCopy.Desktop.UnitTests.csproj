@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="xunit.v3" />
-    <PackageReference Include="coverlet.collector" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/Enigma.HardCopy.Desktop/Enigma.HardCopy.Desktop.csproj" />

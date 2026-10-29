@@ -80,12 +80,12 @@
     <PackageVersion Include="Xamarin.AndroidX.Camera.Lifecycle" Version="1.6.1" />
   </ItemGroup>
 
-  <!-- Tests (MTP-native: xunit.v3 only; coverlet.collector for coverage). No Microsoft.NET.Test.Sdk.
-       xunit.v3 stays on the 3.x line: 4.x is a migration of its own (MTP v2 only, analyzer changes, and
-       coverage moving from coverlet.collector to Microsoft.Testing.Extensions.CodeCoverage), not a bump. -->
+  <!-- Tests (MTP-native: xunit.v3 only; Microsoft.Testing.Extensions.CodeCoverage for coverage).
+       No Microsoft.NET.Test.Sdk, no coverlet.collector: xunit.v3 4.x runs on MTP v2 only, where
+       coverage comes from the platform's own extension. -->
   <ItemGroup>
-    <PackageVersion Include="xunit.v3" Version="3.2.2" />
-    <PackageVersion Include="coverlet.collector" Version="10.1.0" />
+    <PackageVersion Include="xunit.v3" Version="4.0.2" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
   </ItemGroup>
 
 </Project>
