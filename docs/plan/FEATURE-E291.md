@@ -1,6 +1,6 @@
 # FEATURE-E291 — Update NuGet packages
 
-**Status:** TODO
+**Status:** IN PROGRESS
 **Type:** FEATURE (2 phases)
 **Branch:** `feature/feature-e291-phaseNN-<slug>` (one per phase)
 **Run:** feature/2026-10-29-uniform-enigma-apps
@@ -36,7 +36,7 @@ final dependencies.
 
 ## PHASE01 — Runtime packages to latest
 
-**Status:** TODO
+**Status:** DONE
 **Branch:** `feature/feature-e291-phase01-runtime-packages`
 
 ### Steps
