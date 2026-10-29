@@ -232,6 +232,20 @@ is covered step by step in [docs/android.md](docs/android.md).
 
 ## Publishing the release artifacts
 
+For a local build of the desktop app, one command per platform publishes it Release, ReadyToRun, for an installed
+.NET 10 runtime, from any directory:
+
+```
+packaging/windows/publish.ps1         # Windows — or publish.bat from a cmd prompt (no execution policy)
+packaging/linux/publish.sh            # Linux
+```
+
+Each runs `dotnet publish src/Enigma.HardCopy.Desktop -c Release -r <win-x64|linux-x64> -p:PublishReadyToRun=true`
+and leaves its output in `src/Enigma.HardCopy.Desktop/bin/Release/net10.0/<rid>/publish/`. To install on Linux,
+`packaging/linux/install.sh` (see *Installing on Linux*) builds and installs in one step.
+
+The release archives are produced by a different pair of scripts:
+
 ```
 scripts/publish.sh                    # Linux/macOS — every RID
 scripts/publish.ps1                   # Windows — every RID
@@ -265,7 +279,7 @@ by mistake. Creating the key, the variables, and checking the result are covered
 | `src/Enigma.HardCopy.Desktop/` | The Avalonia application. |
 | `src/Enigma.HardCopy.Recover/` | The Android recovery app's platform-neutral half: its UI, ViewModels and seams. |
 | `src/Enigma.HardCopy.Recover.Android/` | The Android recovery app's head: the activity, the manifest and the platform services. |
-| `packaging/` | The icon's SVG masters; the Linux installer: `install.sh`, `uninstall.sh`, the launcher entry and its icons. |
+| `packaging/` | The icon's SVG masters; the one-command publish scripts (`windows/publish.ps1`, `windows/publish.bat`, `linux/publish.sh`); the Linux installer: `install.sh`, `uninstall.sh`, the launcher entry and its icons. |
 | `tests/` | The xUnit suites for Core, the desktop app and the recovery app. |
 | `docs/` | Roadmap, plans and per-phase completion records. The format specification lives in `docs/plan/FEATURE-79FF.md`; the Android build guide in `docs/android.md`. |
 
