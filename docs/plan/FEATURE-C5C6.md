@@ -1,6 +1,6 @@
 # FEATURE-C5C6 — App icon in the output directory
 
-**Status:** TODO
+**Status:** DONE
 **Type:** FEATURE
 **Branch:** `feature/feature-c5c6-icon-in-output-dir`
 **Run:** feature/2026-10-29-uniform-enigma-apps
