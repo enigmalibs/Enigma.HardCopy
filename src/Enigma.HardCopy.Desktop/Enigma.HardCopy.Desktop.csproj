@@ -47,6 +47,10 @@
   <ItemGroup>
     <ProjectReference Include="../Enigma.HardCopy.Core/Enigma.HardCopy.Core.csproj" />
   </ItemGroup>
+  <!-- The safety net's process-wide hooks keep static state; the tests reset it through an internal seam. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Enigma.HardCopy.Desktop.UnitTests" />
+  </ItemGroup>
   <!-- SkiaSharp and HarfBuzz ship debug symbols for their *native* libraries in the runtime assets
        (win-x64: libSkiaSharp.pdb 84 MB + libHarfBuzzSharp.pdb 21 MB). They are of no use to anyone
        running the app and more than double the published artifact, so they are dropped here rather
