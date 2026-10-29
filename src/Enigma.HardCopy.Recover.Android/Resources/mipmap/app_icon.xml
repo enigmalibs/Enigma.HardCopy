@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pre-API-26 launcher icon: the adaptive artwork on a round badge. -->
+<!-- Pre-API-26 launcher icon: the application icon as the branding draws it — the code on its rounded dark tile,
+     scaled from the SVG's 256-unit space so the 240-unit tile fills 96 of the 108 units. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
         android:width="48dp"
         android:height="48dp"
         android:viewportWidth="108"
         android:viewportHeight="108">
-  <path android:fillColor="@color/app_icon_background"
-        android:pathData="M54,6 A48,48 0 1,1 54,102 A48,48 0 1,1 54,6 Z" />
-  <group android:scaleX="0.78"
-         android:scaleY="0.78"
-         android:pivotX="54"
-         android:pivotY="54">
-    <path android:fillColor="#FFFFFFFF"
+  <group android:scaleX="0.4"
+         android:scaleY="0.4"
+         android:translateX="2.8"
+         android:translateY="2.8">
+    <path android:fillColor="@color/app_icon_background"
+          android:pathData="M56,8h144a48,48 0 0 1 48,48v144a48,48 0 0 1 -48,48h-144a48,48 0 0 1 -48,-48v-144a48,48 0 0 1 48,-48z" />
+    <path android:fillColor="#FF6A9BF4"
           android:fillType="evenOdd"
-          android:pathData="M27,27h18v18h-18z M30,30v12h12v-12z M33,33h6v6h-6z M63,27h18v18h-18z M66,30v12h12v-12z M69,33h6v6h-6z M27,63h18v18h-18z M30,66v12h12v-12z M33,69h6v6h-6z M63,63h6v6h-6z M75,63h6v6h-6z M69,69h6v6h-6z M63,75h6v6h-6z M75,75h6v6h-6z" />
+          android:pathData="M73.44,60h29.12a13.44,13.44 0 0 1 13.44,13.44v29.12a13.44,13.44 0 0 1 -13.44,13.44h-29.12a13.44,13.44 0 0 1 -13.44,-13.44v-29.12a13.44,13.44 0 0 1 13.44,-13.44z M77.92,70.08h20.16a7.84,7.84 0 0 1 7.84,7.84v20.16a7.84,7.84 0 0 1 -7.84,7.84h-20.16a7.84,7.84 0 0 1 -7.84,-7.84v-20.16a7.84,7.84 0 0 1 7.84,-7.84z M82.96,78.48h10.08a4.48,4.48 0 0 1 4.48,4.48v10.08a4.48,4.48 0 0 1 -4.48,4.48h-10.08a4.48,4.48 0 0 1 -4.48,-4.48v-10.08a4.48,4.48 0 0 1 4.48,-4.48z M153.44,60h29.12a13.44,13.44 0 0 1 13.44,13.44v29.12a13.44,13.44 0 0 1 -13.44,13.44h-29.12a13.44,13.44 0 0 1 -13.44,-13.44v-29.12a13.44,13.44 0 0 1 13.44,-13.44z M157.92,70.08h20.16a7.84,7.84 0 0 1 7.84,7.84v20.16a7.84,7.84 0 0 1 -7.84,7.84h-20.16a7.84,7.84 0 0 1 -7.84,-7.84v-20.16a7.84,7.84 0 0 1 7.84,-7.84z M162.96,78.48h10.08a4.48,4.48 0 0 1 4.48,4.48v10.08a4.48,4.48 0 0 1 -4.48,4.48h-10.08a4.48,4.48 0 0 1 -4.48,-4.48v-10.08a4.48,4.48 0 0 1 4.48,-4.48z M73.44,140h29.12a13.44,13.44 0 0 1 13.44,13.44v29.12a13.44,13.44 0 0 1 -13.44,13.44h-29.12a13.44,13.44 0 0 1 -13.44,-13.44v-29.12a13.44,13.44 0 0 1 13.44,-13.44z M77.92,150.08h20.16a7.84,7.84 0 0 1 7.84,7.84v20.16a7.84,7.84 0 0 1 -7.84,7.84h-20.16a7.84,7.84 0 0 1 -7.84,-7.84v-20.16a7.84,7.84 0 0 1 7.84,-7.84z M82.96,158.48h10.08a4.48,4.48 0 0 1 4.48,4.48v10.08a4.48,4.48 0 0 1 -4.48,4.48h-10.08a4.48,4.48 0 0 1 -4.48,-4.48v-10.08a4.48,4.48 0 0 1 4.48,-4.48z M124,60h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M124,100h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M64,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M84,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M124,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M164,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M184,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M124,140h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M144,140h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M184,140h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M124,180h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M144,180h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z" />
+    <path android:fillColor="#FF63C77D"
+          android:pathData="M169,160h18a9,9 0 0 1 9,9v18a9,9 0 0 1 -9,9h-18a9,9 0 0 1 -9,-9v-18a9,9 0 0 1 9,-9z" />
   </group>
 </vector>

@@ -29,7 +29,7 @@
 | FEATURE-E291 | Update NuGet packages                        | DONE   | docs/plan/FEATURE-E291.md |
 | - PHASE01    | Runtime packages to latest                   | DONE   | (in FEATURE-E291.md)      |
 | - PHASE02    | xunit.v3 4 and MTP code coverage             | DONE   | (in FEATURE-E291.md)      |
-| FEATURE-1148 | New application icons                        | TODO   | docs/plan/FEATURE-1148.md |
+| FEATURE-1148 | New application icons                        | DONE   | docs/plan/FEATURE-1148.md |
 | FEATURE-C5C6 | App icon in the output directory             | TODO   | docs/plan/FEATURE-C5C6.md |
 | FEATURE-7B95 | Uniform About dialog                         | TODO   | docs/plan/FEATURE-7B95.md |
 | FEATURE-555A | Catch unhandled exceptions                   | TODO   | docs/plan/FEATURE-555A.md |

@@ -1,6 +1,6 @@
 # FEATURE-1148 — New application icons
 
-**Status:** TODO
+**Status:** DONE
 **Type:** FEATURE
 **Branch:** `feature/feature-1148-new-app-icons`
 **Run:** feature/2026-10-29-uniform-enigma-apps

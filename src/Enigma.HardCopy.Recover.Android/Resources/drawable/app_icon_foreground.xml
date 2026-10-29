@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- A QR code's three finder patterns and a few modules — what the application reads. Drawn on the adaptive
-     icon's 108-unit canvas and scaled into the 66-unit safe zone, so no launcher mask clips a corner. -->
+<!-- The application icon's QR code (Branding/Apps/final/hardcopy/enigma-hardcopy.svg), its modules in their two
+     colours, drawn in the SVG's 256-unit space and scaled onto the adaptive icon's 108-unit canvas: the 136-unit
+     code becomes 42 units, inside the 66-unit safe zone, so no launcher mask clips a corner. The finder patterns
+     are one even-odd path, so their dark rings are holes that show the background layer. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
         android:width="108dp"
         android:height="108dp"
         android:viewportWidth="108"
         android:viewportHeight="108">
-  <group android:scaleX="0.78"
-         android:scaleY="0.78"
-         android:pivotX="54"
-         android:pivotY="54">
-    <path android:fillColor="#FFFFFFFF"
+  <group android:scaleX="0.31"
+         android:scaleY="0.31"
+         android:translateX="14.32"
+         android:translateY="14.32">
+    <path android:fillColor="#FF6A9BF4"
           android:fillType="evenOdd"
-          android:pathData="M27,27h18v18h-18z M30,30v12h12v-12z M33,33h6v6h-6z M63,27h18v18h-18z M66,30v12h12v-12z M69,33h6v6h-6z M27,63h18v18h-18z M30,66v12h12v-12z M33,69h6v6h-6z M63,63h6v6h-6z M75,63h6v6h-6z M69,69h6v6h-6z M63,75h6v6h-6z M75,75h6v6h-6z" />
+          android:pathData="M73.44,60h29.12a13.44,13.44 0 0 1 13.44,13.44v29.12a13.44,13.44 0 0 1 -13.44,13.44h-29.12a13.44,13.44 0 0 1 -13.44,-13.44v-29.12a13.44,13.44 0 0 1 13.44,-13.44z M77.92,70.08h20.16a7.84,7.84 0 0 1 7.84,7.84v20.16a7.84,7.84 0 0 1 -7.84,7.84h-20.16a7.84,7.84 0 0 1 -7.84,-7.84v-20.16a7.84,7.84 0 0 1 7.84,-7.84z M82.96,78.48h10.08a4.48,4.48 0 0 1 4.48,4.48v10.08a4.48,4.48 0 0 1 -4.48,4.48h-10.08a4.48,4.48 0 0 1 -4.48,-4.48v-10.08a4.48,4.48 0 0 1 4.48,-4.48z M153.44,60h29.12a13.44,13.44 0 0 1 13.44,13.44v29.12a13.44,13.44 0 0 1 -13.44,13.44h-29.12a13.44,13.44 0 0 1 -13.44,-13.44v-29.12a13.44,13.44 0 0 1 13.44,-13.44z M157.92,70.08h20.16a7.84,7.84 0 0 1 7.84,7.84v20.16a7.84,7.84 0 0 1 -7.84,7.84h-20.16a7.84,7.84 0 0 1 -7.84,-7.84v-20.16a7.84,7.84 0 0 1 7.84,-7.84z M162.96,78.48h10.08a4.48,4.48 0 0 1 4.48,4.48v10.08a4.48,4.48 0 0 1 -4.48,4.48h-10.08a4.48,4.48 0 0 1 -4.48,-4.48v-10.08a4.48,4.48 0 0 1 4.48,-4.48z M73.44,140h29.12a13.44,13.44 0 0 1 13.44,13.44v29.12a13.44,13.44 0 0 1 -13.44,13.44h-29.12a13.44,13.44 0 0 1 -13.44,-13.44v-29.12a13.44,13.44 0 0 1 13.44,-13.44z M77.92,150.08h20.16a7.84,7.84 0 0 1 7.84,7.84v20.16a7.84,7.84 0 0 1 -7.84,7.84h-20.16a7.84,7.84 0 0 1 -7.84,-7.84v-20.16a7.84,7.84 0 0 1 7.84,-7.84z M82.96,158.48h10.08a4.48,4.48 0 0 1 4.48,4.48v10.08a4.48,4.48 0 0 1 -4.48,4.48h-10.08a4.48,4.48 0 0 1 -4.48,-4.48v-10.08a4.48,4.48 0 0 1 4.48,-4.48z M124,60h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M124,100h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M64,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M84,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M124,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M164,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M184,120h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M124,140h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M144,140h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M184,140h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M124,180h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z M144,180h8a4,4 0 0 1 4,4v8a4,4 0 0 1 -4,4h-8a4,4 0 0 1 -4,-4v-8a4,4 0 0 1 4,-4z" />
+    <path android:fillColor="#FF63C77D"
+          android:pathData="M169,160h18a9,9 0 0 1 9,9v18a9,9 0 0 1 -9,9h-18a9,9 0 0 1 -9,-9v-18a9,9 0 0 1 9,-9z" />
   </group>
 </vector>
