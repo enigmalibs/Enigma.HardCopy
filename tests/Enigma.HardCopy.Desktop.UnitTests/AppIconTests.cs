@@ -8,7 +8,7 @@ namespace Enigma.HardCopy.Desktop.UnitTests;
 
 /// <summary>
 /// Pins the application icon to the branding set: the ten-frame <c>app.ico</c> the executable and the window
-/// carry, and the 256-pixel PNG the About dialog shows.
+/// carry, the 256-pixel PNG the About dialog shows, and the copy of the icon written beside the executable.
 /// </summary>
 /// <remarks>
 /// Headers only, read straight from the bytes: decoding an image would need Avalonia's platform, and the frame
@@ -55,5 +55,18 @@ public sealed class AppIconTests
         // IHDR is always the first chunk: width and height follow its 4-byte length and 4-byte type.
         Assert.Equal(256u, BinaryPrimitives.ReadUInt32BigEndian(png.AsSpan(16)));
         Assert.Equal(256u, BinaryPrimitives.ReadUInt32BigEndian(png.AsSpan(20)));
+    }
+
+    [Fact]
+    public void AppIco_IsCopiedToTheOutputDirectory_ByteForByte()
+    {
+        // The app's CopyToOutputDirectory item flows to this referencing project's output, so the copy that
+        // lands beside the test assembly is the one that lands beside the executable.
+        string copy = Path.Combine(AppContext.BaseDirectory, "app.ico");
+
+        Assert.True(File.Exists(copy), $"No app.ico in {AppContext.BaseDirectory}.");
+        Assert.Equal(
+            File.ReadAllBytes(RepositoryRoot.Combine("src/Enigma.HardCopy.Desktop/Assets/app.ico")),
+            File.ReadAllBytes(copy));
     }
 }
