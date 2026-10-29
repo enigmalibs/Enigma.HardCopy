@@ -300,6 +300,61 @@ public static class Strings
     /// <summary>The appearance choice that is always dark.</summary>
     public static string SettingsThemeDark => Get(nameof(SettingsThemeDark));
 
+    /// <summary>The label of the about row.</summary>
+    public static string SettingsAboutLabel => Get(nameof(SettingsAboutLabel));
+
+    /// <summary>Formats the about row's description: the product and its version.</summary>
+    public static string SettingsAboutNoteFormat => Get(nameof(SettingsAboutNoteFormat));
+
+    /// <summary>The label of the button that opens the About dialog.</summary>
+    public static string SettingsAboutButton => Get(nameof(SettingsAboutButton));
+
+    // ===== About dialog =====
+
+    /// <summary>The product's name in words, as the About dialog and the Settings page show it.</summary>
+    public static string AboutProductName => Get(nameof(AboutProductName));
+
+    /// <summary>The label before the version number.</summary>
+    public static string AboutVersionLabel => Get(nameof(AboutVersionLabel));
+
+    /// <summary>The label before the build's short revision.</summary>
+    public static string AboutBuildLabel => Get(nameof(AboutBuildLabel));
+
+    /// <summary>The label of the button that closes the About dialog.</summary>
+    public static string AboutClose => Get(nameof(AboutClose));
+
+    // ===== Unhandled error dialog =====
+
+    /// <summary>The title of the safety net's dialog.</summary>
+    public static string UnhandledErrorTitle => Get(nameof(UnhandledErrorTitle));
+
+    /// <summary>The sentence that opens the safety net's dialog: the application is still running.</summary>
+    public static string UnhandledErrorLead => Get(nameof(UnhandledErrorLead));
+
+    /// <summary>Says that one more error came after the first.</summary>
+    public static string UnhandledErrorMoreOne => Get(nameof(UnhandledErrorMoreOne));
+
+    /// <summary>Formats how many more errors came after the first, for two or more.</summary>
+    public static string UnhandledErrorMoreFormat => Get(nameof(UnhandledErrorMoreFormat));
+
+    /// <summary>The header of the collapsed details.</summary>
+    public static string UnhandledErrorDetails => Get(nameof(UnhandledErrorDetails));
+
+    /// <summary>The accessible name of the details expander.</summary>
+    public static string UnhandledErrorDetailsName => Get(nameof(UnhandledErrorDetailsName));
+
+    /// <summary>The accessible name of the details text.</summary>
+    public static string UnhandledErrorDetailsTextName => Get(nameof(UnhandledErrorDetailsTextName));
+
+    /// <summary>The label of the button that copies the details.</summary>
+    public static string UnhandledErrorCopyDetails => Get(nameof(UnhandledErrorCopyDetails));
+
+    /// <summary>The tooltip of the button that copies the details.</summary>
+    public static string UnhandledErrorCopyDetailsTip => Get(nameof(UnhandledErrorCopyDetailsTip));
+
+    /// <summary>The label of the button that closes the safety net's dialog.</summary>
+    public static string UnhandledErrorClose => Get(nameof(UnhandledErrorClose));
+
     // ===== One code's outcome =====
 
     /// <summary>Reports that the metadata code was accepted.</summary>

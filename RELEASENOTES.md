@@ -1,5 +1,96 @@
 # Enigma.HardCopy Release Notes
 
+## 1.3.0
+
+A release that brings the desktop app in line with the other Enigma apps — the same About dialog, the same safety
+net for unexpected failures, the same packaging — under a new icon, with every dependency on its latest coherent
+version. **The format is untouched: every backup printed by 1.0, 1.1 or 1.2 recovers, on the desktop and on the
+phone alike.**
+
+### About Enigma HardCopy
+
+- **A new About row on the Settings page** names the running version. Its *About Enigma HardCopy* button opens the
+  About dialog every Enigma app shares: the icon, the name, the version, the build's short commit — selectable, to
+  paste into a bug report, and absent for a build made outside the repository — and the copyright.
+
+### When something unexpected fails
+
+- **A safety net catches what nothing else handles** — an exception from a button, from work running in the
+  background, or from work nobody waits for.
+- **It says so in a *Something went wrong* dialog**, and the application keeps running. The dialog gives the error,
+  counts any that followed it ("2 more errors occurred."), and keeps the details — type, message and stack, nothing
+  else — collapsed, with *Copy details* for a bug report.
+- **It never covers a question on screen**: it waits for the question to be answered. A burst of failures opens one
+  dialog, and the same failure is not shown again for a minute after its dialog was closed.
+- **Every such error is logged** in full. The failures the application already knows about — a file it cannot read
+  or write, a code it rejects — are reported where they happen, exactly as before.
+
+### A new icon
+
+- **The new Enigma.HardCopy icon** — a QR code in soft blue with one green module, on a dark rounded tile — replaces
+  the old one in the desktop app (window, taskbar, executable) and on the phone's launcher. The Android icon also
+  has a themed (monochrome) layer for launchers that tint icons.
+- **`app.ico` now sits beside the executable** in every build and publish folder, release archives included, for
+  shortcuts and installers to point at.
+
+### Installing and publishing
+
+- **A Linux installer.** `packaging/linux/install.sh` installs the app for the current user into the XDG
+  directories, with a launcher entry, the icon in eight sizes and an `enigma-hardcopy` command — no root, nothing
+  outside your home. It builds from the repository (bundling the .NET runtime, or `--framework-dependent`) or
+  installs an already-published folder (`--from`). `packaging/linux/uninstall.sh` removes exactly that and never
+  touches your settings.
+- **One-command publish scripts.** `packaging/windows/publish.ps1`, `packaging/windows/publish.bat` and
+  `packaging/linux/publish.sh` publish the desktop app Release, ReadyToRun, for win-x64 or linux-x64, from any
+  directory. The release archives are still produced by `scripts/publish.ps1` / `scripts/publish.sh`, unchanged.
+
+### Compatibility — the paper is unchanged
+
+- **The backup format is the same EHC1 format.** A PDF printed by 1.3 recovers with 1.0, 1.1 and 1.2, and the other
+  way round; the recovery instructions printed on page 1 are unchanged.
+- **The settings file is unchanged** (`settings.json`, the appearance choice).
+- **HardCopy Recover's only visible change is its icon.** It is built and signed exactly as 1.2.0
+  (`scripts/publish-android.*`, the project's release key), so it installs as an update over a release-signed 1.2.0;
+  its `versionCode` is now `10300`.
+
+### For developers
+
+- **The tests run on xunit.v3 4** (Microsoft Testing Platform v2), and coverage comes from
+  `Microsoft.Testing.Extensions.CodeCoverage`: `dotnet test --solution Enigma.HardCopy.slnx --coverage`.
+  `coverlet.collector` is gone.
+- **New `packaging/` folder:** the icon's SVG masters, the publish scripts and the Linux installer.
+- **The suite grows** from 796 to 875 tests.
+
+### Dependencies
+
+**Updated:**
+
+- The Avalonia set (`Avalonia`, `Avalonia.Android`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`,
+  `Avalonia.Fonts.Inter`) 12.1.1 → 12.1.4, with `Enigma.Avalonia.Desktop` 1.0.0 → 1.3.0
+- `QuestPDF` 2026.7.2 → 2026.9.1 — the PDF composer uses the renamed glyph setting; a printed backup is laid out
+  exactly as before
+- `Microsoft.Extensions.Hosting`, `.Logging.Console`, `.Logging.Debug` 10.0.13 → 10.0.14
+- `xunit.v3` 3.2.2 → 4.0.2 (tests only)
+- `coverlet.collector` 10.1.0 → replaced by `Microsoft.Testing.Extensions.CodeCoverage` 18.12.0 (tests only)
+
+**Deliberately held back:**
+
+- `SkiaSharp` / `SkiaSharp.NativeAssets.Linux` stay at 3.119.4 (4.154.0 is out), and with them
+  `ZXing.Net.Bindings.SkiaSharp` at 0.16.22 (0.16.25 needs SkiaSharp 4). Avalonia 12.1.4, the newest, is built on
+  SkiaSharp 3.119.4, and the app needs one Skia runtime.
+- CameraX (`Xamarin.AndroidX.Camera.Camera2` / `.Core` / `.Lifecycle`) stays at 1.6.1 (1.6.2 is out): 1.6.2 moves
+  AndroidX Lifecycle to 2.11, while `Avalonia.Android` 12.1.4 still pins 2.10.
+
+No package in the solution has a known vulnerability, direct or transitive.
+
+### Known limitations
+
+- The About dialog and the safety net are the desktop app's; HardCopy Recover has neither yet.
+- The Linux installer installs for the current user only; there is no distribution package (`.deb`, `.rpm`,
+  Flatpak, AppImage).
+
+---
+
 ## 1.2.0
 
 The first release with **HardCopy Recover**, an Android app that recovers a backup with the phone's camera —

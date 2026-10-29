@@ -26,3 +26,15 @@
 | - PHASE01    | Signed release APK build                     | DONE   | (in FEATURE-DFCB.md)      |
 | - PHASE02    | Dependency refresh                           | DONE   | (in FEATURE-DFCB.md)      |
 | - PHASE03    | Release 1.2.0: version, notes, runbook       | DONE   | (in FEATURE-DFCB.md)      |
+| FEATURE-E291 | Update NuGet packages                        | DONE   | docs/plan/FEATURE-E291.md |
+| - PHASE01    | Runtime packages to latest                   | DONE   | (in FEATURE-E291.md)      |
+| - PHASE02    | xunit.v3 4 and MTP code coverage             | DONE   | (in FEATURE-E291.md)      |
+| FEATURE-1148 | New application icons                        | DONE   | docs/plan/FEATURE-1148.md |
+| FEATURE-C5C6 | App icon in the output directory             | DONE   | docs/plan/FEATURE-C5C6.md |
+| FEATURE-7B95 | Uniform About dialog                         | DONE   | docs/plan/FEATURE-7B95.md |
+| FEATURE-555A | Catch unhandled exceptions                   | DONE   | docs/plan/FEATURE-555A.md |
+| - PHASE01    | Error policy and process hooks               | DONE   | (in FEATURE-555A.md)      |
+| - PHASE02    | Error dialog and wiring                      | DONE   | (in FEATURE-555A.md)      |
+| FEATURE-3D14 | Linux install and uninstall scripts          | DONE   | docs/plan/FEATURE-3D14.md |
+| FEATURE-92E2 | Publish scripts for Windows and Linux        | DONE   | docs/plan/FEATURE-92E2.md |
+| FEATURE-407E | Release 1.3.0                                | DONE   | docs/plan/FEATURE-407E.md |

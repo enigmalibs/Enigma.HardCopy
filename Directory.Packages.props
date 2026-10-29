@@ -11,27 +11,29 @@
   <!-- Core library. Targets net10.0 only, so the netstandard2.0-support pair
        (System.Buffers / PolySharp) is deliberately absent. -->
   <ItemGroup>
-    <!-- 2026.7.2, not 2026.9.x: 2026.9 renames Settings.CheckIfAllTextGlyphsAreAvailable to
-         ThrowOnMissingTextGlyphs (CS0618 under TreatWarningsAsErrors). QuestPDF lays out the paper
-         backups, so its next bump comes with that code change and a fresh look at the printed PDF. -->
-    <PackageVersion Include="QuestPDF" Version="2026.7.2" />
+    <!-- 2026.9 renamed Settings.CheckIfAllTextGlyphsAreAvailable to ThrowOnMissingTextGlyphs (the old
+         name is CS0618 under TreatWarningsAsErrors); PdfComposer uses the new name. QuestPDF lays out
+         the paper backups, so a bump is followed by a look at a printed PDF. -->
+    <PackageVersion Include="QuestPDF" Version="2026.9.1" />
     <PackageVersion Include="QRCoder" Version="1.8.1" />
     <PackageVersion Include="ZXing.Net" Version="0.16.11" />
-    <!-- 0.16.22, not 0.16.24: from 0.16.24 on the binding requires SkiaSharp >= 4.151.1 (NU1605
-         against the pin below), so it now moves with SkiaSharp and the Avalonia group, not alone. -->
+    <!-- 0.16.22, not 0.16.24 or later: from 0.16.24 on the binding requires SkiaSharp >= 4.151.1 (NU1605
+         against the pin below), so it moves with SkiaSharp and the Avalonia group, not alone. -->
     <PackageVersion Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.22" />
-    <!-- SkiaSharp is pinned to the version Avalonia 12.1.1 itself depends on, NOT the newest
+    <!-- SkiaSharp is pinned to the version Avalonia 12.1.4 itself depends on, NOT the newest
          release (4.x): the ZXing SkiaSharp binding and Avalonia.Skia must resolve to one
-         Skia runtime. Bump this only together with the Avalonia ecosystem group below. -->
+         Skia runtime, and Avalonia.Skia 12.1.4 — the newest Avalonia — is built on SkiaSharp
+         3.119.4. Bump this only together with the Avalonia ecosystem group below, once an
+         Avalonia release is built on SkiaSharp 4. -->
     <PackageVersion Include="SkiaSharp" Version="3.119.4" />
     <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="3.119.4" />
   </ItemGroup>
 
   <!-- Hosting / logging — shared by the Desktop app (and a future CLI). -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.14" />
   </ItemGroup>
 
   <!-- Desktop (Avalonia) — this is a version-coupled ecosystem: bump Avalonia, the Fluent theme,
@@ -39,17 +41,17 @@
        versions within the set breaks the build, so the whole group moves as a unit (SkiaSharp
        above is part of that unit — see its note). -->
   <ItemGroup>
-    <PackageVersion Include="Avalonia" Version="12.1.1" />
+    <PackageVersion Include="Avalonia" Version="12.1.4" />
     <!-- The Android head of the recovery app (src/Enigma.HardCopy.Recover.Android). Same set, same rule:
          it moves with Avalonia and never on its own. -->
-    <PackageVersion Include="Avalonia.Android" Version="12.1.1" />
-    <PackageVersion Include="Avalonia.Desktop" Version="12.1.1" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.1" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.1" />
+    <PackageVersion Include="Avalonia.Android" Version="12.1.4" />
+    <PackageVersion Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.4" />
     <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <!-- The house control library and its icon packs. Enigma.Avalonia.Desktop pins Avalonia 12.1.1,
-         Avalonia.Themes.Fluent 12.1.1 and CommunityToolkit.Mvvm 8.4.2 — exactly the versions above —
+    <!-- The house control library and its icon packs. Enigma.Avalonia.Desktop 1.3.0 pins Avalonia 12.1.4,
+         Avalonia.Themes.Fluent 12.1.4 and CommunityToolkit.Mvvm 8.4.2 — exactly the versions above —
          so it belongs to this same version-coupled group and moves with it. Enigma.Icons.Avalonia
          needs Avalonia >= 12.1.0 and is coupled for the same reason.
          Enigma.Icons and Enigma.Icons.Phosphor arrive transitively through Enigma.Icons.Avalonia;
@@ -58,7 +60,7 @@
          BouncyCastle.Cryptography dependency) also arrives transitively with the control library:
          nothing in this app calls it, it backs the library's binary editors, and there is no way
          to opt out short of not referencing the library. -->
-    <PackageVersion Include="Enigma.Avalonia.Desktop" Version="1.0.0" />
+    <PackageVersion Include="Enigma.Avalonia.Desktop" Version="1.3.0" />
     <PackageVersion Include="Enigma.Icons" Version="1.0.0" />
     <PackageVersion Include="Enigma.Icons.Phosphor" Version="1.0.0" />
     <PackageVersion Include="Enigma.Icons.Avalonia" Version="1.0.0" />
@@ -68,9 +70,9 @@
        camera-camera2 pins camera-core to its own patch range, so the three move together. CameraX is the
        AndroidX camera library Google recommends over raw Camera2; its frames are decoded in-process by ZXing
        through Core, so no barcode SDK and no Play Services are involved.
-       1.6.1, not the newer 1.6.1.1 / 1.6.2: those move AndroidX Lifecycle to 2.11, while Avalonia.Android 12.1.1
-       pins its Lifecycle packages to the 2.10 line (NU1608). Bump CameraX together with the Avalonia group, once
-       Avalonia's AndroidX set has moved. -->
+       1.6.1, not the newer 1.6.1.1 / 1.6.2: those move AndroidX Lifecycle to 2.11, while Avalonia.Android — 12.1.4,
+       the newest, as 12.1.1 before it — pins its Lifecycle packages to the 2.10 line (NU1608). Bump CameraX
+       together with the Avalonia group, once Avalonia's AndroidX set has moved. -->
 
   <ItemGroup>
     <PackageVersion Include="Xamarin.AndroidX.Camera.Camera2" Version="1.6.1" />
@@ -78,12 +80,12 @@
     <PackageVersion Include="Xamarin.AndroidX.Camera.Lifecycle" Version="1.6.1" />
   </ItemGroup>
 
-  <!-- Tests (MTP-native: xunit.v3 only; coverlet.collector for coverage). No Microsoft.NET.Test.Sdk.
-       xunit.v3 stays on the 3.x line: 4.x is a migration of its own (MTP v2 only, analyzer changes, and
-       coverage moving from coverlet.collector to Microsoft.Testing.Extensions.CodeCoverage), not a bump. -->
+  <!-- Tests (MTP-native: xunit.v3 only; Microsoft.Testing.Extensions.CodeCoverage for coverage).
+       No Microsoft.NET.Test.Sdk, no coverlet.collector: xunit.v3 4.x runs on MTP v2 only, where
+       coverage comes from the platform's own extension. -->
   <ItemGroup>
-    <PackageVersion Include="xunit.v3" Version="3.2.2" />
-    <PackageVersion Include="coverlet.collector" Version="10.1.0" />
+    <PackageVersion Include="xunit.v3" Version="4.0.2" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
   </ItemGroup>
 
 </Project>

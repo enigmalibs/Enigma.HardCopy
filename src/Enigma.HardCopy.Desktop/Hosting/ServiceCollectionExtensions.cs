@@ -51,13 +51,20 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<IFileDialogService>(provider =>
                 new StorageProviderFileDialogService(provider.GetRequiredService<LibraryFileDialogs>()));
 
-            // The three shell seams the pages report through. Each wraps one of the library's host-backed
-            // services and is registered by implementation type rather than by factory, which is what keeps
-            // the library's own service names — IOverlayService, IInfoBarService, IContentDialogService — out
-            // of this file and its IFileDialogService unambiguous.
+            // The three shell seams the pages report through, and the About dialog. Each wraps one of the
+            // library's host-backed services and is registered by implementation type rather than by factory,
+            // which is what keeps the library's own service names — IOverlayService, IInfoBarService,
+            // IContentDialogService — out of this file and its IFileDialogService unambiguous.
             services.AddSingleton<IProgressOverlay, ProgressOverlay>();
             services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<IConfirmationService, ConfirmationService>();
+            services.AddSingleton<IAboutDialogService, AboutDialogService>();
+
+            // The safety net (FEATURE-555A). The dialog is one instance under two names: App hands it the window's
+            // dialog host by its concrete type, and the reporter sees only the seam it is tested against.
+            services.AddSingleton<ErrorDialog>();
+            services.AddSingleton<IErrorDialog>(provider => provider.GetRequiredService<ErrorDialog>());
+            services.AddSingleton<IUnhandledErrorReporter, UnhandledErrorReporter>();
 
             // The preference file and the variant it selects. The store is built by hand because its path is
             // a plain string the container has no way to supply — and passing it in is what lets a test point

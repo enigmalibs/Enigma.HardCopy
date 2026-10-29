@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Enigma.HardCopy.Desktop.Diagnostics;
 using Enigma.HardCopy.Desktop.Settings;
 using Enigma.HardCopy.Desktop.UnitTests.TestDoubles;
 using Enigma.HardCopy.Desktop.ViewModels;
@@ -22,7 +24,7 @@ public sealed class SettingsViewModelTests
     public void Themes_AreSystemThenLightThenDark_WithTheirLabels()
     {
         Assert.Collection(
-            new SettingsViewModel(new FakeThemeService(), new FakeAppSettingsStore()).Themes,
+            new SettingsViewModel(new FakeThemeService(), new FakeAppSettingsStore(), new FakeAboutDialogService()).Themes,
             option => Assert.Equal(AppTheme.System, option.Theme),
             option => Assert.Equal(AppTheme.Light, option.Theme),
             option => Assert.Equal(AppTheme.Dark, option.Theme));
@@ -36,7 +38,7 @@ public sealed class SettingsViewModelTests
     {
         FakeAppSettingsStore store = new(new AppSettings { Theme = stored });
 
-        SettingsViewModel viewModel = new(new FakeThemeService(), store);
+        SettingsViewModel viewModel = new(new FakeThemeService(), store, new FakeAboutDialogService());
 
         Assert.Equal(stored, viewModel.SelectedTheme.Theme);
     }
@@ -51,7 +53,7 @@ public sealed class SettingsViewModelTests
         FakeThemeService theme = new();
         FakeAppSettingsStore store = new(new AppSettings { Theme = AppTheme.Dark });
 
-        _ = new SettingsViewModel(theme, store);
+        _ = new SettingsViewModel(theme, store, new FakeAboutDialogService());
 
         Assert.Empty(theme.Applied);
         Assert.Empty(store.Saved);
@@ -62,7 +64,7 @@ public sealed class SettingsViewModelTests
     {
         FakeAppSettingsStore store = new(new AppSettings { Theme = (AppTheme)9 });
 
-        SettingsViewModel viewModel = new(new FakeThemeService(), store);
+        SettingsViewModel viewModel = new(new FakeThemeService(), store, new FakeAboutDialogService());
 
         Assert.Equal(AppTheme.System, viewModel.SelectedTheme.Theme);
     }
@@ -77,7 +79,7 @@ public sealed class SettingsViewModelTests
         AppTheme other = chosen == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark;
         FakeThemeService theme = new();
         FakeAppSettingsStore store = new(new AppSettings { Theme = other });
-        SettingsViewModel viewModel = new(theme, store);
+        SettingsViewModel viewModel = new(theme, store, new FakeAboutDialogService());
 
         viewModel.SelectedTheme = ThemeOption.For(chosen);
 
@@ -92,7 +94,7 @@ public sealed class SettingsViewModelTests
     {
         FakeThemeService theme = new();
         FakeAppSettingsStore store = new(new AppSettings { Theme = AppTheme.Dark });
-        SettingsViewModel viewModel = new(theme, store);
+        SettingsViewModel viewModel = new(theme, store, new FakeAboutDialogService());
 
         viewModel.SelectedTheme = ThemeOption.For(AppTheme.Dark);
 
@@ -106,7 +108,7 @@ public sealed class SettingsViewModelTests
     {
         FakeThemeService theme = new();
         FakeAppSettingsStore store = new(new AppSettings { Theme = AppTheme.Light });
-        SettingsViewModel viewModel = new(theme, store);
+        SettingsViewModel viewModel = new(theme, store, new FakeAboutDialogService());
 
         viewModel.SelectedTheme = null!;
 
@@ -119,7 +121,7 @@ public sealed class SettingsViewModelTests
     public void SelectedTheme_RaisesPropertyChanged_SoTheSelectorFollows()
     {
         List<string?> changed = [];
-        SettingsViewModel viewModel = new(new FakeThemeService(), new FakeAppSettingsStore());
+        SettingsViewModel viewModel = new(new FakeThemeService(), new FakeAppSettingsStore(), new FakeAboutDialogService());
         viewModel.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
 
         viewModel.SelectedTheme = ThemeOption.For(AppTheme.Dark);
@@ -132,7 +134,7 @@ public sealed class SettingsViewModelTests
     {
         FakeThemeService theme = new();
         FakeAppSettingsStore store = new();
-        SettingsViewModel viewModel = new(theme, store);
+        SettingsViewModel viewModel = new(theme, store, new FakeAboutDialogService());
 
         viewModel.SelectedTheme = ThemeOption.For(AppTheme.Dark);
         viewModel.SelectedTheme = ThemeOption.For(AppTheme.Dark);
@@ -146,7 +148,30 @@ public sealed class SettingsViewModelTests
     [Fact]
     public void Constructor_RejectsMissingDependencies()
     {
-        Assert.Throws<ArgumentNullException>(() => new SettingsViewModel(null!, new FakeAppSettingsStore()));
-        Assert.Throws<ArgumentNullException>(() => new SettingsViewModel(new FakeThemeService(), null!));
+        Assert.Throws<ArgumentNullException>(
+            () => new SettingsViewModel(null!, new FakeAppSettingsStore(), new FakeAboutDialogService()));
+        Assert.Throws<ArgumentNullException>(
+            () => new SettingsViewModel(new FakeThemeService(), null!, new FakeAboutDialogService()));
+        Assert.Throws<ArgumentNullException>(
+            () => new SettingsViewModel(new FakeThemeService(), new FakeAppSettingsStore(), null!));
+    }
+
+    [Fact]
+    public async Task OpenAboutCommand_ShowsTheAboutDialogOnce()
+    {
+        FakeAboutDialogService about = new();
+        SettingsViewModel viewModel = new(new FakeThemeService(), new FakeAppSettingsStore(), about);
+
+        await viewModel.OpenAboutCommand.ExecuteAsync(null);
+
+        Assert.Equal(1, about.ShowCalls);
+    }
+
+    [Fact]
+    public void AboutNote_NamesTheProductAndTheRunningVersion()
+    {
+        SettingsViewModel viewModel = new(new FakeThemeService(), new FakeAppSettingsStore(), new FakeAboutDialogService());
+
+        Assert.Equal($"{ProductInformation.DisplayName}, version {ProductInformation.Version}.", viewModel.AboutNote);
     }
 }
