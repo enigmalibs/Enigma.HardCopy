@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Enigma.HardCopy.Desktop.Diagnostics;
+using Enigma.HardCopy.Desktop.Resources;
 using Enigma.HardCopy.Desktop.Services;
 using Enigma.HardCopy.Desktop.Settings;
 
 namespace Enigma.HardCopy.Desktop.ViewModels;
 
 /// <summary>
-/// The settings page: the appearance of the application, and — deliberately — nothing else.
+/// The settings page: the appearance of the application — the one preference it keeps — and the way to its About
+/// dialog.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -27,26 +32,42 @@ public sealed class SettingsViewModel : ObservableObject
 {
     private readonly IThemeService _theme;
     private readonly IAppSettingsStore _store;
+    private readonly IAboutDialogService _about;
 
     private ThemeOption _selectedTheme;
 
     /// <summary>Initializes a new instance of the <see cref="SettingsViewModel"/> class.</summary>
     /// <param name="theme">Repaints the application when the choice changes.</param>
     /// <param name="store">Holds the choice between runs.</param>
+    /// <param name="about">Shows the About dialog from the about row.</param>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null"/>.</exception>
-    public SettingsViewModel(IThemeService theme, IAppSettingsStore store)
+    public SettingsViewModel(IThemeService theme, IAppSettingsStore store, IAboutDialogService about)
     {
         ArgumentNullException.ThrowIfNull(theme);
         ArgumentNullException.ThrowIfNull(store);
+        ArgumentNullException.ThrowIfNull(about);
 
         _theme = theme;
         _store = store;
+        _about = about;
+
+        OpenAboutCommand = new AsyncRelayCommand(_about.ShowAsync);
 
         // A page that throws while being built is a blank window, so a stored value outside the enum falls
         // back here as well — the store already guards its own file, this guards the contract.
         AppTheme stored = store.Load().Theme;
         _selectedTheme = Enum.IsDefined(stored) ? ThemeOption.For(stored) : ThemeOption.Default;
     }
+
+    /// <summary>Gets the about row's description: the product's name and the version of the running build.</summary>
+    public string AboutNote { get; } = string.Format(
+        CultureInfo.CurrentCulture,
+        Strings.SettingsAboutNoteFormat,
+        ProductInformation.DisplayName,
+        ProductInformation.Version);
+
+    /// <summary>Gets the command that opens the About dialog.</summary>
+    public AsyncRelayCommand OpenAboutCommand { get; }
 
     /// <summary>Gets the variants on offer.</summary>
     public IReadOnlyList<ThemeOption> Themes => ThemeOption.All;

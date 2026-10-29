@@ -14,9 +14,10 @@ control library, with icons from `Enigma.Icons.Phosphor` — plus **HardCopy Rec
 recovers a backup by scanning its codes with the phone's camera and stores nothing on the phone (see
 [Recovering on Android](#recovering-on-android)).
 
-> **What's new in 1.2.0** — **HardCopy Recover**, an Android app that recovers a backup with the phone's camera,
-> stores nothing on the phone, and can also check a freshly printed backup before you file it away. **The format
-> is untouched — every backup printed by 1.0 or 1.1 still recovers.** See [RELEASENOTES.md](RELEASENOTES.md).
+> **What's new in 1.3.0** — an **About** dialog, a **safety net** that reports an unexpected failure in a dialog
+> while the app keeps running, the **new icon** on the desktop and the phone, a **Linux installer** and one-command
+> **publish scripts**, and every dependency on its latest coherent version. **The format is untouched — every backup
+> printed by 1.0, 1.1 or 1.2 still recovers.** See [RELEASENOTES.md](RELEASENOTES.md).
 
 ## Why paper
 
@@ -33,13 +34,29 @@ required on the machine that runs it**.
 
 | Platform | Archive | Run |
 |---|---|---|
-| Windows (x64) | `Enigma.HardCopy-1.2.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
-| Linux (x64) | `Enigma.HardCopy-1.2.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
+| Windows (x64) | `Enigma.HardCopy-1.3.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
+| Linux (x64) | `Enigma.HardCopy-1.3.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
 
 On Linux, if the archive was produced on Windows the executable bit does not survive the zip — run
 `chmod +x Enigma.HardCopy.Desktop` once after unpacking.
 
-The Android app, **HardCopy Recover**, is a single APK: `Enigma.HardCopy.Recover-1.2.0.apk` (Android 7.0 or later,
+### Installing on Linux
+
+`packaging/linux/install.sh` installs the app for the current user — no root, nothing outside your home — with an
+entry in the desktop's application launcher and an `enigma-hardcopy` command:
+
+```
+packaging/linux/install.sh                      # build from this repository (.NET runtime bundled) and install
+packaging/linux/install.sh --from <folder>      # install an already-published folder instead
+packaging/linux/install.sh --help               # every option: --framework-dependent, --rid
+```
+
+It writes `~/.local/share/enigma-hardcopy` (the application), `~/.local/bin/enigma-hardcopy`,
+`~/.local/share/applications/enigma-hardcopy.desktop` and the icon in eight sizes, honouring `XDG_DATA_HOME` and
+`XDG_BIN_HOME`. Run it again to upgrade in place. `packaging/linux/uninstall.sh` removes exactly that, and never
+your settings in `~/.config/Enigma.HardCopy`.
+
+The Android app, **HardCopy Recover**, is a single APK: `Enigma.HardCopy.Recover-1.3.0.apk` (Android 7.0 or later,
 64-bit). Open it on the phone and allow installing apps from that source, or `adb install` it. It is signed with
 the project's release key: if a build made from source is already on the phone, uninstall that first, since
 Android refuses an update with a different signature. See [Recovering on Android](#recovering-on-android).
@@ -53,6 +70,9 @@ text you have typed are all still there when you come back.
 Long operations dim the window behind a card naming what is running and how far along it is. Every outcome —
 a PDF written, a recovery completed, a code rejected — is announced in a bar across the top of the window,
 while the detail stays on the page that owns it.
+
+Should something fail that the application does not expect, a *Something went wrong* dialog says so and the
+application keeps running; its collapsed *Details* hold what to paste into a bug report (*Copy details*).
 
 ## Backing up a file
 
@@ -162,6 +182,9 @@ The **Settings** page, at the foot of the rail, holds one choice: **Appearance**
 *Light* or *Dark*. It takes effect the moment you pick it and is remembered between runs. New installations
 follow the system.
 
+Below it, the **About** row names the running version; its *About Enigma HardCopy* button opens the About
+dialog — the version, the build's short commit (selectable, for a bug report) and the copyright.
+
 The choice is kept in a small JSON file, written only once you make one:
 
 | Platform | Path |
@@ -210,6 +233,20 @@ is covered step by step in [docs/android.md](docs/android.md).
 
 ## Publishing the release artifacts
 
+For a local build of the desktop app, one command per platform publishes it Release, ReadyToRun, for an installed
+.NET 10 runtime, from any directory:
+
+```
+packaging/windows/publish.ps1         # Windows — or publish.bat from a cmd prompt (no execution policy)
+packaging/linux/publish.sh            # Linux
+```
+
+Each runs `dotnet publish src/Enigma.HardCopy.Desktop -c Release -r <win-x64|linux-x64> -p:PublishReadyToRun=true`
+and leaves its output in `src/Enigma.HardCopy.Desktop/bin/Release/net10.0/<rid>/publish/`. To install on Linux,
+`packaging/linux/install.sh` (see *Installing on Linux*) builds and installs in one step.
+
+The release archives are produced by a different pair of scripts:
+
 ```
 scripts/publish.sh                    # Linux/macOS — every RID
 scripts/publish.ps1                   # Windows — every RID
@@ -243,6 +280,7 @@ by mistake. Creating the key, the variables, and checking the result are covered
 | `src/Enigma.HardCopy.Desktop/` | The Avalonia application. |
 | `src/Enigma.HardCopy.Recover/` | The Android recovery app's platform-neutral half: its UI, ViewModels and seams. |
 | `src/Enigma.HardCopy.Recover.Android/` | The Android recovery app's head: the activity, the manifest and the platform services. |
+| `packaging/` | The icon's SVG masters; the one-command publish scripts (`windows/publish.ps1`, `windows/publish.bat`, `linux/publish.sh`); the Linux installer: `install.sh`, `uninstall.sh`, the launcher entry and its icons. |
 | `tests/` | The xUnit suites for Core, the desktop app and the recovery app. |
 | `docs/` | Roadmap, plans and per-phase completion records. The format specification lives in `docs/plan/FEATURE-79FF.md`; the Android build guide in `docs/android.md`. |
 
