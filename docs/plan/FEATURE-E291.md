@@ -1,6 +1,6 @@
 # FEATURE-E291 — Update NuGet packages
 
-**Status:** IN PROGRESS
+**Status:** DONE
 **Type:** FEATURE (2 phases)
 **Branch:** `feature/feature-e291-phaseNN-<slug>` (one per phase)
 **Run:** feature/2026-10-29-uniform-enigma-apps
@@ -58,7 +58,7 @@ final dependencies.
 
 ## PHASE02 — xunit.v3 4 and MTP code coverage
 
-**Status:** TODO
+**Status:** DONE
 **Branch:** `feature/feature-e291-phase02-xunit-v4`
 
 ### Steps
