@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using AppAbout = Enigma.HardCopy.Desktop.Services.IAboutDialogService;
 using AppConfirmations = Enigma.HardCopy.Desktop.Services.IConfirmationService;
+using AppErrorDialog = Enigma.HardCopy.Desktop.Services.ErrorDialog;
+using AppErrorReporter = Enigma.HardCopy.Desktop.Services.IUnhandledErrorReporter;
+using AppErrorSeam = Enigma.HardCopy.Desktop.Services.IErrorDialog;
 using AppFileDialogs = Enigma.HardCopy.Desktop.Services.IFileDialogService;
 using AppNotifications = Enigma.HardCopy.Desktop.Services.INotificationService;
 using AppProgressOverlay = Enigma.HardCopy.Desktop.Services.IProgressOverlay;
@@ -104,6 +107,9 @@ public sealed class ServiceCollectionExtensionsTests
     [InlineData(typeof(AppNotifications), ServiceLifetime.Singleton)]
     [InlineData(typeof(AppConfirmations), ServiceLifetime.Singleton)]
     [InlineData(typeof(AppAbout), ServiceLifetime.Singleton)]
+    [InlineData(typeof(AppErrorDialog), ServiceLifetime.Singleton)]
+    [InlineData(typeof(AppErrorSeam), ServiceLifetime.Singleton)]
+    [InlineData(typeof(AppErrorReporter), ServiceLifetime.Singleton)]
     [InlineData(typeof(IAppSettingsStore), ServiceLifetime.Singleton)]
     [InlineData(typeof(AppTheming), ServiceLifetime.Singleton)]
     [InlineData(typeof(MainWindow), ServiceLifetime.Singleton)]
@@ -206,6 +212,24 @@ public sealed class ServiceCollectionExtensionsTests
         Assert.NotNull(provider.GetRequiredService<AppNotifications>());
         Assert.NotNull(provider.GetRequiredService<AppConfirmations>());
         Assert.NotNull(provider.GetRequiredService<AppAbout>());
+    }
+
+    /// <summary>
+    /// The safety net: the reporter is resolvable, and the dialog App hands the window's host to is the very one
+    /// the reporter shows on — two instances would leave the reporter waiting for a host that never comes.
+    /// </summary>
+    [Fact]
+    public void TheSafetyNet_IsResolvable_OverOneErrorDialog()
+    {
+        ServiceCollection services = [];
+        services.AddLogging();
+        services.AddEnigmaAvaloniaDesktop();
+        services.AddEnigmaHardCopyDesktop();
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        Assert.NotNull(provider.GetRequiredService<AppErrorReporter>());
+        Assert.Same(provider.GetRequiredService<AppErrorDialog>(), provider.GetRequiredService<AppErrorSeam>());
     }
 
     [Fact]

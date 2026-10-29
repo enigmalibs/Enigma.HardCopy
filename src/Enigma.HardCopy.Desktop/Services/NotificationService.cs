@@ -54,7 +54,7 @@ internal sealed class NotificationService : INotificationService
             _ => (Strings.NotificationInformationTitle, InfoBarSeverity.Info),
         };
 
-        _ = ShowAsync(title, message.Text, severity);
+        ShowAsync(title, message.Text, severity).Forget();
     }
 
     private async Task ShowAsync(string title, string text, InfoBarSeverity severity)

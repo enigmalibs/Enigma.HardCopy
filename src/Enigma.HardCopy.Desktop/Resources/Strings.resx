@@ -385,6 +385,41 @@
     <value>Close</value>
   </data>
 
+  <!-- ===== Unhandled error dialog ===== -->
+  <!-- The safety net every Enigma app shares: an exception nothing else handled, said to still leave the
+       application running. A failure the application knows about is reported where it happens instead. -->
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="UnhandledErrorLead" xml:space="preserve">
+    <value>Something went wrong, but the application is still running. You can carry on, or close it and start it again if something looks wrong.</value>
+  </data>
+  <data name="UnhandledErrorMoreOne" xml:space="preserve">
+    <value>1 more error occurred.</value>
+  </data>
+  <data name="UnhandledErrorMoreFormat" xml:space="preserve">
+    <value>{0} more errors occurred.</value>
+    <comment>{0} = how many errors came after the first, two or more.</comment>
+  </data>
+  <data name="UnhandledErrorDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="UnhandledErrorDetailsName" xml:space="preserve">
+    <value>Details of the error</value>
+  </data>
+  <data name="UnhandledErrorDetailsTextName" xml:space="preserve">
+    <value>The details of the error</value>
+  </data>
+  <data name="UnhandledErrorCopyDetails" xml:space="preserve">
+    <value>Copy details</value>
+  </data>
+  <data name="UnhandledErrorCopyDetailsTip" xml:space="preserve">
+    <value>Copy the details, to paste them into a bug report</value>
+  </data>
+  <data name="UnhandledErrorClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+
   <!-- ===== One code's outcome ===== -->
   <data name="CodeAcceptedMetadata" xml:space="preserve">
     <value>Metadata code accepted.</value>
