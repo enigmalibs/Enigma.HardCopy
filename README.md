@@ -39,6 +39,22 @@ required on the machine that runs it**.
 On Linux, if the archive was produced on Windows the executable bit does not survive the zip — run
 `chmod +x Enigma.HardCopy.Desktop` once after unpacking.
 
+### Installing on Linux
+
+`packaging/linux/install.sh` installs the app for the current user — no root, nothing outside your home — with an
+entry in the desktop's application launcher and an `enigma-hardcopy` command:
+
+```
+packaging/linux/install.sh                      # build from this repository (.NET runtime bundled) and install
+packaging/linux/install.sh --from <folder>      # install an already-published folder instead
+packaging/linux/install.sh --help               # every option: --framework-dependent, --rid
+```
+
+It writes `~/.local/share/enigma-hardcopy` (the application), `~/.local/bin/enigma-hardcopy`,
+`~/.local/share/applications/enigma-hardcopy.desktop` and the icon in eight sizes, honouring `XDG_DATA_HOME` and
+`XDG_BIN_HOME`. Run it again to upgrade in place. `packaging/linux/uninstall.sh` removes exactly that, and never
+your settings in `~/.config/Enigma.HardCopy`.
+
 The Android app, **HardCopy Recover**, is a single APK: `Enigma.HardCopy.Recover-1.2.0.apk` (Android 7.0 or later,
 64-bit). Open it on the phone and allow installing apps from that source, or `adb install` it. It is signed with
 the project's release key: if a build made from source is already on the phone, uninstall that first, since
@@ -249,6 +265,7 @@ by mistake. Creating the key, the variables, and checking the result are covered
 | `src/Enigma.HardCopy.Desktop/` | The Avalonia application. |
 | `src/Enigma.HardCopy.Recover/` | The Android recovery app's platform-neutral half: its UI, ViewModels and seams. |
 | `src/Enigma.HardCopy.Recover.Android/` | The Android recovery app's head: the activity, the manifest and the platform services. |
+| `packaging/` | The icon's SVG masters; the Linux installer: `install.sh`, `uninstall.sh`, the launcher entry and its icons. |
 | `tests/` | The xUnit suites for Core, the desktop app and the recovery app. |
 | `docs/` | Roadmap, plans and per-phase completion records. The format specification lives in `docs/plan/FEATURE-79FF.md`; the Android build guide in `docs/android.md`. |
 

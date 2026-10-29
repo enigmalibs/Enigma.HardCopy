@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Enigma HardCopy
+GenericName=Paper Backup
+Comment=Back up small critical files to paper as QR codes, and recover them
+Exec=@EXEC@
+Icon=enigma-hardcopy
+Terminal=false
+Categories=Utility;Archiving;
+Keywords=paper;backup;QR code;print;recovery;restore;
+StartupNotify=true
+StartupWMClass=Enigma.HardCopy.Desktop
