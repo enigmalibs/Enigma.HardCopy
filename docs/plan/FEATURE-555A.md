@@ -1,6 +1,6 @@
 # FEATURE-555A — Catch unhandled exceptions
 
-**Status:** TODO
+**Status:** IN PROGRESS
 **Type:** FEATURE (2 phases)
 **Branch:** `feature/feature-555a-phaseNN-<slug>` (one per phase)
 **Run:** feature/2026-10-29-uniform-enigma-apps
@@ -31,7 +31,7 @@ Enigma apps fail alike.
 
 ## PHASE01 — Error policy and process hooks
 
-**Status:** TODO
+**Status:** DONE
 **Branch:** `feature/feature-555a-phase01-policy-hooks`
 
 ### Steps
