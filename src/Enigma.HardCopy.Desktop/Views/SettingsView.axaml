@@ -12,7 +12,8 @@
 
   <!-- The one page of this application built the way the library's settings cards are meant to be used: a
        stack of labelled rows, each an icon, a header, a description and its control — no surrounding
-       Border.card, because here the card IS the row. There is exactly one row, and the intro says why. -->
+       Border.card, because here the card IS the row. There is one preference, and the intro says why; the
+       about row below it is not a preference, only the way to the About dialog. -->
 
   <ScrollViewer>
     <StackPanel Classes="page">
@@ -35,6 +36,17 @@
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
+      </controls:SettingsCard>
+
+      <!-- The About dialog every Enigma app shares (icon, name, version, build, copyright) opens from here: the
+           rail holds the pages, and this application has no menu to put it on. -->
+      <controls:SettingsCard Header="{x:Static res:Strings.SettingsAboutLabel}"
+                             Description="{Binding AboutNote}"
+                             IconData="{ei:IconGeometry Info}">
+        <Button Name="OpenAbout"
+                Command="{Binding OpenAboutCommand}"
+                Content="{x:Static res:Strings.SettingsAboutButton}"
+                AutomationProperties.Name="{x:Static res:Strings.SettingsAboutButton}" />
       </controls:SettingsCard>
 
     </StackPanel>

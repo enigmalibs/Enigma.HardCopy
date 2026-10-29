@@ -8,6 +8,7 @@ using Enigma.HardCopy.Desktop.ViewModels;
 using Enigma.HardCopy.Desktop.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using AppAbout = Enigma.HardCopy.Desktop.Services.IAboutDialogService;
 using AppConfirmations = Enigma.HardCopy.Desktop.Services.IConfirmationService;
 using AppFileDialogs = Enigma.HardCopy.Desktop.Services.IFileDialogService;
 using AppNotifications = Enigma.HardCopy.Desktop.Services.INotificationService;
@@ -102,6 +103,7 @@ public sealed class ServiceCollectionExtensionsTests
     [InlineData(typeof(AppProgressOverlay), ServiceLifetime.Singleton)]
     [InlineData(typeof(AppNotifications), ServiceLifetime.Singleton)]
     [InlineData(typeof(AppConfirmations), ServiceLifetime.Singleton)]
+    [InlineData(typeof(AppAbout), ServiceLifetime.Singleton)]
     [InlineData(typeof(IAppSettingsStore), ServiceLifetime.Singleton)]
     [InlineData(typeof(AppTheming), ServiceLifetime.Singleton)]
     [InlineData(typeof(MainWindow), ServiceLifetime.Singleton)]
@@ -203,6 +205,7 @@ public sealed class ServiceCollectionExtensionsTests
         Assert.NotNull(provider.GetRequiredService<AppProgressOverlay>());
         Assert.NotNull(provider.GetRequiredService<AppNotifications>());
         Assert.NotNull(provider.GetRequiredService<AppConfirmations>());
+        Assert.NotNull(provider.GetRequiredService<AppAbout>());
     }
 
     [Fact]

@@ -359,6 +359,31 @@
   <data name="SettingsThemeDark" xml:space="preserve">
     <value>Dark</value>
   </data>
+  <data name="SettingsAboutLabel" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="SettingsAboutNoteFormat" xml:space="preserve">
+    <value>{0}, version {1}.</value>
+    <comment>{0} = the product name. {1} = the version of the running build.</comment>
+  </data>
+  <data name="SettingsAboutButton" xml:space="preserve">
+    <value>About Enigma HardCopy</value>
+  </data>
+
+  <!-- ===== About dialog ===== -->
+  <!-- The dialog every Enigma app shares: the product's name in words, its version, its build. -->
+  <data name="AboutProductName" xml:space="preserve">
+    <value>Enigma HardCopy</value>
+  </data>
+  <data name="AboutVersionLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="AboutBuildLabel" xml:space="preserve">
+    <value>Build</value>
+  </data>
+  <data name="AboutClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
 
   <!-- ===== One code's outcome ===== -->
   <data name="CodeAcceptedMetadata" xml:space="preserve">

@@ -162,6 +162,9 @@ The **Settings** page, at the foot of the rail, holds one choice: **Appearance**
 *Light* or *Dark*. It takes effect the moment you pick it and is remembered between runs. New installations
 follow the system.
 
+Below it, the **About** row names the running version; its *About Enigma HardCopy* button opens the About
+dialog — the version, the build's short commit (selectable, for a bug report) and the copyright.
+
 The choice is kept in a small JSON file, written only once you make one:
 
 | Platform | Path |
