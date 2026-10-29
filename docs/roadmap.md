@@ -37,4 +37,4 @@
 | - PHASE02    | Error dialog and wiring                      | DONE   | (in FEATURE-555A.md)      |
 | FEATURE-3D14 | Linux install and uninstall scripts          | DONE   | docs/plan/FEATURE-3D14.md |
 | FEATURE-92E2 | Publish scripts for Windows and Linux        | DONE   | docs/plan/FEATURE-92E2.md |
-| FEATURE-407E | Release 1.3.0                                | TODO   | docs/plan/FEATURE-407E.md |
+| FEATURE-407E | Release 1.3.0                                | DONE   | docs/plan/FEATURE-407E.md |
