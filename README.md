@@ -272,6 +272,29 @@ read the key from environment variables and refuse to build without it, so a deb
 by mistake. Creating the key, the variables, and checking the result are covered in
 [docs/android.md](docs/android.md), *Release APK*.
 
+## Building the Windows installer
+
+`packaging\windows\buildmsi.ps1` (or `buildmsi.bat`, from a `cmd` prompt) builds
+`artifacts\Enigma.HardCopy.X.Y.Z.msi` in one step:
+
+1. it runs `git clean -dxf`, which deletes **every file git does not track**: build output, `artifacts\`, IDE
+   folders, and any new file you have not added yet;
+2. it publishes with `packaging\windows\publish.ps1`;
+3. it packages the result, uncompressed, with Enigma.Msi. A copy of Enigma.Msi's worker is in
+   `packaging\windows\Enigma.Msi.Worker\`.
+
+The MSI installs **Enigma HardCopy** for all users in `%ProgramFiles%\Enigma HardCopy`, with a shortcut on the
+desktop and one in the program menu. It replaces an earlier version installed from an MSI. The version is the one
+in `Directory.Build.props`. Building it needs Windows and the WiX CLI (`dotnet tool install --global wix`) as well
+as the .NET 10 SDK. Unlike the release archives, the installed application is not self-contained: it needs the
+.NET 10 runtime.
+
+```powershell
+.\packaging\windows\buildmsi.ps1
+# Under Windows PowerShell's default execution policy, which refuses local scripts:
+powershell -ExecutionPolicy Bypass -File packaging\windows\buildmsi.ps1
+```
+
 ## Project layout
 
 | Path | What it is |
@@ -280,7 +303,7 @@ by mistake. Creating the key, the variables, and checking the result are covered
 | `src/Enigma.HardCopy.Desktop/` | The Avalonia application. |
 | `src/Enigma.HardCopy.Recover/` | The Android recovery app's platform-neutral half: its UI, ViewModels and seams. |
 | `src/Enigma.HardCopy.Recover.Android/` | The Android recovery app's head: the activity, the manifest and the platform services. |
-| `packaging/` | The icon's SVG masters; the one-command publish scripts (`windows/publish.ps1`, `windows/publish.bat`, `linux/publish.sh`); the Linux installer: `install.sh`, `uninstall.sh`, the launcher entry and its icons. |
+| `packaging/` | The icon's SVG masters; the one-command publish scripts (`windows/publish.ps1`, `windows/publish.bat`, `linux/publish.sh`); the Windows installer build (`windows/buildmsi.ps1`, `windows/buildmsi.bat`) and its vendored Enigma.Msi worker; the Linux installer: `install.sh`, `uninstall.sh`, the launcher entry and its icons. |
 | `tests/` | The xUnit suites for Core, the desktop app and the recovery app. |
 | `docs/` | Roadmap, plans and per-phase completion records. The format specification lives in `docs/plan/FEATURE-79FF.md`; the Android build guide in `docs/android.md`. |
 

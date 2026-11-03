@@ -1,6 +1,6 @@
 # FEATURE-4ED9 — Windows MSI build script
 
-**Status:** IN PROGRESS
+**Status:** DONE
 **Type:** FEATURE
 **Branch:** one per phase, see below
 **Run:** feature/2026-11-03-icons-msi-release
@@ -85,7 +85,7 @@ worker CLI. The product is named **Enigma HardCopy**, has its own upgrade code, 
 ## PHASE02 — The buildmsi script
 
 **Branch:** `feature/feature-4ed9-phase02-buildmsi-script`
-**Status:** TODO
+**Status:** DONE
 
 ### Steps
 
