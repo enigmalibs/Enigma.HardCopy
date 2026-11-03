@@ -1,5 +1,6 @@
 using System;
 using System.Buffers.Binary;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Xunit;
@@ -8,7 +9,8 @@ namespace Enigma.HardCopy.Desktop.UnitTests;
 
 /// <summary>
 /// Pins the application icon to the branding set: the ten-frame <c>app.ico</c> the executable and the window
-/// carry, the 256-pixel PNG the About dialog shows, and the copy of the icon written beside the executable.
+/// carry, the 256-pixel PNG the About dialog shows, the Linux installer's PNGs, and the copy of the icon written
+/// beside the executable. Every PNG is one of the icon's own frames, so the copies cannot drift apart.
 /// </summary>
 /// <remarks>
 /// Headers only, read straight from the bytes: decoding an image would need Avalonia's platform, and the frame
@@ -58,6 +60,32 @@ public sealed class AppIconTests
     }
 
     [Fact]
+    public void AppPng_IsTheIcosOwn256Frame_ByteForByte()
+    {
+        byte[] png = File.ReadAllBytes(RepositoryRoot.Combine("src/Enigma.HardCopy.Desktop/Assets/app-256.png"));
+
+        Assert.Equal(IcoFrame(256), png);
+    }
+
+    /// <summary>
+    /// The Linux installer's PNGs are the same artwork as the executable's icon: a new icon set copied in part would
+    /// otherwise give the launcher one icon and the window another, and every size would still be right.
+    /// </summary>
+    [Fact]
+    public void EveryLinuxIcon_IsTheIcosFrameOfItsSize_ByteForByte()
+    {
+        string[] icons = Directory.GetFiles(RepositoryRoot.Combine("packaging/linux/icons"), "enigma-hardcopy-*.png");
+
+        Assert.NotEmpty(icons);
+        foreach (string icon in icons)
+        {
+            int size = int.Parse(Path.GetFileNameWithoutExtension(icon)["enigma-hardcopy-".Length..], CultureInfo.InvariantCulture);
+
+            Assert.True(IcoFrame(size).AsSpan().SequenceEqual(File.ReadAllBytes(icon)), $"{Path.GetFileName(icon)} is not the {size} px frame of app.ico.");
+        }
+    }
+
+    [Fact]
     public void AppIco_IsCopiedToTheOutputDirectory_ByteForByte()
     {
         // The app's CopyToOutputDirectory item flows to this referencing project's output, so the copy that
@@ -68,5 +96,26 @@ public sealed class AppIconTests
         Assert.Equal(
             File.ReadAllBytes(RepositoryRoot.Combine("src/Enigma.HardCopy.Desktop/Assets/app.ico")),
             File.ReadAllBytes(copy));
+    }
+
+    /// <summary>The bytes of <c>app.ico</c>'s frame at <paramref name="size"/> pixels, a whole PNG file.</summary>
+    private static byte[] IcoFrame(int size)
+    {
+        byte[] ico = File.ReadAllBytes(RepositoryRoot.Combine("src/Enigma.HardCopy.Desktop/Assets/app.ico"));
+        int count = BinaryPrimitives.ReadUInt16LittleEndian(ico.AsSpan(4));
+
+        for (int i = 0; i < count; i++)
+        {
+            ReadOnlySpan<byte> entry = ico.AsSpan(6 + (16 * i), 16);
+
+            if ((entry[0] == 0 ? 256 : entry[0]) == size)
+            {
+                int length = (int)BinaryPrimitives.ReadUInt32LittleEndian(entry[8..]);
+                int offset = (int)BinaryPrimitives.ReadUInt32LittleEndian(entry[12..]);
+                return ico.AsSpan(offset, length).ToArray();
+            }
+        }
+
+        throw new InvalidOperationException($"app.ico has no {size} px frame.");
     }
 }
