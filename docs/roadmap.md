@@ -38,3 +38,8 @@
 | FEATURE-3D14 | Linux install and uninstall scripts          | DONE   | docs/plan/FEATURE-3D14.md |
 | FEATURE-92E2 | Publish scripts for Windows and Linux        | DONE   | docs/plan/FEATURE-92E2.md |
 | FEATURE-407E | Release 1.3.0                                | DONE   | docs/plan/FEATURE-407E.md |
+| FEATURE-BA6C | New icon set without the tile                | DONE   | docs/plan/FEATURE-BA6C.md |
+| FEATURE-4ED9 | Windows MSI build script                     | DONE   | docs/plan/FEATURE-4ED9.md |
+| - PHASE01    | Vendor the Enigma.Msi worker CLI             | DONE   | (in FEATURE-4ED9.md)      |
+| - PHASE02    | The buildmsi script                          | DONE   | (in FEATURE-4ED9.md)      |
+| FEATURE-C1D1 | Release 1.4.0                                | DONE   | docs/plan/FEATURE-C1D1.md |

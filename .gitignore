@@ -368,3 +368,7 @@ FodyWeavers.xsd
 # repository (docs/android.md, "Release APK"), and these patterns keep a copy from being committed by mistake.
 *.keystore
 *.jks
+
+# Enigma.Msi worker (packaging/windows/Enigma.Msi.Worker): WixSharp writes this folder beside the
+# worker on its first MSI build. It is rebuilt on demand, never committed.
+packaging/windows/Enigma.Msi.Worker/.wixsharp/

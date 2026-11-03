@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The application icon's QR code (Branding/Apps/final/hardcopy/enigma-hardcopy.svg), its modules in their two
+<!-- The application icon's QR code (packaging/icon/enigma-hardcopy.svg), its modules in their two
      colours, drawn in the SVG's 256-unit space and scaled onto the adaptive icon's 108-unit canvas: the 136-unit
      code becomes 42 units, inside the 66-unit safe zone, so no launcher mask clips a corner. The finder patterns
      are one even-odd path, so their dark rings are holes that show the background layer. -->
