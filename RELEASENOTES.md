@@ -1,5 +1,77 @@
 # Enigma.HardCopy Release Notes
 
+## 1.4.0
+
+A release about installing: **a Windows installer**, built in one command, and the icon redrawn **without its tile**,
+the way the other Enigma apps now draw theirs. **The format is untouched: every backup printed by 1.0 to 1.3
+recovers, on the desktop and on the phone alike.**
+
+### A Windows installer
+
+- **`packaging/windows/buildmsi.ps1`** (or `buildmsi.bat` from a `cmd` prompt) builds
+  `artifacts/Enigma.HardCopy.1.4.0.msi` in one step. It cleans the repository with `git clean -dxf` (every file git
+  does not track is deleted), publishes with `packaging/windows/publish.ps1`, then packages the result with
+  Enigma.Msi, the tool every Enigma app's installer is built with. A copy of its worker is in
+  `packaging/windows/Enigma.Msi.Worker/`.
+- **The MSI installs *Enigma HardCopy*** for all users in `%ProgramFiles%\Enigma HardCopy`, with a shortcut on the
+  desktop and one in the Start menu. It appears in *Installed apps* with the icon.
+- **It upgrades in place from now on.** Every MSI of Enigma HardCopy carries the same upgrade code, so the next
+  version's installer replaces this one instead of installing beside it.
+- **The installed app needs the .NET 10 runtime**, which the MSI does not install. The release archives are
+  unchanged: self-contained, with nothing to install.
+- Building the MSI needs Windows, the .NET 10 SDK and the WiX CLI (`dotnet tool install --global wix`). The README's
+  *Building the Windows installer* has the details.
+
+### A new icon
+
+- **The icon loses its dark rounded tile.** The same QR code, in the same soft blue with one green module, now sits
+  on a transparent background, so the taskbar, the title bar, the About dialog and the Linux launcher show it on
+  their own background.
+- **HardCopy Recover's launcher icon is unchanged.** Android masks every launcher icon into its own shape, and the
+  tile's colour fills that shape.
+
+### Compatibility — the paper is unchanged
+
+- **The backup format is the same EHC1 format.** A PDF printed by 1.4 recovers with 1.0 to 1.3, and the other way
+  round; the recovery instructions printed on page 1 are unchanged.
+- **The settings file is unchanged** (`settings.json`, the appearance choice).
+- **HardCopy Recover has no visible change.** It is built and signed exactly as 1.3.0, so it installs as an update
+  over a release-signed 1.3.0; its `versionCode` is now `10400`.
+
+### For developers
+
+- **New in `packaging/windows/`:** `buildmsi.ps1`, `buildmsi.bat` and the vendored Enigma.Msi 1.7.0 worker (its
+  README gives its source, its licences and how to refresh it).
+- **The suite grows** from 875 to 884 tests. They pin the installer's upgrade code, its product name and the
+  executable its shortcuts start, and they require every copy of the icon to be the `.ico`'s own frame, byte for
+  byte.
+
+### Dependencies
+
+**Updated:** none. The packages that have newer versions all belong to sets that move together, and none of those
+sets can move yet.
+
+**Deliberately held back:**
+
+- The Avalonia set (`Avalonia`, `Avalonia.Android`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`,
+  `Avalonia.Fonts.Inter`) stays at 12.1.4 (12.1.5 is out): `Enigma.Avalonia.Desktop` 1.3.0, the newest, is built
+  on 12.1.4, and the set moves only with it.
+- `SkiaSharp` / `SkiaSharp.NativeAssets.Linux` stay at 3.119.4 (4.154.0 is out), and with them
+  `ZXing.Net.Bindings.SkiaSharp` at 0.16.22 (0.16.25 needs SkiaSharp 4). Avalonia 12.1.4 is built on SkiaSharp
+  3.119.4, and the app needs one Skia runtime.
+- CameraX (`Xamarin.AndroidX.Camera.Camera2` / `.Core` / `.Lifecycle`) stays at 1.6.1 (1.6.2 is out): 1.6.2 moves
+  AndroidX Lifecycle to 2.11, while `Avalonia.Android` 12.1.4 still pins 2.10.
+
+No package in the solution has a known vulnerability, direct or transitive.
+
+### Known limitations
+
+- The MSI is a 32-bit Windows Installer package, so it installs under `Program Files (x86)` on 64-bit Windows. The
+  application it installs is 64-bit.
+- The MSI is not signed.
+
+---
+
 ## 1.3.0
 
 A release that brings the desktop app in line with the other Enigma apps — the same About dialog, the same safety

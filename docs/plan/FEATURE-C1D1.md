@@ -1,6 +1,6 @@
 # FEATURE-C1D1 — Release 1.4.0
 
-**Status:** TODO
+**Status:** DONE
 **Type:** FEATURE
 **Branch:** `feature/feature-c1d1-release-1-4-0`
 **Run:** feature/2026-11-03-icons-msi-release
