@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pre-API-26 launcher icon: the application icon as the branding draws it — the code on its rounded dark tile,
-     scaled from the SVG's 256-unit space so the 240-unit tile fills 96 of the 108 units. -->
+<!-- Pre-API-26 launcher icon: the application icon's code (packaging/icon/enigma-hardcopy.svg) on the branding's
+     rounded dark tile — a pre-26 launcher shows the drawable as drawn, with no mask to give it a shape — scaled
+     from the SVG's 256-unit space so the 240-unit tile fills 96 of the 108 units. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
         android:width="48dp"
         android:height="48dp"

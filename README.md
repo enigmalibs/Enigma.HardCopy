@@ -14,10 +14,10 @@ control library, with icons from `Enigma.Icons.Phosphor` — plus **HardCopy Rec
 recovers a backup by scanning its codes with the phone's camera and stores nothing on the phone (see
 [Recovering on Android](#recovering-on-android)).
 
-> **What's new in 1.3.0** — an **About** dialog, a **safety net** that reports an unexpected failure in a dialog
-> while the app keeps running, the **new icon** on the desktop and the phone, a **Linux installer** and one-command
-> **publish scripts**, and every dependency on its latest coherent version. **The format is untouched — every backup
-> printed by 1.0, 1.1 or 1.2 still recovers.** See [RELEASENOTES.md](RELEASENOTES.md).
+> **What's new in 1.4.0** — a **Windows installer** (an MSI built in one command, which upgrades in place from now
+> on), and the icon redrawn **without its tile**. 1.3.0 brought the About dialog, the safety net for unexpected
+> failures, the Linux installer and the publish scripts. **The format is untouched — every backup printed by 1.0 to
+> 1.3 still recovers.** See [RELEASENOTES.md](RELEASENOTES.md).
 
 ## Why paper
 
@@ -34,11 +34,15 @@ required on the machine that runs it**.
 
 | Platform | Archive | Run |
 |---|---|---|
-| Windows (x64) | `Enigma.HardCopy-1.3.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
-| Linux (x64) | `Enigma.HardCopy-1.3.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
+| Windows (x64) | `Enigma.HardCopy-1.4.0-win-x64.zip` | `Enigma.HardCopy.Desktop.exe` |
+| Linux (x64) | `Enigma.HardCopy-1.4.0-linux-x64.zip` | `./Enigma.HardCopy.Desktop` |
 
 On Linux, if the archive was produced on Windows the executable bit does not survive the zip — run
 `chmod +x Enigma.HardCopy.Desktop` once after unpacking.
+
+On Windows there is also an installer, `Enigma.HardCopy.1.4.0.msi`: it installs **Enigma HardCopy** for all users,
+with a shortcut on the desktop and one in the Start menu, and a later MSI upgrades it in place. Unlike the archive,
+the installed application needs the .NET 10 runtime. See *Building the Windows installer*.
 
 ### Installing on Linux
 
@@ -56,7 +60,7 @@ It writes `~/.local/share/enigma-hardcopy` (the application), `~/.local/bin/enig
 `XDG_BIN_HOME`. Run it again to upgrade in place. `packaging/linux/uninstall.sh` removes exactly that, and never
 your settings in `~/.config/Enigma.HardCopy`.
 
-The Android app, **HardCopy Recover**, is a single APK: `Enigma.HardCopy.Recover-1.3.0.apk` (Android 7.0 or later,
+The Android app, **HardCopy Recover**, is a single APK: `Enigma.HardCopy.Recover-1.4.0.apk` (Android 7.0 or later,
 64-bit). Open it on the phone and allow installing apps from that source, or `adb install` it. It is signed with
 the project's release key: if a build made from source is already on the phone, uninstall that first, since
 Android refuses an update with a different signature. See [Recovering on Android](#recovering-on-android).
@@ -272,6 +276,29 @@ read the key from environment variables and refuse to build without it, so a deb
 by mistake. Creating the key, the variables, and checking the result are covered in
 [docs/android.md](docs/android.md), *Release APK*.
 
+## Building the Windows installer
+
+`packaging\windows\buildmsi.ps1` (or `buildmsi.bat`, from a `cmd` prompt) builds
+`artifacts\Enigma.HardCopy.X.Y.Z.msi` in one step:
+
+1. it runs `git clean -dxf`, which deletes **every file git does not track**: build output, `artifacts\`, IDE
+   folders, and any new file you have not added yet;
+2. it publishes with `packaging\windows\publish.ps1`;
+3. it packages the result, uncompressed, with Enigma.Msi. A copy of Enigma.Msi's worker is in
+   `packaging\windows\Enigma.Msi.Worker\`.
+
+The MSI installs **Enigma HardCopy** for all users in `%ProgramFiles%\Enigma HardCopy`, with a shortcut on the
+desktop and one in the program menu. It replaces an earlier version installed from an MSI. The version is the one
+in `Directory.Build.props`. Building it needs Windows and the WiX CLI (`dotnet tool install --global wix`) as well
+as the .NET 10 SDK. Unlike the release archives, the installed application is not self-contained: it needs the
+.NET 10 runtime.
+
+```powershell
+.\packaging\windows\buildmsi.ps1
+# Under Windows PowerShell's default execution policy, which refuses local scripts:
+powershell -ExecutionPolicy Bypass -File packaging\windows\buildmsi.ps1
+```
+
 ## Project layout
 
 | Path | What it is |
@@ -280,7 +307,7 @@ by mistake. Creating the key, the variables, and checking the result are covered
 | `src/Enigma.HardCopy.Desktop/` | The Avalonia application. |
 | `src/Enigma.HardCopy.Recover/` | The Android recovery app's platform-neutral half: its UI, ViewModels and seams. |
 | `src/Enigma.HardCopy.Recover.Android/` | The Android recovery app's head: the activity, the manifest and the platform services. |
-| `packaging/` | The icon's SVG masters; the one-command publish scripts (`windows/publish.ps1`, `windows/publish.bat`, `linux/publish.sh`); the Linux installer: `install.sh`, `uninstall.sh`, the launcher entry and its icons. |
+| `packaging/` | The icon's SVG masters; the one-command publish scripts (`windows/publish.ps1`, `windows/publish.bat`, `linux/publish.sh`); the Windows installer build (`windows/buildmsi.ps1`, `windows/buildmsi.bat`) and its vendored Enigma.Msi worker; the Linux installer: `install.sh`, `uninstall.sh`, the launcher entry and its icons. |
 | `tests/` | The xUnit suites for Core, the desktop app and the recovery app. |
 | `docs/` | Roadmap, plans and per-phase completion records. The format specification lives in `docs/plan/FEATURE-79FF.md`; the Android build guide in `docs/android.md`. |
 
