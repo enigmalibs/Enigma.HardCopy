@@ -1,6 +1,6 @@
 # FEATURE-DA65 — Release 1.5.0
 
-**Status:** TODO
+**Status:** DONE
 **Type:** FEATURE
 **Branch:** `feature/feature-da65-release-1-5-0`
 **Run:** feature/2026-11-04-icons-release
