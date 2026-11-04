@@ -1,6 +1,6 @@
 # FEATURE-3642 — Icon set that fills the frame
 
-**Status:** TODO
+**Status:** DONE
 **Type:** FEATURE
 **Branch:** `feature/feature-3642-fill-frame-icons`
 **Run:** feature/2026-11-04-icons-release

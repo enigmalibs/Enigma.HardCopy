@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Enigma.HardCopy application icon without the tile, simplified for the 16 to 32 px frames: enigma-hardcopy.svg with heavier marks and fewer details.
+  Enigma.HardCopy application icon without the tile, filling the frame (final3), simplified for the 16 to 32 px frames: enigma-hardcopy.svg with heavier marks and fewer details.
+  Drawn on the live area, 16 to 240, with its straight edges on the 16-unit grid.
+  Regenerate the SVGs, the PNG frames and the .ico with: python3 Branding/Apps/export.py final3
 -->
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256">
-  <path d="M48 32H96A16 16 0 0 1 112 48V96A16 16 0 0 1 96 112H48A16 16 0 0 1 32 96V48A16 16 0 0 1 48 32ZM54 48H90A6 6 0 0 1 96 54V90A6 6 0 0 1 90 96H54A6 6 0 0 1 48 90V54A6 6 0 0 1 54 48Z" fill="#6A9BF4" fill-rule="evenodd"/>
-  <rect x="64" y="64" width="16" height="16" fill="#6A9BF4"/>
-  <path d="M160 32H208A16 16 0 0 1 224 48V96A16 16 0 0 1 208 112H160A16 16 0 0 1 144 96V48A16 16 0 0 1 160 32ZM166 48H202A6 6 0 0 1 208 54V90A6 6 0 0 1 202 96H166A6 6 0 0 1 160 90V54A6 6 0 0 1 166 48Z" fill="#6A9BF4" fill-rule="evenodd"/>
-  <rect x="176" y="64" width="16" height="16" fill="#6A9BF4"/>
-  <path d="M48 144H96A16 16 0 0 1 112 160V208A16 16 0 0 1 96 224H48A16 16 0 0 1 32 208V160A16 16 0 0 1 48 144ZM54 160H90A6 6 0 0 1 96 166V202A6 6 0 0 1 90 208H54A6 6 0 0 1 48 202V166A6 6 0 0 1 54 160Z" fill="#6A9BF4" fill-rule="evenodd"/>
-  <rect x="64" y="176" width="16" height="16" fill="#6A9BF4"/>
-  <rect x="152" y="152" width="64" height="64" rx="12" fill="#63C77D"/>
+  <path d="M32 16H96A16 16 0 0 1 112 32V96A16 16 0 0 1 96 112H32A16 16 0 0 1 16 96V32A16 16 0 0 1 32 16ZM38 32H90A6 6 0 0 1 96 38V90A6 6 0 0 1 90 96H38A6 6 0 0 1 32 90V38A6 6 0 0 1 38 32Z" fill="#6A9BF4" fill-rule="evenodd"/>
+  <rect x="48" y="48" width="32" height="32" fill="#6A9BF4"/>
+  <path d="M160 16H224A16 16 0 0 1 240 32V96A16 16 0 0 1 224 112H160A16 16 0 0 1 144 96V32A16 16 0 0 1 160 16ZM166 32H218A6 6 0 0 1 224 38V90A6 6 0 0 1 218 96H166A6 6 0 0 1 160 90V38A6 6 0 0 1 166 32Z" fill="#6A9BF4" fill-rule="evenodd"/>
+  <rect x="176" y="48" width="32" height="32" fill="#6A9BF4"/>
+  <path d="M32 144H96A16 16 0 0 1 112 160V224A16 16 0 0 1 96 240H32A16 16 0 0 1 16 224V160A16 16 0 0 1 32 144ZM38 160H90A6 6 0 0 1 96 166V218A6 6 0 0 1 90 224H38A6 6 0 0 1 32 218V166A6 6 0 0 1 38 160Z" fill="#6A9BF4" fill-rule="evenodd"/>
+  <rect x="48" y="176" width="32" height="32" fill="#6A9BF4"/>
+  <rect x="160" y="160" width="64" height="64" rx="12" fill="#63C77D"/>
 </svg>
