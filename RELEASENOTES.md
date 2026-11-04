@@ -1,5 +1,67 @@
 # Enigma.HardCopy Release Notes
 
+## 1.5.0
+
+A release about the icon: **it now fills its frame**, so it reads at the same size as the icons around it. **The
+format is untouched: every backup printed by 1.0 to 1.4 recovers, on the desktop and on the phone alike.**
+
+### A larger icon
+
+- **The icon fills its frame.** It is the same tile-free QR code as 1.4, in the same soft blue with one green
+  module. In 1.4 it sat in the middle of a wide transparent margin; now it spans nearly the whole square. The change
+  shows everywhere the icon appears:
+  - the taskbar and the title bar;
+  - the About dialog;
+  - the desktop and Start-menu shortcuts and the *Installed apps* entry the MSI creates;
+  - the Linux launcher.
+- **The small sizes are redrawn for the larger code.** The 16 to 32 px frames, which the title bar and the taskbar
+  use, still come from a simplified drawing with heavier marks, now drawn edge to edge.
+- **HardCopy Recover's launcher icon is unchanged.** Android masks every launcher icon into its own shape, and that
+  mask would cut the corners off a drawing that filled the square.
+
+### Compatibility — the paper is unchanged
+
+- **The backup format is the same EHC1 format.** A PDF printed by 1.5 recovers with 1.0 to 1.4, and the other way
+  round. The recovery instructions printed on page 1 are unchanged.
+- **The settings file is unchanged** (`settings.json`, the appearance choice).
+- **The MSI upgrades 1.4.0 in place.** `Enigma.HardCopy.1.5.0.msi` carries the same upgrade code as 1.4.0's, so it
+  replaces the installed version instead of installing beside it.
+- **HardCopy Recover has no visible change.** It is built and signed exactly as 1.4.0, so it installs as an update
+  over a release-signed 1.4.0. Its `versionCode` is now `10500`.
+
+### For developers
+
+- **`packaging/windows/buildmsi.ps1` is unchanged.** It reads the version from `Directory.Build.props`, so it builds
+  `artifacts/Enigma.HardCopy.1.5.0.msi` with no edit of its own. Two new tests keep it that way: the script takes
+  its version from `Directory.Build.props`, and it contains no version number of its own.
+- **The suite grows** from 884 to 886 tests.
+
+### Dependencies
+
+**Updated:** none. The packages that have newer versions all belong to sets that move together, and none of those
+sets can move yet. Nothing has changed since 1.4.0.
+
+**Deliberately held back:**
+
+- The Avalonia set (`Avalonia`, `Avalonia.Android`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`,
+  `Avalonia.Fonts.Inter`) stays at 12.1.4 (12.1.5 is out). `Enigma.Avalonia.Desktop` 1.3.0, the newest, is built
+  on 12.1.4, and the set moves only with it.
+- `SkiaSharp` / `SkiaSharp.NativeAssets.Linux` stay at 3.119.4 (4.154.0 is out), and with them
+  `ZXing.Net.Bindings.SkiaSharp` at 0.16.22 (0.16.25 needs SkiaSharp 4). Avalonia 12.1.4 is built on SkiaSharp
+  3.119.4, and the app needs one Skia runtime.
+- CameraX (`Xamarin.AndroidX.Camera.Camera2` / `.Core` / `.Lifecycle`) stays at 1.6.1 (1.6.2 is out). 1.6.2 moves
+  AndroidX Lifecycle to 2.11, while `Avalonia.Android` 12.1.4 still pins 2.10.
+
+No package in the solution has a known vulnerability, direct or transitive.
+
+### Known limitations
+
+- The MSI is a 32-bit Windows Installer package, so it installs under `Program Files (x86)` on 64-bit Windows. The
+  application it installs is 64-bit.
+- The MSI is not signed.
+
+---
+
 ## 1.4.0
 
 A release about installing: **a Windows installer**, built in one command, and the icon redrawn **without its tile**,

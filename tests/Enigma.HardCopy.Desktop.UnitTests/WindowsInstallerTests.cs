@@ -41,6 +41,26 @@ public sealed class WindowsInstallerTests
     public void TheInstaller_PackagesAndStartsTheExecutableOfTheAssembly()
         => Assert.Contains($"$Assembly = '{AssemblyName}'", Script);
 
+    /// <summary>
+    /// The MSI's version is the app's: the script reads <c>Directory.Build.props</c>'s <c>&lt;Version&gt;</c> and
+    /// names its output after it, so a release bumps the version there and nowhere else.
+    /// </summary>
+    [Fact]
+    public void TheInstaller_TakesItsVersionFromDirectoryBuildProps()
+    {
+        Assert.Contains("$props.Load((Join-Path $root 'Directory.Build.props'))", Script);
+        Assert.Contains("$versionNode = $props.SelectSingleNode('/Project/PropertyGroup/Version')", Script);
+        Assert.Contains("$version = $versionNode.InnerText.Trim()", Script);
+        Assert.Contains("$name = \"Enigma.HardCopy.$version\"", Script);
+    }
+
+    /// <summary>
+    /// A version number written into the script would be a second source of truth, stale at the next release.
+    /// </summary>
+    [Fact]
+    public void TheInstaller_WritesNoVersionNumberOfItsOwn()
+        => Assert.DoesNotMatch(@"\d+\.\d+\.\d+", string.Join('\n', Script));
+
     [Fact]
     public void TheInstaller_PackagesWhatThePublishScriptPublishes()
         => Assert.Contains("& (Join-Path $PSScriptRoot 'publish.ps1')", Script);
